@@ -82,8 +82,8 @@ textarea:focus{outline:2px solid #2563eb;outline-offset:-1px;border-color:#2563e
       <div class="card" onclick="showDetail('ld')"><span class="icon">🏷️</span><h2>랜딩별 비교</h2><p>유형별 영역 / PC + Mobile 디바이스</p><span class="arr">열기 →</span></div>
     </div>
     <div class="footer-bar">
-      <span>데이터 형식 가이드</span>
-      <a href="template.xlsx" download class="dl-btn">📥 마스터 템플릿 (.xlsx)</a>
+      <span>엑셀 로우 데이터를 AI에 넣을 때 쓰는 전처리 프롬프트예요</span>
+      <button class="dl-btn" onclick="openGuide()">📋 데이터 형식 가이드</button>
     </div>
   </div>
 </div>
@@ -3553,6 +3553,275 @@ $download.addEventListener("click", () => {
 });
   })();
 };
+</script>
+
+
+<!-- ════════ 데이터 형식 가이드 모달 ════════ -->
+<style>
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,0.45); backdrop-filter: blur(2px);
+  align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: #fff; border-radius: 16px; width: 90%; max-width: 720px;
+  max-height: 88vh; display: flex; flex-direction: column;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.18);
+}
+.modal-header {
+  padding: 20px 24px 16px; border-bottom: 1px solid #D2D2D7;
+  display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+}
+.modal-header h2 { font-size: 17px; font-weight: 700; color: #1D1D1F; margin: 0; }
+.modal-header p { font-size: 12px; color: #6E6E73; margin: 4px 0 0; }
+.modal-close {
+  background: #F5F5F7; border: none; border-radius: 50%;
+  width: 32px; height: 32px; font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; color: #6E6E73;
+  flex-shrink: 0;
+}
+.modal-close:hover { background: #D2D2D7; }
+.modal-tabs {
+  display: flex; gap: 4px; padding: 12px 24px 0; flex-shrink: 0;
+  border-bottom: 1px solid #D2D2D7;
+}
+.modal-tab {
+  padding: 7px 14px; border: none; border-bottom: 2px solid transparent;
+  background: none; font: inherit; font-size: 13px; color: #6E6E73;
+  cursor: pointer; white-space: nowrap; transition: all 0.12s;
+}
+.modal-tab:hover { color: #1D1D1F; }
+.modal-tab.active { color: #2563eb; border-bottom-color: #2563eb; font-weight: 700; }
+.modal-body { padding: 20px 24px; overflow-y: auto; flex: 1; }
+.prompt-desc {
+  font-size: 13px; color: #6E6E73; margin: 0 0 14px; line-height: 1.6;
+}
+.prompt-box {
+  background: #F5F5F7; border: 1px solid #D2D2D7; border-radius: 10px;
+  padding: 14px 16px; font-size: 12px; font-family: ui-monospace, monospace;
+  line-height: 1.7; color: #1D1D1F; white-space: pre-wrap; margin: 0 0 14px;
+}
+.copy-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 18px; background: #2563eb; color: #fff;
+  border: none; border-radius: 8px; font: inherit; font-size: 13px;
+  font-weight: 600; cursor: pointer; transition: background 0.12s;
+}
+.copy-btn:hover { background: #1d4ed8; }
+.copy-btn.copied { background: #059669; }
+.how-to {
+  margin-top: 16px; padding: 12px 14px;
+  background: #eff6ff; border: 1px solid #bfdbfe;
+  border-radius: 8px; font-size: 12px; color: #1e40af; line-height: 1.6;
+}
+.how-to b { color: #1e3a8a; }
+</style>
+
+<div class="modal-overlay" id="guideModal" onclick="closeGuideOutside(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <h2>📋 데이터 형식 가이드</h2>
+        <p>아래 프롬프트를 복사해서 로우 데이터와 함께 AI에 붙여넣으세요</p>
+      </div>
+      <button class="modal-close" onclick="closeGuide()">✕</button>
+    </div>
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="switchGuideTab(0)">📋 유형 요약</button>
+      <button class="modal-tab" onclick="switchGuideTab(1)">📊 채널 분석</button>
+      <button class="modal-tab" onclick="switchGuideTab(2)">📉 단계별 이탈</button>
+      <button class="modal-tab" onclick="switchGuideTab(3)">🏷️ 랜딩별 비교</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- 유형 요약 -->
+      <div class="guide-panel active" id="guide-0">
+        <p class="prompt-desc">유형별 유입수와 최종 전환수를 정리합니다. 각 유형마다 유입 행과 최종 전환 단계 행이 한 쌍이어야 합니다.</p>
+        <div class="prompt-box" id="prompt-0">아래는 GA4에서 추출한 퍼널 분석 로우 데이터야.
+이 데이터를 아래 형식에 맞게 변환해줘.
+
+[출력 형식]
+유형	단계별	수치
+{유형명}	{로우데이터의 첫 번째 단계명 그대로}	{유입수}
+	{로우데이터의 마지막 단계명 그대로}	{전환수}
+(유형마다 반복)
+
+[규칙]
+- 단계명은 로우 데이터에 있는 그대로 사용 (임의로 바꾸지 말 것)
+- 유입은 퍼널의 첫 단계 사용자 수
+- 최종 전환 단계는 가장 마지막 완료 단계
+- 수치는 숫자만 (콤마, % 제거)
+- 유형명이 없으면 캠페인명 또는 페이지명을 사용
+
+[로우 데이터]
+(여기에 복사한 데이터 붙여넣기)</div>
+        <button class="copy-btn" onclick="copyPrompt(0)">📋 프롬프트 복사</button>
+        <div class="how-to">
+          <b>사용 방법</b><br>
+          1. 위 프롬프트를 복사하세요<br>
+          2. Claude 또는 ChatGPT를 열고 붙여넣기<br>
+          3. [로우 데이터] 아래에 GA4에서 복사한 데이터를 추가하세요<br>
+          4. 변환된 결과를 차트 도구의 "데이터 갱신" 탭에 붙여넣으세요
+        </div>
+      </div>
+
+      <!-- 채널 분석 -->
+      <div class="guide-panel" id="guide-1">
+        <p class="prompt-desc">채널별 PC/MO 디바이스 분리 데이터가 필요합니다. 5단계 퍼널 + 채널 + 디바이스 구조로 변환합니다.</p>
+        <div class="prompt-box" id="prompt-1">아래는 GA4에서 추출한 채널별 퍼널 로우 데이터야.
+이 데이터를 아래 형식에 맞게 변환해줘.
+
+[출력 형식]
+채널	디바이스	{1단계명}	{2단계명}	{3단계명}	{4단계명}	{5단계명}	최종 전환율
+{채널명}	PC	{수치}	{수치}	{수치}	{수치}	{수치}	{전환율}%
+{채널명}	MO	{수치}	{수치}	{수치}	{수치}	{수치}	{전환율}%
+(채널마다 반복)
+
+[규칙]
+- 단계명은 로우 데이터에 있는 그대로 사용 (임의로 바꾸지 말 것)
+- 단계가 5개가 아니면 있는 단계 수만큼만 열 추가
+- 디바이스는 PC와 MO(모바일) 두 행으로 분리
+- 최종 전환율 = 마지막단계/첫단계 × 100 (소수점 2자리)
+- 수치는 숫자만 (콤마, % 제거)
+
+[로우 데이터]
+(여기에 복사한 데이터 붙여넣기)</div>
+        <button class="copy-btn" onclick="copyPrompt(1)">📋 프롬프트 복사</button>
+        <div class="how-to">
+          <b>사용 방법</b><br>
+          1. 위 프롬프트를 복사하세요<br>
+          2. Claude 또는 ChatGPT를 열고 붙여넣기<br>
+          3. [로우 데이터] 아래에 GA4에서 복사한 데이터를 추가하세요<br>
+          4. 변환된 결과를 차트 도구의 "데이터 갱신" 탭에 붙여넣으세요
+        </div>
+      </div>
+
+      <!-- 단계별 이탈 -->
+      <div class="guide-panel" id="guide-2">
+        <p class="prompt-desc">PC와 MO 각각 5단계 퍼널 사용자 수가 필요합니다. GA4 피벗 또는 직접 추출 데이터 모두 지원합니다.</p>
+        <div class="prompt-box" id="prompt-2">아래는 GA4에서 추출한 단계별 퍼널 로우 데이터야.
+이 데이터를 아래 형식에 맞게 변환해줘.
+
+[출력 형식]
+moweb
+행 레이블	총합계
+{로우데이터의 1단계명 그대로}	{MO 수치}
+{로우데이터의 2단계명 그대로}	{MO 수치}
+{로우데이터의 3단계명 그대로}	{MO 수치}
+{로우데이터의 4단계명 그대로}	{MO 수치}
+{로우데이터의 5단계명 그대로}	{MO 수치}
+
+pc
+행 레이블	총합계
+{로우데이터의 1단계명 그대로}	{PC 수치}
+{로우데이터의 2단계명 그대로}	{PC 수치}
+{로우데이터의 3단계명 그대로}	{PC 수치}
+{로우데이터의 4단계명 그대로}	{PC 수치}
+{로우데이터의 5단계명 그대로}	{PC 수치}
+
+[규칙]
+- 단계명은 로우 데이터에 있는 그대로 사용 (임의로 바꾸지 말 것)
+- 단계가 5개가 아니면 있는 단계 수만큼만 작성
+- MO 블록과 PC 블록을 빈 줄로 구분
+- 수치는 숫자만 (콤마 제거)
+
+[로우 데이터]
+(여기에 복사한 데이터 붙여넣기)</div>
+        <button class="copy-btn" onclick="copyPrompt(2)">📋 프롬프트 복사</button>
+        <div class="how-to">
+          <b>사용 방법</b><br>
+          1. 위 프롬프트를 복사하세요<br>
+          2. Claude 또는 ChatGPT를 열고 붙여넣기<br>
+          3. [로우 데이터] 아래에 GA4에서 복사한 데이터를 추가하세요<br>
+          4. 변환된 결과를 차트 도구의 "데이터 갱신" 탭에 붙여넣으세요
+        </div>
+      </div>
+
+      <!-- 랜딩별 비교 -->
+      <div class="guide-panel" id="guide-3">
+        <p class="prompt-desc">두 캠페인의 5단계 퍼널을 전체/PC/MO로 비교합니다. 너겟 전체 기준값과 각 캠페인 데이터가 필요합니다.</p>
+        <div class="prompt-box" id="prompt-3">아래는 GA4에서 추출한 랜딩별 비교 로우 데이터야.
+이 데이터를 아래 형식에 맞게 변환해줘.
+
+[출력 형식]
+[1] 전체 기준
+행 레이블	전체합계		MO합계		PC합계
+{로우데이터의 1단계명 그대로}	{전체}		{MO}		{PC}
+{로우데이터의 2단계명 그대로}	{전체}		{MO}		{PC}
+{로우데이터의 3단계명 그대로}	{전체}		{MO}		{PC}
+{로우데이터의 4단계명 그대로}	{전체}		{MO}		{PC}
+{로우데이터의 5단계명 그대로}	{전체}		{MO}		{PC}
+
+1) {캠페인명1 — 원본 그대로}
+{로우데이터의 1단계명 그대로}	{전체}		{MO}		{PC}
+{로우데이터의 2단계명 그대로}	{전체}		{MO}		{PC}
+{로우데이터의 3단계명 그대로}	{전체}		{MO}		{PC}
+{로우데이터의 4단계명 그대로}	{전체}		{MO}		{PC}
+{로우데이터의 5단계명 그대로}	{전체}		{MO}		{PC}
+
+2) {캠페인명2 — 원본 그대로}
+{로우데이터의 1단계명 그대로}	{전체}		{MO}		{PC}
+{로우데이터의 2단계명 그대로}	{전체}		{MO}		{PC}
+{로우데이터의 3단계명 그대로}	{전체}		{MO}		{PC}
+{로우데이터의 4단계명 그대로}	{전체}		{MO}		{PC}
+{로우데이터의 5단계명 그대로}	{전체}		{MO}		{PC}
+
+[규칙]
+- 단계명은 로우 데이터에 있는 그대로 사용 (임의로 바꾸지 말 것)
+- 단계가 5개가 아니면 있는 단계 수만큼만 작성
+- 캠페인명은 원본 그대로 사용
+- 전체/MO/PC 순서 유지, 수치는 숫자만 (콤마 제거)
+
+[로우 데이터]
+(여기에 복사한 데이터 붙여넣기)</div>
+        <button class="copy-btn" onclick="copyPrompt(3)">📋 프롬프트 복사</button>
+        <div class="how-to">
+          <b>사용 방법</b><br>
+          1. 위 프롬프트를 복사하세요<br>
+          2. Claude 또는 ChatGPT를 열고 붙여넣기<br>
+          3. [로우 데이터] 아래에 GA4에서 복사한 데이터를 추가하세요<br>
+          4. 변환된 결과를 차트 도구의 "데이터 갱신" 탭에 붙여넣으세요
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function openGuide() {
+  document.getElementById('guideModal').classList.add('open');
+}
+function closeGuide() {
+  document.getElementById('guideModal').classList.remove('open');
+}
+function closeGuideOutside(e) {
+  if (e.target === document.getElementById('guideModal')) closeGuide();
+}
+function switchGuideTab(idx) {
+  document.querySelectorAll('.modal-tab').forEach((t, i) => t.classList.toggle('active', i === idx));
+  document.querySelectorAll('.guide-panel').forEach((p, i) => {
+    p.classList.toggle('active', i === idx);
+    p.style.display = i === idx ? 'block' : 'none';
+  });
+}
+function copyPrompt(idx) {
+  var text = document.getElementById('prompt-' + idx).innerText;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.querySelectorAll('.copy-btn')[idx];
+    btn.textContent = '✓ 복사됐어요!';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.textContent = '📋 프롬프트 복사';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+// 초기 패널 표시
+document.querySelectorAll('.guide-panel').forEach((p, i) => {
+  p.style.display = i === 0 ? 'block' : 'none';
+});
 </script>
 
 </body>
