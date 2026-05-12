@@ -8,7 +8,7 @@
 :root{color-scheme:light;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:#fff;color:#1f2937;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Pretendard","Noto Sans KR",sans-serif;font-size:14px;line-height:1.6;}
-#view-index{padding:48px 24px;}
+#view-index{display:block;padding:48px 24px;}
 #view-index .wrap{max-width:880px;margin:0 auto;}
 #view-index h1{font-size:28px;font-weight:700;margin:0 0 8px;color:#111827;letter-spacing:-0.01em;}
 #view-index .sub{color:#6b7280;font-size:15px;margin:0 0 40px;}
@@ -324,16 +324,21 @@ textarea:focus{outline:2px solid #2563eb;outline-offset:-1px;border-color:#2563e
 <script>
 var _inited = {};
 function showIndex() {
-  document.getElementById('view-index').style.display = '';
+  document.getElementById('view-index').style.display = 'block';
   document.getElementById('view-detail').style.display = 'none';
   window.scrollTo(0,0);
 }
 function showDetail(id) {
   document.getElementById('view-index').style.display = 'none';
-  document.getElementById('view-detail').style.display = '';
+  document.getElementById('view-detail').style.display = 'block';
   switchTab(id);
   window.scrollTo(0,0);
 }
+// 페이지 로드 시 index가 보이도록 강제
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('view-index').style.display = 'block';
+  document.getElementById('view-detail').style.display = 'none';
+});
 function switchTab(id) {
   document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.id===id); });
   document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.toggle('active', p.id==='panel-'+id); });
