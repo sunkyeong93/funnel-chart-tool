@@ -7,12 +7,7 @@
 <style>
 :root{color-scheme:light;}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{
-  background:#fff;color:#1f2937;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Pretendard","Noto Sans KR",sans-serif;
-  font-size:14px;line-height:1.6;
-}
-/* INDEX */
+body{background:#fff;color:#1f2937;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Pretendard","Noto Sans KR",sans-serif;font-size:14px;line-height:1.6;}
 #view-index{padding:48px 24px;}
 #view-index .wrap{max-width:880px;margin:0 auto;}
 #view-index h1{font-size:28px;font-weight:700;margin:0 0 8px;color:#111827;letter-spacing:-0.01em;}
@@ -28,7 +23,6 @@ body{
 .footer-bar span{color:#6b7280;font-size:13px;}
 .dl-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:#fff;border:1px solid #d1d5db;border-radius:8px;color:#1f2937;text-decoration:none;font-size:13px;font-weight:600;transition:all .15s;}
 .dl-btn:hover{border-color:#9ca3af;background:#f3f4f6;}
-/* DETAIL */
 #view-detail{display:none;}
 .detail-nav{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:stretch;padding:0 20px;gap:2px;}
 .back-btn{display:flex;align-items:center;gap:6px;padding:0 16px;height:48px;background:none;border:none;border-right:1px solid #e5e7eb;color:#6b7280;font:inherit;font-size:13px;font-weight:600;cursor:pointer;margin-right:8px;white-space:nowrap;transition:color .12s;}
@@ -38,7 +32,6 @@ body{
 .tab-btn.active{color:#2563eb;border-bottom-color:#2563eb;font-weight:700;}
 .tab-panel{display:none;}
 .tab-panel.active{display:block;}
-/* PANEL SHARED */
 .tab-panel .inner{max-width:1280px;margin:0 auto;padding:20px;}
 .tab-panel header h1{font-size:20px;font-weight:700;margin:0 0 6px;color:#111827;}
 .tab-panel header p{margin:0 0 18px;color:#6b7280;font-size:13px;}
@@ -73,15 +66,11 @@ textarea:focus{outline:2px solid #2563eb;outline-offset:-1px;border-color:#2563e
 .status.err{color:#dc2626;}
 .tips{margin-top:16px;padding:12px 14px;background:#fef9c3;border:1px solid #fde68a;border-radius:8px;color:#713f12;font-size:13px;}
 .tips b{color:#92400e;}
-@media(max-width:600px){
-  .grid{grid-template-columns:1fr;}
-  #view-index{padding:32px 16px;}
-}
+@media(max-width:600px){.grid{grid-template-columns:1fr;}#view-index{padding:32px 16px;}}
 </style>
 </head>
 <body>
 
-<!-- INDEX -->
 <div id="view-index">
   <div class="wrap">
     <h1>퍼널 분석 차트 도구</h1>
@@ -99,7 +88,6 @@ textarea:focus{outline:2px solid #2563eb;outline-offset:-1px;border-color:#2563e
   </div>
 </div>
 
-<!-- DETAIL -->
 <div id="view-detail">
   <nav class="detail-nav">
     <button class="back-btn" onclick="showIndex()">← 목록으로</button>
@@ -334,28 +322,32 @@ textarea:focus{outline:2px solid #2563eb;outline-offset:-1px;border-color:#2563e
 </div>
 
 <script>
-function showIndex(){
-  document.getElementById('view-index').style.display='';
-  document.getElementById('view-detail').style.display='none';
+var _inited = {};
+function showIndex() {
+  document.getElementById('view-index').style.display = '';
+  document.getElementById('view-detail').style.display = 'none';
   window.scrollTo(0,0);
 }
-function showDetail(id){
-  document.getElementById('view-index').style.display='none';
-  document.getElementById('view-detail').style.display='';
+function showDetail(id) {
+  document.getElementById('view-index').style.display = 'none';
+  document.getElementById('view-detail').style.display = '';
   switchTab(id);
   window.scrollTo(0,0);
 }
-function switchTab(id){
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.id===id));
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+id));
+function switchTab(id) {
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.id===id); });
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.toggle('active', p.id==='panel-'+id); });
+  if (!_inited[id]) { _inited[id]=true; var fn=window['__init_'+id]; if(fn) fn(); }
 }
 </script>
 
-<script type="module">
+<script>
+window['__init_ch'] = function() {
+  (function() {
 // ============================================================
 // Seed data — from GA4_퍼널분석_데이터인풋_템플릿.xlsx (PC/MO separated + total)
 // ============================================================
-const SEED = [
+var SEED = [
   { channel: "Organic",  pc: { inflow: 4169,  signups: 90,  rate: 2.16 },
                          mo: { inflow: 956,   signups: 9,   rate: 0.94 },
                          total: { inflow: 5125,  signups: 99,  rate: 1.93 } },
@@ -373,7 +365,7 @@ const SEED = [
                          total: { inflow: 2504,  signups: 44,  rate: 1.76 } }
 ];
 
-const SEED_TSV = [
+var SEED_TSV = [
   "채널\t디바이스\t①커머스인입\t②정보탐색\t③주문시도\t④본인인증\t⑤가입신청완료\t최종 전환율",
   "Organic\tPC\t4169\t1556\t211\t129\t90\t2.16%",
   "Organic\tMO\t956\t271\t56\t24\t9\t0.94%",
@@ -390,7 +382,7 @@ const SEED_TSV = [
 // ============================================================
 // Color palette
 // ============================================================
-const PALETTES = {
+var PALETTES = {
   template: {
     Organic:     { fill: "rgba(143,124,217,0.40)", stroke: "#8F7CD9" },
     Paid:        { fill: "rgba(120,166,217,0.45)", stroke: "#78A6D9" },
@@ -413,24 +405,24 @@ function esc(s) {
   return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 function median(arr) {
-  const s = [...arr].sort((a, b) => a - b);
-  const m = Math.floor(s.length / 2);
+  var s = [...arr].sort((a, b) => a - b);
+  var m = Math.floor(s.length / 2);
   return s.length % 2 ? s[m] : (s[m-1] + s[m]) / 2;
 }
 function niceLogHigh(v) {
   if (v <= 0) return 10;
-  const e = Math.floor(Math.log10(v));
-  const m = v / Math.pow(10, e);
+  var e = Math.floor(Math.log10(v));
+  var m = v / Math.pow(10, e);
   if (m <= 1) return Math.pow(10, e);
   if (m <= 2) return 2 * Math.pow(10, e);
   if (m <= 5) return 5 * Math.pow(10, e);
   return Math.pow(10, e + 1);
 }
 function niceLogTicks(lo, hi) {
-  const ticks = [];
-  for (let e = Math.floor(Math.log10(lo)); e <= Math.ceil(Math.log10(hi)); e++) {
-    for (const m of [1, 2, 5]) {
-      const v = m * Math.pow(10, e);
+  var ticks = [];
+  for (var e = Math.floor(Math.log10(lo)); e <= Math.ceil(Math.log10(hi)); e++) {
+    for (var m of [1, 2, 5]) {
+      var v = m * Math.pow(10, e);
       if (v >= lo && v <= hi) ticks.push(v);
     }
   }
@@ -443,14 +435,14 @@ function formatNum(n) {
   return String(n);
 }
 
-const STEP_FIRST = s => /①/.test(s) || /^1[\.\s]\S/.test(s);
-const STEP_LAST  = s => /⑤/.test(s) || /^5[\.\s]\S/.test(s);
-const STEP_ANY   = s => /[①②③④⑤]/.test(s) || /^[1-5][\.\s]\S/.test(s);
+var STEP_FIRST = s => /①/.test(s) || /^1[\.\s]\S/.test(s);
+var STEP_LAST  = s => /⑤/.test(s) || /^5[\.\s]\S/.test(s);
+var STEP_ANY   = s => /[①②③④⑤]/.test(s) || /^[1-5][\.\s]\S/.test(s);
 function isPCDevice(s) { return /^pc$/i.test(s) || /desktop/i.test(s); }
 function isMODevice(s) { return /^mo$|^moweb$|^mobile$|^m$/i.test(s); }
 
 function finalizeChannel(channel, v) {
-  const total = {
+  var total = {
     inflow: v.pc.inflow + v.mo.inflow,
     signups: v.pc.signups + v.mo.signups
   };
@@ -464,12 +456,12 @@ function finalizeChannel(channel, v) {
 }
 
 function getRowTotalAfter(row, startCol) {
-  let last = null;
-  for (let c = startCol; c < row.length; c++) {
-    const v = row[c];
+  var last = null;
+  for (var c = startCol; c < row.length; c++) {
+    var v = row[c];
     if (v == null) continue;
     if (typeof v === "string") {
-      const t = v.trim();
+      var t = v.trim();
       if (t === "" || t === "-" || t === "–" || t === "N/A") continue;
       break;
     }
@@ -482,23 +474,23 @@ function getRowTotalAfter(row, startCol) {
 // PC/MO-aware parsers (template / pivot / transposed)
 // ============================================================
 function parseDevice_template(rows) {
-  const agg = new Map();
-  for (const row of rows) {
+  var agg = new Map();
+  for (var row of rows) {
     if (!row || row.length < 7) continue;
-    const ch = row[0];
+    var ch = row[0];
     if (typeof ch !== "string" || !ch.trim()) continue;
     if (ch === "채널" || ch.startsWith("※") || ch.startsWith("//")) continue;
-    const dev = String(row[1] || "").trim();
-    let device;
+    var dev = String(row[1] || "").trim();
+    var device;
     if (isPCDevice(dev)) device = "pc";
     else if (isMODevice(dev)) device = "mo";
     else continue;
-    const inflow = row[2];
-    const signups = row[6];
+    var inflow = row[2];
+    var signups = row[6];
     if (typeof inflow !== "number" || inflow <= 0) continue;
     if (typeof signups !== "number" || signups < 0) continue;
     if (!agg.has(ch)) agg.set(ch, { pc: { inflow: 0, signups: 0 }, mo: { inflow: 0, signups: 0 } });
-    const v = agg.get(ch)[device];
+    var v = agg.get(ch)[device];
     v.inflow += inflow;
     v.signups += signups;
   }
@@ -506,28 +498,28 @@ function parseDevice_template(rows) {
 }
 
 function parseDevice_pivot(rows) {
-  const labelCols = new Set();
-  for (let r = 0; r < rows.length; r++) {
-    const row = rows[r] || [];
-    for (let c = 0; c < row.length; c++) {
+  var labelCols = new Set();
+  for (var r = 0; r < rows.length; r++) {
+    var row = rows[r] || [];
+    for (var c = 0; c < row.length; c++) {
       if (typeof row[c] === "string" && STEP_ANY(row[c])) labelCols.add(c);
     }
   }
-  const colDevice = new Map();
-  for (const c of labelCols) {
-    let device = null;
-    let firstStepRow = -1;
-    for (let r = 0; r < rows.length; r++) {
-      const row = rows[r] || [];
+  var colDevice = new Map();
+  for (var c of labelCols) {
+    var device = null;
+    var firstStepRow = -1;
+    for (var r = 0; r < rows.length; r++) {
+      var row = rows[r] || [];
       if (typeof row[c] === "string" && STEP_ANY(row[c])) { firstStepRow = r; break; }
     }
     if (firstStepRow < 0) continue;
-    for (let r = 0; r < firstStepRow && !device; r++) {
-      const row = rows[r] || [];
-      for (let cc = Math.max(0, c - 2); cc <= Math.min(row.length - 1, c + 2); cc++) {
-        const v = row[cc];
+    for (var r = 0; r < firstStepRow && !device; r++) {
+      var row = rows[r] || [];
+      for (var cc = Math.max(0, c - 2); cc <= Math.min(row.length - 1, c + 2); cc++) {
+        var v = row[cc];
         if (typeof v !== "string") continue;
-        const t = v.trim();
+        var t = v.trim();
         if (isPCDevice(t)) { device = "pc"; break; }
         if (isMODevice(t)) { device = "mo"; break; }
       }
@@ -536,14 +528,14 @@ function parseDevice_pivot(rows) {
   }
   if (!colDevice.size) return [];
 
-  const channels = new Map();
-  for (const [c, device] of colDevice.entries()) {
-    let state = null;
-    for (let r = 0; r < rows.length; r++) {
-      const row = rows[r] || [];
-      const v = row[c];
+  var channels = new Map();
+  for (var [c, device] of colDevice.entries()) {
+    var state = null;
+    for (var r = 0; r < rows.length; r++) {
+      var row = rows[r] || [];
+      var v = row[c];
       if (typeof v !== "string") continue;
-      const t = v.trim();
+      var t = v.trim();
       if (!t) continue;
       if (STEP_ANY(t)) {
         state = STEP_FIRST(t) ? "entry" : STEP_LAST(t) ? "signups" : "other";
@@ -552,10 +544,10 @@ function parseDevice_pivot(rows) {
       if (/^(행|열)\s*레이블/.test(t)) continue;
       if (/^(총합계|합계|소계)/.test(t)) continue;
       if (state !== "entry" && state !== "signups") continue;
-      const total = getRowTotalAfter(row, c + 1);
+      var total = getRowTotalAfter(row, c + 1);
       if (total == null || !isFinite(total)) continue;
       if (!channels.has(t)) channels.set(t, { pc: { inflow: 0, signups: 0 }, mo: { inflow: 0, signups: 0 } });
-      const ch = channels.get(t)[device];
+      var ch = channels.get(t)[device];
       if (state === "entry") ch.inflow += total;
       else ch.signups += total;
     }
@@ -564,27 +556,27 @@ function parseDevice_pivot(rows) {
 }
 
 function parseDevice_transposed(rows) {
-  const headers = [];
-  for (let r = 0; r < rows.length; r++) {
-    const row = rows[r] || [];
-    for (let c = 0; c < row.length; c++) {
-      const v = row[c];
+  var headers = [];
+  for (var r = 0; r < rows.length; r++) {
+    var row = rows[r] || [];
+    for (var c = 0; c < row.length; c++) {
+      var v = row[c];
       if (typeof v !== "string" || !/^행\s*레이블$/.test(v.trim())) continue;
-      const channelCols = [];
-      for (let cc = c + 1; cc < row.length; cc++) {
-        const cv = row[cc];
+      var channelCols = [];
+      for (var cc = c + 1; cc < row.length; cc++) {
+        var cv = row[cc];
         if (typeof cv === "string" && cv.trim() && !/^\d{4}\./.test(cv.trim())) {
           channelCols.push({ col: cc, name: cv.trim() });
         }
       }
       if (channelCols.length < 2) break;
-      let device = null;
-      for (let rr = Math.max(0, r - 4); rr < r && !device; rr++) {
-        const ur = rows[rr] || [];
-        for (let cc = 0; cc < ur.length; cc++) {
-          const uv = ur[cc];
+      var device = null;
+      for (var rr = Math.max(0, r - 4); rr < r && !device; rr++) {
+        var ur = rows[rr] || [];
+        for (var cc = 0; cc < ur.length; cc++) {
+          var uv = ur[cc];
           if (typeof uv !== "string") continue;
-          const ut = uv.trim();
+          var ut = uv.trim();
           if (isPCDevice(ut)) { device = "pc"; break; }
           if (isMODevice(ut)) { device = "mo"; break; }
         }
@@ -595,27 +587,27 @@ function parseDevice_transposed(rows) {
   }
   if (!headers.length) return [];
 
-  const channels = new Map();
-  for (let h = 0; h < headers.length; h++) {
-    const hdr = headers[h];
+  var channels = new Map();
+  for (var h = 0; h < headers.length; h++) {
+    var hdr = headers[h];
     if (!hdr.device) continue;
-    const nextHeaderRow = h + 1 < headers.length ? headers[h + 1].row : rows.length;
-    for (let r = hdr.row + 1; r < nextHeaderRow; r++) {
-      const row = rows[r] || [];
-      const lab = row[hdr.labelCol];
+    var nextHeaderRow = h + 1 < headers.length ? headers[h + 1].row : rows.length;
+    for (var r = hdr.row + 1; r < nextHeaderRow; r++) {
+      var row = rows[r] || [];
+      var lab = row[hdr.labelCol];
       if (typeof lab !== "string") continue;
-      const txt = lab.trim();
+      var txt = lab.trim();
       if (!txt) continue;
       if (/^(총합계|합계|소계)/.test(txt)) continue;
       if (!STEP_ANY(txt)) continue;
-      const isE = STEP_FIRST(txt);
-      const isX = STEP_LAST(txt);
+      var isE = STEP_FIRST(txt);
+      var isX = STEP_LAST(txt);
       if (!isE && !isX) continue;
-      for (const cc of hdr.channelCols) {
-        const v = row[cc.col];
+      for (var cc of hdr.channelCols) {
+        var v = row[cc.col];
         if (typeof v !== "number" || !isFinite(v)) continue;
         if (!channels.has(cc.name)) channels.set(cc.name, { pc: { inflow: 0, signups: 0 }, mo: { inflow: 0, signups: 0 } });
-        const ch = channels.get(cc.name)[hdr.device];
+        var ch = channels.get(cc.name)[hdr.device];
         if (isE) ch.inflow += v;
         else ch.signups += v;
       }
@@ -625,21 +617,21 @@ function parseDevice_transposed(rows) {
 }
 
 function detectFormat(rows) {
-  let hasTemplateHeader = false, hasStep = false, hasTransposed = false;
-  for (let r = 0; r < rows.length; r++) {
-    const row = rows[r] || [];
-    let foundCh = false, foundDev = false;
-    for (let c = 0; c < row.length; c++) {
-      const cell = row[c];
+  var hasTemplateHeader = false, hasStep = false, hasTransposed = false;
+  for (var r = 0; r < rows.length; r++) {
+    var row = rows[r] || [];
+    var foundCh = false, foundDev = false;
+    for (var c = 0; c < row.length; c++) {
+      var cell = row[c];
       if (typeof cell !== "string") continue;
-      const t = cell.trim();
+      var t = cell.trim();
       if (t === "채널") foundCh = true;
       if (t === "디바이스") foundDev = true;
       if (STEP_ANY(t)) hasStep = true;
       if (/^행\s*레이블$/.test(t)) {
-        let abc = 0;
-        for (let cc = c + 1; cc < row.length; cc++) {
-          const v = row[cc];
+        var abc = 0;
+        for (var cc = c + 1; cc < row.length; cc++) {
+          var v = row[cc];
           if (typeof v === "string" && v.trim() && /^[A-Za-z]/.test(v.trim())) abc++;
         }
         if (abc >= 2) hasTransposed = true;
@@ -654,12 +646,12 @@ function detectFormat(rows) {
 }
 
 function rowsToDeviceData(rows) {
-  const fmt = detectFormat(rows);
+  var fmt = detectFormat(rows);
   if (fmt === "template") return parseDevice_template(rows);
   if (fmt === "transposed") return parseDevice_transposed(rows);
   if (fmt === "pivot") return parseDevice_pivot(rows);
-  for (const fn of [parseDevice_template, parseDevice_transposed, parseDevice_pivot]) {
-    const d = fn(rows);
+  for (var fn of [parseDevice_template, parseDevice_transposed, parseDevice_pivot]) {
+    var d = fn(rows);
     if (d.length > 0) return d;
   }
   return [];
@@ -669,37 +661,37 @@ function rowsToDeviceData(rows) {
 // Minimal .xlsx reader
 // ============================================================
 async function unzipXlsx(u8) {
-  const dv = new DataView(u8.buffer, u8.byteOffset, u8.byteLength);
-  const eocdSig = 0x06054b50;
-  let eocd = -1;
-  const scanFrom = Math.max(0, u8.length - 65557);
-  for (let i = u8.length - 22; i >= scanFrom; i--) {
+  var dv = new DataView(u8.buffer, u8.byteOffset, u8.byteLength);
+  var eocdSig = 0x06054b50;
+  var eocd = -1;
+  var scanFrom = Math.max(0, u8.length - 65557);
+  for (var i = u8.length - 22; i >= scanFrom; i--) {
     if (dv.getUint32(i, true) === eocdSig) { eocd = i; break; }
   }
   if (eocd < 0) throw new Error("올바른 .xlsx 파일이 아닙니다");
-  const cdOffset = dv.getUint32(eocd + 16, true);
-  const numEntries = dv.getUint16(eocd + 10, true);
-  const files = {};
-  let p = cdOffset;
-  for (let i = 0; i < numEntries; i++) {
+  var cdOffset = dv.getUint32(eocd + 16, true);
+  var numEntries = dv.getUint16(eocd + 10, true);
+  var files = {};
+  var p = cdOffset;
+  for (var i = 0; i < numEntries; i++) {
     if (dv.getUint32(p, true) !== 0x02014b50) break;
-    const compMethod = dv.getUint16(p + 10, true);
-    const compSize = dv.getUint32(p + 20, true);
-    const nameLen = dv.getUint16(p + 28, true);
-    const extraLen = dv.getUint16(p + 30, true);
-    const commentLen = dv.getUint16(p + 32, true);
-    const lho = dv.getUint32(p + 42, true);
-    const name = new TextDecoder("utf-8").decode(u8.subarray(p + 46, p + 46 + nameLen));
+    var compMethod = dv.getUint16(p + 10, true);
+    var compSize = dv.getUint32(p + 20, true);
+    var nameLen = dv.getUint16(p + 28, true);
+    var extraLen = dv.getUint16(p + 30, true);
+    var commentLen = dv.getUint16(p + 32, true);
+    var lho = dv.getUint32(p + 42, true);
+    var name = new TextDecoder("utf-8").decode(u8.subarray(p + 46, p + 46 + nameLen));
     p += 46 + nameLen + extraLen + commentLen;
     if (dv.getUint32(lho, true) !== 0x04034b50) continue;
-    const lNameLen = dv.getUint16(lho + 26, true);
-    const lExtraLen = dv.getUint16(lho + 28, true);
-    const dataStart = lho + 30 + lNameLen + lExtraLen;
-    const compData = u8.subarray(dataStart, dataStart + compSize);
-    let bytes;
+    var lNameLen = dv.getUint16(lho + 26, true);
+    var lExtraLen = dv.getUint16(lho + 28, true);
+    var dataStart = lho + 30 + lNameLen + lExtraLen;
+    var compData = u8.subarray(dataStart, dataStart + compSize);
+    var bytes;
     if (compMethod === 0) bytes = compData;
     else if (compMethod === 8) {
-      const stream = new Blob([compData]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+      var stream = new Blob([compData]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
       bytes = new Uint8Array(await new Response(stream).arrayBuffer());
     } else throw new Error("지원하지 않는 압축: " + compMethod);
     files[name] = bytes;
@@ -708,65 +700,65 @@ async function unzipXlsx(u8) {
 }
 
 function parseXlsxWorkbook(files) {
-  const decoder = new TextDecoder("utf-8");
-  const text = name => files[name] ? decoder.decode(files[name]) : null;
-  const sharedStrings = [];
+  var decoder = new TextDecoder("utf-8");
+  var text = name => files[name] ? decoder.decode(files[name]) : null;
+  var sharedStrings = [];
   if (files["xl/sharedStrings.xml"]) {
-    const doc = new DOMParser().parseFromString(text("xl/sharedStrings.xml"), "text/xml");
-    for (const si of doc.getElementsByTagName("si")) {
-      let str = "";
-      for (const t of si.getElementsByTagName("t")) str += t.textContent || "";
+    var doc = new DOMParser().parseFromString(text("xl/sharedStrings.xml"), "text/xml");
+    for (var si of doc.getElementsByTagName("si")) {
+      var str = "";
+      for (var t of si.getElementsByTagName("t")) str += t.textContent || "";
       sharedStrings.push(str);
     }
   }
-  const rid2target = {};
+  var rid2target = {};
   if (files["xl/_rels/workbook.xml.rels"]) {
-    const rdoc = new DOMParser().parseFromString(text("xl/_rels/workbook.xml.rels"), "text/xml");
-    for (const r of rdoc.getElementsByTagName("Relationship")) {
+    var rdoc = new DOMParser().parseFromString(text("xl/_rels/workbook.xml.rels"), "text/xml");
+    for (var r of rdoc.getElementsByTagName("Relationship")) {
       rid2target[r.getAttribute("Id")] = r.getAttribute("Target");
     }
   }
-  const sheets = [];
+  var sheets = [];
   if (files["xl/workbook.xml"]) {
-    const wdoc = new DOMParser().parseFromString(text("xl/workbook.xml"), "text/xml");
-    for (const s of wdoc.getElementsByTagName("sheet")) {
-      const name = s.getAttribute("name");
-      let rid = s.getAttribute("r:id");
+    var wdoc = new DOMParser().parseFromString(text("xl/workbook.xml"), "text/xml");
+    for (var s of wdoc.getElementsByTagName("sheet")) {
+      var name = s.getAttribute("name");
+      var rid = s.getAttribute("r:id");
       if (!rid) {
-        for (let i = 0; i < s.attributes.length; i++) {
+        for (var i = 0; i < s.attributes.length; i++) {
           if (s.attributes[i].localName === "id") { rid = s.attributes[i].value; break; }
         }
       }
-      const target = rid2target[rid];
+      var target = rid2target[rid];
       if (!target) continue;
       sheets.push({ name, file: target.startsWith("/") ? target.slice(1) : "xl/" + target });
     }
   }
   function colRefToIdx(ref) {
-    let n = 0;
-    for (const c of ref) n = n * 26 + (c.charCodeAt(0) - 64);
+    var n = 0;
+    for (var c of ref) n = n * 26 + (c.charCodeAt(0) - 64);
     return n - 1;
   }
   function readSheet(name) {
-    const sheet = sheets.find(s => s.name === name);
+    var sheet = sheets.find(s => s.name === name);
     if (!sheet) return null;
-    const xml = text(sheet.file);
+    var xml = text(sheet.file);
     if (!xml) return null;
-    const doc = new DOMParser().parseFromString(xml, "text/xml");
-    const result = [];
-    for (const row of doc.getElementsByTagName("row")) {
-      const rIdx = parseInt(row.getAttribute("r"), 10) - 1;
+    var doc = new DOMParser().parseFromString(xml, "text/xml");
+    var result = [];
+    for (var row of doc.getElementsByTagName("row")) {
+      var rIdx = parseInt(row.getAttribute("r"), 10) - 1;
       while (result.length <= rIdx) result.push([]);
-      const arr = result[rIdx];
-      for (const cell of row.getElementsByTagName("c")) {
-        const ref = cell.getAttribute("r");
-        const m = ref ? ref.match(/^[A-Z]+/) : null;
+      var arr = result[rIdx];
+      for (var cell of row.getElementsByTagName("c")) {
+        var ref = cell.getAttribute("r");
+        var m = ref ? ref.match(/^[A-Z]+/) : null;
         if (!m) continue;
-        const ci = colRefToIdx(m[0]);
-        const t = cell.getAttribute("t");
-        const vEl = cell.getElementsByTagName("v")[0];
-        const isEl = cell.getElementsByTagName("is")[0];
-        let val;
+        var ci = colRefToIdx(m[0]);
+        var t = cell.getAttribute("t");
+        var vEl = cell.getElementsByTagName("v")[0];
+        var isEl = cell.getElementsByTagName("is")[0];
+        var val;
         if (t === "s" && vEl) val = sharedStrings[parseInt(vEl.textContent, 10)];
         else if (t === "inlineStr" && isEl) val = isEl.textContent.trim();
         else if (t === "str" && vEl) val = vEl.textContent;
@@ -785,18 +777,18 @@ function parseXlsxWorkbook(files) {
 // TSV → 2D rows
 // ============================================================
 function parseTSVToRows(text) {
-  const cleaned = String(text).replace(/ /g, " ");
-  const lines = cleaned.split(/\r?\n/);
-  const rows = [];
-  for (const raw of lines) {
+  var cleaned = String(text).replace(/ /g, " ");
+  var lines = cleaned.split(/\r?\n/);
+  var rows = [];
+  for (var raw of lines) {
     if (raw.trim() === "") { rows.push([]); continue; }
-    let cols;
+    var cols;
     if (raw.includes("\t")) cols = raw.split("\t");
     else cols = raw.split(/,(?![^"]*"\s*$)/);
-    const parsed = cols.map(c => {
-      const t = String(c == null ? "" : c).trim().replace(/^"|"$/g, "");
+    var parsed = cols.map(c => {
+      var t = String(c == null ? "" : c).trim().replace(/^"|"$/g, "");
       if (t === "" || t === "-" || t === "–" || t === "N/A") return null;
-      const numStr = t.replace(/,/g, "").replace(/%$/, "");
+      var numStr = t.replace(/,/g, "").replace(/%$/, "");
       if (/^-?\d+(\.\d+)?$/.test(numStr)) return parseFloat(numStr);
       return t;
     });
@@ -810,53 +802,53 @@ function parseTSVToRows(text) {
 // ============================================================
 function renderSVG_matrix(data, opts) {
   opts = opts || {};
-  const palette = PALETTES[opts.palette] || PALETTES.template;
-  const showMedian = opts.showMedian !== false;
-  const showQuadrants = opts.showQuadrants !== false;
+  var palette = PALETTES[opts.palette] || PALETTES.template;
+  var showMedian = opts.showMedian !== false;
+  var showQuadrants = opts.showQuadrants !== false;
 
-  const W = 1400, H = 800;
-  const margin = { top: 110, right: 110, bottom: 100, left: 130 };
-  const plotW = W - margin.left - margin.right;
-  const plotH = H - margin.top - margin.bottom;
+  var W = 1400, H = 800;
+  var margin = { top: 110, right: 110, bottom: 100, left: 130 };
+  var plotW = W - margin.left - margin.right;
+  var plotH = H - margin.top - margin.bottom;
 
   if (!data || data.length === 0) {
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"><rect width="${W}" height="${H}" fill="#ffffff"/><text x="${W/2}" y="${H/2}" text-anchor="middle" font-size="18" fill="#9ca3af">데이터가 없습니다</text></svg>`;
   }
 
-  const inflows = data.map(d => d.total.inflow);
-  const rates = data.map(d => d.total.rate);
-  const signupsArr = data.map(d => d.total.signups);
+  var inflows = data.map(d => d.total.inflow);
+  var rates = data.map(d => d.total.rate);
+  var signupsArr = data.map(d => d.total.signups);
 
-  const minIn = Math.min(...inflows), maxIn = Math.max(...inflows);
-  const xmin = Math.pow(10, Math.floor(Math.log10(minIn)));
-  const xmax = niceLogHigh(maxIn);
-  const xticks = niceLogTicks(xmin, xmax);
+  var minIn = Math.min(...inflows), maxIn = Math.max(...inflows);
+  var xmin = Math.pow(10, Math.floor(Math.log10(minIn)));
+  var xmax = niceLogHigh(maxIn);
+  var xticks = niceLogTicks(xmin, xmax);
 
-  const maxRate = Math.max(...rates);
-  let ystep;
+  var maxRate = Math.max(...rates);
+  var ystep;
   if (maxRate <= 4) ystep = 1;
   else if (maxRate <= 10) ystep = 2;
   else if (maxRate <= 25) ystep = 5;
   else if (maxRate <= 50) ystep = 10;
   else ystep = 20;
-  const ymaxLabel = Math.max(ystep, Math.ceil(maxRate / ystep) * ystep);
-  const ymax = Math.max(ymaxLabel + ystep * 0.5, maxRate + 1.5);
-  const yticks = [];
-  for (let i = 0; i <= ymaxLabel; i += ystep) yticks.push(i);
+  var ymaxLabel = Math.max(ystep, Math.ceil(maxRate / ystep) * ystep);
+  var ymax = Math.max(ymaxLabel + ystep * 0.5, maxRate + 1.5);
+  var yticks = [];
+  for (var i = 0; i <= ymaxLabel; i += ystep) yticks.push(i);
 
-  const xs = v => margin.left + (Math.log10(v) - Math.log10(xmin)) / (Math.log10(xmax) - Math.log10(xmin)) * plotW;
-  const ys = v => margin.top + (1 - v / ymax) * plotH;
-  const maxSig = Math.max(...signupsArr);
-  const rs = v => 18 + Math.sqrt(v / maxSig) * 70;
-  const medY = median(rates);
-  const colorOf = ch => palette[ch] || palette._default || { fill: "rgba(150,150,150,0.4)", stroke: "#888" };
+  var xs = v => margin.left + (Math.log10(v) - Math.log10(xmin)) / (Math.log10(xmax) - Math.log10(xmin)) * plotW;
+  var ys = v => margin.top + (1 - v / ymax) * plotH;
+  var maxSig = Math.max(...signupsArr);
+  var rs = v => 18 + Math.sqrt(v / maxSig) * 70;
+  var medY = median(rates);
+  var colorOf = ch => palette[ch] || palette._default || { fill: "rgba(150,150,150,0.4)", stroke: "#888" };
 
-  const TXT = {
+  var TXT = {
     titleBg: "#5C6470", subtitle: "#7B8194", axisLabel: "#C8447F",
     tickLabel: "#9CA3AF", grid: "#E5E7EB", median: "#D1D5DB",
     label: "#374151", quadHigh: "#9F6FE0", quadLow: "#9CA3AF"
   };
-  const out = [];
+  var out = [];
   out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif">`);
   out.push(`<rect x="0" y="0" width="${W}" height="${H}" fill="#ffffff"/>`);
   out.push(`<rect x="32" y="28" rx="22" ry="22" width="540" height="44" fill="${TXT.titleBg}"/>`);
@@ -865,13 +857,13 @@ function renderSVG_matrix(data, opts) {
   out.push(`<text transform="translate(46,${margin.top + plotH/2}) rotate(-90)" text-anchor="middle" font-size="14" font-weight="600" fill="${TXT.axisLabel}">최종 전환율 (%)</text>`);
   out.push(`<text x="${margin.left + plotW/2}" y="${H - 30}" text-anchor="middle" font-size="14" font-weight="600" fill="${TXT.axisLabel}">유입 수</text>`);
 
-  for (const t of xticks) {
-    const x = xs(t);
+  for (var t of xticks) {
+    var x = xs(t);
     out.push(`<line x1="${x}" y1="${margin.top}" x2="${x}" y2="${margin.top + plotH}" stroke="${TXT.grid}" stroke-width="1"/>`);
     out.push(`<text x="${x}" y="${margin.top + plotH + 30}" text-anchor="middle" font-size="13" fill="${TXT.tickLabel}">${formatNum(t)}</text>`);
   }
-  for (const t of yticks) {
-    const y = ys(t);
+  for (var t of yticks) {
+    var y = ys(t);
     out.push(`<line x1="${margin.left}" y1="${y}" x2="${margin.left + plotW}" y2="${y}" stroke="${TXT.grid}" stroke-width="1"/>`);
     out.push(`<text x="${margin.left - 14}" y="${y + 5}" text-anchor="end" font-size="13" fill="${TXT.tickLabel}">${t}%</text>`);
   }
@@ -887,35 +879,35 @@ function renderSVG_matrix(data, opts) {
     out.push(`<text x="${margin.left + plotW - 14}" y="${margin.top + plotH - 12}" text-anchor="end" font-size="13" fill="${TXT.quadLow}">큰 부피 / 낮은 효율 ↘</text>`);
   }
 
-  const bubbles = data.map(d => ({
+  var bubbles = data.map(d => ({
     d, cx: xs(d.total.inflow), cy: ys(d.total.rate), r: rs(d.total.signups), color: colorOf(d.channel)
   }));
-  for (const b of bubbles) {
+  for (var b of bubbles) {
     out.push(`<circle cx="${b.cx.toFixed(2)}" cy="${b.cy.toFixed(2)}" r="${b.r.toFixed(2)}" fill="${b.color.fill}" stroke="${b.color.stroke}" stroke-width="2"/>`);
     out.push(`<circle cx="${b.cx.toFixed(2)}" cy="${b.cy.toFixed(2)}" r="3" fill="${b.color.stroke}"/>`);
   }
-  const labelW = 200, labelH = 44;
+  var labelW = 200, labelH = 44;
   function boxIntersectsAnyBubble(box, exclude) {
-    for (const b of bubbles) {
+    for (var b of bubbles) {
       if (b === exclude) continue;
-      const closestX = Math.max(box.x, Math.min(b.cx, box.x + box.w));
-      const closestY = Math.max(box.y, Math.min(b.cy, box.y + box.h));
-      const dx = b.cx - closestX, dy = b.cy - closestY;
+      var closestX = Math.max(box.x, Math.min(b.cx, box.x + box.w));
+      var closestY = Math.max(box.y, Math.min(b.cy, box.y + box.h));
+      var dx = b.cx - closestX, dy = b.cy - closestY;
       if (dx*dx + dy*dy < b.r*b.r) return true;
     }
     return false;
   }
-  for (const b of bubbles) {
-    const aboveTop = b.cy - b.r - labelH - 6;
-    const belowTop = b.cy + b.r + 6;
-    const boxAbove = { x: b.cx - labelW/2, y: aboveTop, w: labelW, h: labelH };
-    const boxBelow = { x: b.cx - labelW/2, y: belowTop, w: labelW, h: labelH };
-    let pos = "above";
-    const aboveOk = aboveTop >= 105 && !boxIntersectsAnyBubble(boxAbove, b);
-    const belowOk = belowTop + labelH < H - 20 && !boxIntersectsAnyBubble(boxBelow, b);
+  for (var b of bubbles) {
+    var aboveTop = b.cy - b.r - labelH - 6;
+    var belowTop = b.cy + b.r + 6;
+    var boxAbove = { x: b.cx - labelW/2, y: aboveTop, w: labelW, h: labelH };
+    var boxBelow = { x: b.cx - labelW/2, y: belowTop, w: labelW, h: labelH };
+    var pos = "above";
+    var aboveOk = aboveTop >= 105 && !boxIntersectsAnyBubble(boxAbove, b);
+    var belowOk = belowTop + labelH < H - 20 && !boxIntersectsAnyBubble(boxBelow, b);
     if (!aboveOk && belowOk) pos = "below";
     else if (!aboveOk && !belowOk) pos = "below";
-    let nameY, valY;
+    var nameY, valY;
     if (pos === "above") { nameY = b.cy - b.r - 28; valY = b.cy - b.r - 10; }
     else { nameY = b.cy + b.r + 22; valY = b.cy + b.r + 40; }
     out.push(`<text x="${b.cx.toFixed(2)}" y="${nameY.toFixed(2)}" text-anchor="middle" font-size="16" font-weight="700" fill="${TXT.label}">${esc(b.d.channel)}</text>`);
@@ -930,84 +922,84 @@ function renderSVG_matrix(data, opts) {
 // ============================================================
 function renderSVG_bars(data, opts) {
   opts = opts || {};
-  const palette = PALETTES[opts.palette] || PALETTES.template;
-  const showAvg = opts.showAvg !== false;
+  var palette = PALETTES[opts.palette] || PALETTES.template;
+  var showAvg = opts.showAvg !== false;
 
   if (!data || data.length === 0) {
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 400" width="1400" height="400"><rect width="1400" height="400" fill="#ffffff"/><text x="700" y="200" text-anchor="middle" font-size="18" fill="#9ca3af">데이터가 없습니다</text></svg>`;
   }
-  const colorOf = ch => palette[ch] || palette._default || { fill: "rgba(150,150,150,0.4)", stroke: "#888" };
-  const ROW_H = 150;
-  const W = 1600;
-  const margin = { top: 200, right: 100, bottom: 90, left: 240 };
-  const plotW = W - margin.left - margin.right;
-  const plotH = data.length * ROW_H;
-  const H = margin.top + plotH + margin.bottom;
+  var colorOf = ch => palette[ch] || palette._default || { fill: "rgba(150,150,150,0.4)", stroke: "#888" };
+  var ROW_H = 150;
+  var W = 1600;
+  var margin = { top: 200, right: 100, bottom: 90, left: 240 };
+  var plotW = W - margin.left - margin.right;
+  var plotH = data.length * ROW_H;
+  var H = margin.top + plotH + margin.bottom;
 
-  const allRates = data.flatMap(d => [d.pc.rate, d.mo.rate, d.total.rate]);
-  const maxRate = Math.max(...allRates, 0);
-  let xstep;
+  var allRates = data.flatMap(d => [d.pc.rate, d.mo.rate, d.total.rate]);
+  var maxRate = Math.max(...allRates, 0);
+  var xstep;
   if (maxRate <= 4) xstep = 1;
   else if (maxRate <= 12) xstep = 2;
   else if (maxRate <= 25) xstep = 5;
   else if (maxRate <= 60) xstep = 10;
   else xstep = 20;
-  const xmaxLabel = Math.max(xstep, Math.ceil(maxRate / xstep) * xstep);
-  const xmaxPlot = Math.max(xmaxLabel * 1.05, maxRate + xstep * 0.5);
-  const xticks = [];
-  for (let i = 0; i <= xmaxLabel; i += xstep) xticks.push(i);
-  const xs = v => margin.left + v / xmaxPlot * plotW;
+  var xmaxLabel = Math.max(xstep, Math.ceil(maxRate / xstep) * xstep);
+  var xmaxPlot = Math.max(xmaxLabel * 1.05, maxRate + xstep * 0.5);
+  var xticks = [];
+  for (var i = 0; i <= xmaxLabel; i += xstep) xticks.push(i);
+  var xs = v => margin.left + v / xmaxPlot * plotW;
 
-  const sumIn = data.reduce((s, d) => s + d.total.inflow, 0);
-  const sumSig = data.reduce((s, d) => s + d.total.signups, 0);
-  const avgRate = sumIn > 0 ? sumSig / sumIn * 100 : 0;
+  var sumIn = data.reduce((s, d) => s + d.total.inflow, 0);
+  var sumSig = data.reduce((s, d) => s + d.total.signups, 0);
+  var avgRate = sumIn > 0 ? sumSig / sumIn * 100 : 0;
 
-  const TXT = {
+  var TXT = {
     titleBg: "#5C6470", subtitle: "#7B8194", axisLabel: "#C8447F",
     avg: "#C8447F", avgLine: "#DC3A8E",
     tickLabel: "#9CA3AF", grid: "#E5E7EB",
     channelName: "#1F2937", metaSignup: "#9CA3AF", deviceLabel: "#6B7280"
   };
-  const out = [];
+  var out = [];
   out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif">`);
   out.push(`<rect x="0" y="0" width="${W}" height="${H}" fill="#ffffff"/>`);
   out.push(`<rect x="32" y="28" rx="22" ry="22" width="500" height="44" fill="${TXT.titleBg}"/>`);
   out.push(`<text x="60" y="56" font-size="20" font-weight="700" fill="#ffffff">${esc("채널별 최종 전환율 — PC vs Mobile")}</text>`);
   out.push(`<text x="32" y="100" font-size="15" fill="${TXT.subtitle}">채널별 각 퍼널 단계 사용자 수 및 단계 통과율</text>`);
 
-  for (const t of xticks) {
-    const x = xs(t);
+  for (var t of xticks) {
+    var x = xs(t);
     out.push(`<line x1="${x.toFixed(2)}" y1="${margin.top}" x2="${x.toFixed(2)}" y2="${margin.top + plotH}" stroke="${TXT.grid}" stroke-width="1"/>`);
   }
 
   if (showAvg) {
-    const avgX = xs(avgRate);
+    var avgX = xs(avgRate);
     out.push(`<line x1="${avgX.toFixed(2)}" y1="${margin.top - 30}" x2="${avgX.toFixed(2)}" y2="${margin.top + plotH}" stroke="${TXT.avgLine}" stroke-width="1.5" stroke-dasharray="6,4"/>`);
     out.push(`<text x="${avgX.toFixed(2)}" y="${margin.top - 38}" text-anchor="middle" font-size="14" font-weight="700" fill="${TXT.avg}">합산 평균 ${avgRate.toFixed(2)}%</text>`);
   }
 
-  for (let i = 0; i < data.length; i++) {
-    const d = data[i];
-    const c = colorOf(d.channel);
-    const yTop = margin.top + i * ROW_H;
-    const labelX = margin.left;
+  for (var i = 0; i < data.length; i++) {
+    var d = data[i];
+    var c = colorOf(d.channel);
+    var yTop = margin.top + i * ROW_H;
+    var labelX = margin.left;
     out.push(`<text x="${labelX}" y="${yTop + 22}" font-size="20" font-weight="700" fill="${TXT.channelName}">${esc(d.channel)}</text>`);
     out.push(`<text x="${labelX + 220}" y="${yTop + 22}" font-size="16" font-weight="700" fill="${c.stroke}">합산 ${d.total.rate.toFixed(2)}%</text>`);
     out.push(`<text x="${labelX + 380}" y="${yTop + 22}" font-size="14" fill="${TXT.metaSignup}">가입 ${d.total.signups.toLocaleString()}명</text>`);
-    const pcY = yTop + 48;
-    const pcW = Math.max(0, xs(d.pc.rate) - margin.left);
+    var pcY = yTop + 48;
+    var pcW = Math.max(0, xs(d.pc.rate) - margin.left);
     out.push(`<text x="${labelX - 16}" y="${pcY + 16}" text-anchor="end" font-size="12" font-weight="600" fill="${TXT.deviceLabel}">PC</text>`);
     out.push(`<rect x="${labelX}" y="${pcY}" width="${pcW.toFixed(2)}" height="22" rx="2" ry="2" fill="${c.stroke}" opacity="0.9"/>`);
     out.push(`<text x="${(labelX + pcW + 8).toFixed(2)}" y="${pcY + 17}" font-size="14" font-weight="700" fill="${c.stroke}">${d.pc.rate.toFixed(2)}%</text>`);
-    const moY = yTop + 88;
-    const moW = Math.max(0, xs(d.mo.rate) - margin.left);
+    var moY = yTop + 88;
+    var moW = Math.max(0, xs(d.mo.rate) - margin.left);
     out.push(`<text x="${labelX - 16}" y="${moY + 16}" text-anchor="end" font-size="12" font-weight="600" fill="${TXT.deviceLabel}">Mo</text>`);
     out.push(`<rect x="${labelX}" y="${moY}" width="${moW.toFixed(2)}" height="22" rx="2" ry="2" fill="${c.fill}"/>`);
     out.push(`<text x="${(labelX + moW + 8).toFixed(2)}" y="${moY + 17}" font-size="14" font-weight="700" fill="${c.stroke}">${d.mo.rate.toFixed(2)}%</text>`);
   }
 
-  const axisY = margin.top + plotH + 28;
-  for (const t of xticks) {
+  var axisY = margin.top + plotH + 28;
+  for (var t of xticks) {
     out.push(`<text x="${xs(t).toFixed(2)}" y="${axisY}" text-anchor="middle" font-size="13" fill="${TXT.tickLabel}">${t}%</text>`);
   }
   out.push(`<text x="${margin.left + plotW / 2}" y="${H - 24}" text-anchor="middle" font-size="14" font-weight="600" fill="${TXT.axisLabel}">최종 전환율 (%)</text>`);
@@ -1024,24 +1016,24 @@ function renderSVG(data, opts) {
 // ============================================================
 // UI wiring
 // ============================================================
-let currentData = SEED.slice();
+var currentData = SEED.slice();
 
-const $chart = document.getElementById("ch-chart");
-const $tsv = document.getElementById("ch-tsv");
-const $apply = document.getElementById("ch-apply");
-const $reset = document.getElementById("ch-reset");
-const $download = document.getElementById("ch-download");
-const $palette = document.getElementById("ch-palette");
-const $chartType = document.getElementById("ch-chartType");
-const $showMedian = document.getElementById("ch-showMedian");
-const $showQuadrants = document.getElementById("ch-showQuadrants");
-const $showAvg = document.getElementById("ch-showAvg");
-const $optMedian = document.getElementById("ch-optMedian");
-const $optQuad = document.getElementById("ch-optQuad");
-const $optAvg = document.getElementById("ch-optAvg");
-const $status = document.getElementById("ch-status");
-const $xlsx = document.getElementById("ch-xlsxInput");
-const $filename = document.getElementById("ch-filename");
+var $chart = document.getElementById("ch-chart");
+var $tsv = document.getElementById("ch-tsv");
+var $apply = document.getElementById("ch-apply");
+var $reset = document.getElementById("ch-reset");
+var $download = document.getElementById("ch-download");
+var $palette = document.getElementById("ch-palette");
+var $chartType = document.getElementById("ch-chartType");
+var $showMedian = document.getElementById("ch-showMedian");
+var $showQuadrants = document.getElementById("ch-showQuadrants");
+var $showAvg = document.getElementById("ch-showAvg");
+var $optMedian = document.getElementById("ch-optMedian");
+var $optQuad = document.getElementById("ch-optQuad");
+var $optAvg = document.getElementById("ch-optAvg");
+var $status = document.getElementById("ch-status");
+var $xlsx = document.getElementById("ch-xlsxInput");
+var $filename = document.getElementById("ch-filename");
 
 function currentOpts() {
   return {
@@ -1053,7 +1045,7 @@ function currentOpts() {
   };
 }
 function syncControls() {
-  const isMatrix = $chartType.value === "matrix";
+  var isMatrix = $chartType.value === "matrix";
   $optMedian.style.display = isMatrix ? "" : "none";
   $optQuad.style.display = isMatrix ? "" : "none";
   $optAvg.style.display = isMatrix ? "none" : "";
@@ -1072,8 +1064,8 @@ rerender();
 setStatus(`현재 ${currentData.length}개 채널 표시 중 (시드 데이터)`);
 
 $apply.addEventListener("click", () => {
-  const rows = parseTSVToRows($tsv.value);
-  const data = rowsToDeviceData(rows);
+  var rows = parseTSVToRows($tsv.value);
+  var data = rowsToDeviceData(rows);
   if (!data.length) {
     setStatus("파싱 실패: 형식을 확인하세요 (템플릿 / GA4 피벗 / 전치 피벗 지원).", "err");
     return;
@@ -1095,34 +1087,34 @@ $reset.addEventListener("click", () => {
 );
 
 $xlsx.addEventListener("change", async (e) => {
-  const file = e.target.files && e.target.files[0];
+  var file = e.target.files && e.target.files[0];
   if (!file) return;
   $filename.textContent = file.name;
   setStatus(`엑셀 파싱 중: ${file.name}…`);
   try {
-    const buf = await file.arrayBuffer();
-    const u8 = new Uint8Array(buf);
-    const files = await unzipXlsx(u8);
-    const wb = parseXlsxWorkbook(files);
+    var buf = await file.arrayBuffer();
+    var u8 = new Uint8Array(buf);
+    var files = await unzipXlsx(u8);
+    var wb = parseXlsxWorkbook(files);
     if (!wb.sheets.length) throw new Error("시트를 찾을 수 없습니다");
-    let chosen = null, data = [];
-    const preferred = [
+    var chosen = null, data = [];
+    var preferred = [
       s => /채널.*퍼널|채널별_퍼널|01_채널/.test(s.name),
       s => /^01[_\s]/.test(s.name),
       s => /디바이스|채널/.test(s.name),
       s => /분석|시트/.test(s.name),
       () => true
     ];
-    const ordered = []; const seen = new Set();
-    for (const pred of preferred) {
-      for (const s of wb.sheets) {
+    var ordered = []; var seen = new Set();
+    for (var pred of preferred) {
+      for (var s of wb.sheets) {
         if (seen.has(s.name)) continue;
         if (pred(s)) { ordered.push(s); seen.add(s.name); }
       }
     }
-    for (const s of ordered) {
-      const rows = wb.readSheet(s.name) || [];
-      const d = rowsToDeviceData(rows);
+    for (var s of ordered) {
+      var rows = wb.readSheet(s.name) || [];
+      var d = rowsToDeviceData(rows);
       if (d.length > 0) { chosen = s; data = d; break; }
     }
     if (!data.length) throw new Error("PC/MO 디바이스가 분리된 채널 데이터를 찾지 못했습니다");
@@ -1138,10 +1130,10 @@ $xlsx.addEventListener("change", async (e) => {
 });
 
 $download.addEventListener("click", () => {
-  const svg = renderSVG(currentData, currentOpts());
-  const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
+  var svg = renderSVG(currentData, currentOpts());
+  var blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
   a.href = url;
   a.download = $chartType.value === "bars"
     ? "channel_pc_vs_mobile_bars.svg"
@@ -1152,13 +1144,17 @@ $download.addEventListener("click", () => {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
   setStatus("✓ SVG 다운로드 — Figma 캔버스에 드래그하세요");
 });
+  })();
+};
 </script>
 
-<script type="module">
+<script>
+window['__init_st'] = function() {
+  (function() {
 // ============================================================
 // Seed data — from 디바이스_페이지별.xlsx (PC + MO funnel stages)
 // ============================================================
-const SEED = {
+var SEED = {
   stages: [
     { num: 1, icon: "①", name: "커머스인입",   pc: 41844, mo: 37496 },
     { num: 2, icon: "②", name: "정보탐색",     pc: 14140, mo: 6318  },
@@ -1168,7 +1164,7 @@ const SEED = {
   ].map(s => ({ ...s, total: s.pc + s.mo }))
 };
 
-const SEED_TSV = [
+var SEED_TSV = [
   "moweb",
   "행 레이블\t총합계",
   "1.①커머스인입\t37496",
@@ -1195,21 +1191,21 @@ function esc(s) {
 function fmtNum(n) { return Math.round(n).toLocaleString(); }
 function pct(part, whole) { return whole > 0 ? part / whole * 100 : 0; }
 
-const STEP_FIRST = s => /①/.test(s) || /^1[\.\s]\S/.test(s);
-const STEP_LAST  = s => /⑤/.test(s) || /^5[\.\s]\S/.test(s);
-const STEP_ANY   = s => /[①②③④⑤]/.test(s) || /^[1-5][\.\s]\S/.test(s);
-const ICONS = ["①","②","③","④","⑤"];
+var STEP_FIRST = s => /①/.test(s) || /^1[\.\s]\S/.test(s);
+var STEP_LAST  = s => /⑤/.test(s) || /^5[\.\s]\S/.test(s);
+var STEP_ANY   = s => /[①②③④⑤]/.test(s) || /^[1-5][\.\s]\S/.test(s);
+var ICONS = ["①","②","③","④","⑤"];
 function iconToNum(c) { return ICONS.indexOf(c) + 1; }
 function stepInfoFromLabel(t) {
   // Returns { num, name, icon } or null
-  let num = null, icon = null, name = "";
-  const m1 = t.match(/^([1-5])[\.\s]?\s*([①②③④⑤])?\s*(.*)$/);
+  var num = null, icon = null, name = "";
+  var m1 = t.match(/^([1-5])[\.\s]?\s*([①②③④⑤])?\s*(.*)$/);
   if (m1) {
     num = parseInt(m1[1]);
     icon = m1[2] || ICONS[num - 1];
     name = (m1[3] || "").trim();
   } else {
-    const im = t.match(/[①②③④⑤]/);
+    var im = t.match(/[①②③④⑤]/);
     if (im) {
       icon = im[0];
       num = iconToNum(icon);
@@ -1223,12 +1219,12 @@ function isPCDevice(s) { return /^pc$/i.test(s) || /desktop/i.test(s); }
 function isMODevice(s) { return /^mo$|^moweb$|^mobile$|^m$/i.test(s); }
 
 function getRowTotalAfter(row, startCol) {
-  let last = null;
-  for (let c = startCol; c < row.length; c++) {
-    const v = row[c];
+  var last = null;
+  for (var c = startCol; c < row.length; c++) {
+    var v = row[c];
     if (v == null) continue;
     if (typeof v === "string") {
-      const t = v.trim();
+      var t = v.trim();
       if (t === "" || t === "-" || t === "–" || t === "N/A") continue;
       break;
     }
@@ -1242,21 +1238,21 @@ function getRowTotalAfter(row, startCol) {
 // ============================================================
 function parseStages_template(rows) {
   // Header has "채널" + "디바이스" + 5 step columns
-  let headerRow = -1;
-  let stepCols = []; // array of { col, info: {num,name,icon} }
-  for (let r = 0; r < rows.length; r++) {
-    const row = rows[r] || [];
-    let foundCh = false, foundDev = false;
-    for (const cell of row) {
+  var headerRow = -1;
+  var stepCols = []; // array of { col, info: {num,name,icon} }
+  for (var r = 0; r < rows.length; r++) {
+    var row = rows[r] || [];
+    var foundCh = false, foundDev = false;
+    for (var cell of row) {
       if (typeof cell !== "string") continue;
       if (cell.trim() === "채널") foundCh = true;
       if (cell.trim() === "디바이스") foundDev = true;
     }
     if (foundCh && foundDev) {
       headerRow = r;
-      for (let c = 0; c < row.length; c++) {
+      for (var c = 0; c < row.length; c++) {
         if (typeof row[c] !== "string") continue;
-        const info = stepInfoFromLabel(row[c].trim());
+        var info = stepInfoFromLabel(row[c].trim());
         if (info) stepCols.push({ col: c, info });
       }
       break;
@@ -1264,24 +1260,24 @@ function parseStages_template(rows) {
   }
   if (headerRow < 0 || stepCols.length === 0) return { stages: [] };
 
-  const pcByNum = new Map(), moByNum = new Map();
-  const nameByNum = new Map();
-  for (const sc of stepCols) nameByNum.set(sc.info.num, sc.info);
+  var pcByNum = new Map(), moByNum = new Map();
+  var nameByNum = new Map();
+  for (var sc of stepCols) nameByNum.set(sc.info.num, sc.info);
 
-  for (let r = headerRow + 1; r < rows.length; r++) {
-    const row = rows[r] || [];
-    const ch = row[0];
+  for (var r = headerRow + 1; r < rows.length; r++) {
+    var row = rows[r] || [];
+    var ch = row[0];
     if (typeof ch !== "string" || !ch.trim()) continue;
     if (ch === "채널" || ch.startsWith("※") || ch.startsWith("//")) continue;
-    const dev = String(row[1] || "").trim();
-    let device;
+    var dev = String(row[1] || "").trim();
+    var device;
     if (isPCDevice(dev)) device = "pc";
     else if (isMODevice(dev)) device = "mo";
     else continue;
-    for (const sc of stepCols) {
-      const v = row[sc.col];
+    for (var sc of stepCols) {
+      var v = row[sc.col];
       if (typeof v !== "number" || !isFinite(v)) continue;
-      const map = device === "pc" ? pcByNum : moByNum;
+      var map = device === "pc" ? pcByNum : moByNum;
       map.set(sc.info.num, (map.get(sc.info.num) || 0) + v);
     }
   }
@@ -1289,28 +1285,28 @@ function parseStages_template(rows) {
 }
 
 function parseStages_pivot(rows) {
-  const labelCols = new Set();
-  for (let r = 0; r < rows.length; r++) {
-    const row = rows[r] || [];
-    for (let c = 0; c < row.length; c++) {
+  var labelCols = new Set();
+  for (var r = 0; r < rows.length; r++) {
+    var row = rows[r] || [];
+    for (var c = 0; c < row.length; c++) {
       if (typeof row[c] === "string" && STEP_ANY(row[c])) labelCols.add(c);
     }
   }
-  const colDevice = new Map();
-  for (const c of labelCols) {
-    let device = null;
-    let firstStepRow = -1;
-    for (let r = 0; r < rows.length; r++) {
-      const row = rows[r] || [];
+  var colDevice = new Map();
+  for (var c of labelCols) {
+    var device = null;
+    var firstStepRow = -1;
+    for (var r = 0; r < rows.length; r++) {
+      var row = rows[r] || [];
       if (typeof row[c] === "string" && STEP_ANY(row[c])) { firstStepRow = r; break; }
     }
     if (firstStepRow < 0) continue;
-    for (let r = 0; r < firstStepRow && !device; r++) {
-      const row = rows[r] || [];
-      for (let cc = Math.max(0, c - 2); cc <= Math.min(row.length - 1, c + 2); cc++) {
-        const v = row[cc];
+    for (var r = 0; r < firstStepRow && !device; r++) {
+      var row = rows[r] || [];
+      for (var cc = Math.max(0, c - 2); cc <= Math.min(row.length - 1, c + 2); cc++) {
+        var v = row[cc];
         if (typeof v !== "string") continue;
-        const t = v.trim();
+        var t = v.trim();
         if (isPCDevice(t)) { device = "pc"; break; }
         if (isMODevice(t)) { device = "mo"; break; }
       }
@@ -1319,20 +1315,20 @@ function parseStages_pivot(rows) {
   }
   if (!colDevice.size) return { stages: [] };
 
-  const pcByNum = new Map(), moByNum = new Map();
-  const nameByNum = new Map();
-  for (const [c, device] of colDevice.entries()) {
-    for (let r = 0; r < rows.length; r++) {
-      const row = rows[r] || [];
-      const v = row[c];
+  var pcByNum = new Map(), moByNum = new Map();
+  var nameByNum = new Map();
+  for (var [c, device] of colDevice.entries()) {
+    for (var r = 0; r < rows.length; r++) {
+      var row = rows[r] || [];
+      var v = row[c];
       if (typeof v !== "string") continue;
-      const t = v.trim();
+      var t = v.trim();
       if (!STEP_ANY(t)) continue;
-      const info = stepInfoFromLabel(t);
+      var info = stepInfoFromLabel(t);
       if (!info) continue;
-      const total = getRowTotalAfter(row, c + 1);
+      var total = getRowTotalAfter(row, c + 1);
       if (total == null || !isFinite(total)) continue;
-      const map = device === "pc" ? pcByNum : moByNum;
+      var map = device === "pc" ? pcByNum : moByNum;
       // For pivot: each step row has ONE total per device — set, don't add
       // But if multiple step rows with same number exist (unusual), sum them
       map.set(info.num, (map.get(info.num) || 0) + total);
@@ -1345,28 +1341,28 @@ function parseStages_pivot(rows) {
 }
 // Replace pivot parser with a per-device unique-step version
 function parseStages_pivot(rows) {
-  const labelCols = new Set();
-  for (let r = 0; r < rows.length; r++) {
-    const row = rows[r] || [];
-    for (let c = 0; c < row.length; c++) {
+  var labelCols = new Set();
+  for (var r = 0; r < rows.length; r++) {
+    var row = rows[r] || [];
+    for (var c = 0; c < row.length; c++) {
       if (typeof row[c] === "string" && STEP_ANY(row[c])) labelCols.add(c);
     }
   }
-  const colDevice = new Map();
-  for (const c of labelCols) {
-    let device = null;
-    let firstStepRow = -1;
-    for (let r = 0; r < rows.length; r++) {
-      const row = rows[r] || [];
+  var colDevice = new Map();
+  for (var c of labelCols) {
+    var device = null;
+    var firstStepRow = -1;
+    for (var r = 0; r < rows.length; r++) {
+      var row = rows[r] || [];
       if (typeof row[c] === "string" && STEP_ANY(row[c])) { firstStepRow = r; break; }
     }
     if (firstStepRow < 0) continue;
-    for (let r = 0; r < firstStepRow && !device; r++) {
-      const row = rows[r] || [];
-      for (let cc = Math.max(0, c - 2); cc <= Math.min(row.length - 1, c + 2); cc++) {
-        const v = row[cc];
+    for (var r = 0; r < firstStepRow && !device; r++) {
+      var row = rows[r] || [];
+      for (var cc = Math.max(0, c - 2); cc <= Math.min(row.length - 1, c + 2); cc++) {
+        var v = row[cc];
         if (typeof v !== "string") continue;
-        const t = v.trim();
+        var t = v.trim();
         if (isPCDevice(t)) { device = "pc"; break; }
         if (isMODevice(t)) { device = "mo"; break; }
       }
@@ -1375,26 +1371,26 @@ function parseStages_pivot(rows) {
   }
   if (!colDevice.size) return { stages: [] };
 
-  const pcByNum = new Map(), moByNum = new Map();
-  const nameByNum = new Map();
-  for (const [c, device] of colDevice.entries()) {
-    const localByNum = new Map();
-    for (let r = 0; r < rows.length; r++) {
-      const row = rows[r] || [];
-      const v = row[c];
+  var pcByNum = new Map(), moByNum = new Map();
+  var nameByNum = new Map();
+  for (var [c, device] of colDevice.entries()) {
+    var localByNum = new Map();
+    for (var r = 0; r < rows.length; r++) {
+      var row = rows[r] || [];
+      var v = row[c];
       if (typeof v !== "string") continue;
-      const t = v.trim();
+      var t = v.trim();
       if (!STEP_ANY(t)) continue;
-      const info = stepInfoFromLabel(t);
+      var info = stepInfoFromLabel(t);
       if (!info) continue;
-      const total = getRowTotalAfter(row, c + 1);
+      var total = getRowTotalAfter(row, c + 1);
       if (total == null || !isFinite(total)) continue;
       // Within one device-block, take the FIRST occurrence of each step
       if (!localByNum.has(info.num)) localByNum.set(info.num, total);
       if (!nameByNum.has(info.num)) nameByNum.set(info.num, info);
     }
-    const target = device === "pc" ? pcByNum : moByNum;
-    for (const [n, v] of localByNum.entries()) {
+    var target = device === "pc" ? pcByNum : moByNum;
+    for (var [n, v] of localByNum.entries()) {
       target.set(n, (target.get(n) || 0) + v);
     }
   }
@@ -1402,27 +1398,27 @@ function parseStages_pivot(rows) {
 }
 
 function parseStages_transposed(rows) {
-  const headers = [];
-  for (let r = 0; r < rows.length; r++) {
-    const row = rows[r] || [];
-    for (let c = 0; c < row.length; c++) {
-      const v = row[c];
+  var headers = [];
+  for (var r = 0; r < rows.length; r++) {
+    var row = rows[r] || [];
+    for (var c = 0; c < row.length; c++) {
+      var v = row[c];
       if (typeof v !== "string" || !/^행\s*레이블$/.test(v.trim())) continue;
-      const dataCols = [];
-      for (let cc = c + 1; cc < row.length; cc++) {
-        const cv = row[cc];
+      var dataCols = [];
+      for (var cc = c + 1; cc < row.length; cc++) {
+        var cv = row[cc];
         if (typeof cv === "string" && cv.trim() && !/^\d{4}\./.test(cv.trim())) {
           dataCols.push({ col: cc, name: cv.trim() });
         }
       }
       if (dataCols.length < 1) break;
-      let device = null;
-      for (let rr = Math.max(0, r - 4); rr < r && !device; rr++) {
-        const ur = rows[rr] || [];
-        for (let cc = 0; cc < ur.length; cc++) {
-          const uv = ur[cc];
+      var device = null;
+      for (var rr = Math.max(0, r - 4); rr < r && !device; rr++) {
+        var ur = rows[rr] || [];
+        for (var cc = 0; cc < ur.length; cc++) {
+          var uv = ur[cc];
           if (typeof uv !== "string") continue;
-          const ut = uv.trim();
+          var ut = uv.trim();
           if (isPCDevice(ut)) { device = "pc"; break; }
           if (isMODevice(ut)) { device = "mo"; break; }
         }
@@ -1433,29 +1429,29 @@ function parseStages_transposed(rows) {
   }
   if (!headers.length) return { stages: [] };
 
-  const pcByNum = new Map(), moByNum = new Map();
-  const nameByNum = new Map();
-  for (let h = 0; h < headers.length; h++) {
-    const hdr = headers[h];
+  var pcByNum = new Map(), moByNum = new Map();
+  var nameByNum = new Map();
+  for (var h = 0; h < headers.length; h++) {
+    var hdr = headers[h];
     if (!hdr.device) continue;
-    const nextHeaderRow = h + 1 < headers.length ? headers[h + 1].row : rows.length;
-    for (let r = hdr.row + 1; r < nextHeaderRow; r++) {
-      const row = rows[r] || [];
-      const lab = row[hdr.labelCol];
+    var nextHeaderRow = h + 1 < headers.length ? headers[h + 1].row : rows.length;
+    for (var r = hdr.row + 1; r < nextHeaderRow; r++) {
+      var row = rows[r] || [];
+      var lab = row[hdr.labelCol];
       if (typeof lab !== "string") continue;
-      const txt = lab.trim();
+      var txt = lab.trim();
       if (!txt) continue;
       if (/^(총합계|합계|소계)/.test(txt)) continue;
       if (!STEP_ANY(txt)) continue;
-      const info = stepInfoFromLabel(txt);
+      var info = stepInfoFromLabel(txt);
       if (!info) continue;
       // Sum ALL data columns for this stage
-      let stageSum = 0;
-      for (const cc of hdr.dataCols) {
-        const v = row[cc.col];
+      var stageSum = 0;
+      for (var cc of hdr.dataCols) {
+        var v = row[cc.col];
         if (typeof v === "number" && isFinite(v)) stageSum += v;
       }
-      const target = hdr.device === "pc" ? pcByNum : moByNum;
+      var target = hdr.device === "pc" ? pcByNum : moByNum;
       target.set(info.num, (target.get(info.num) || 0) + stageSum);
       if (!nameByNum.has(info.num)) nameByNum.set(info.num, info);
     }
@@ -1464,33 +1460,33 @@ function parseStages_transposed(rows) {
 }
 
 function finalizeStages(nameByNum, pcByNum, moByNum) {
-  const allNums = new Set([...nameByNum.keys(), ...pcByNum.keys(), ...moByNum.keys()]);
-  const sorted = [...allNums].sort((a, b) => a - b);
-  const stages = sorted.map(n => {
-    const info = nameByNum.get(n) || { num: n, name: `Stage ${n}`, icon: ICONS[n - 1] || `${n}` };
-    const pc = pcByNum.get(n) || 0;
-    const mo = moByNum.get(n) || 0;
+  var allNums = new Set([...nameByNum.keys(), ...pcByNum.keys(), ...moByNum.keys()]);
+  var sorted = [...allNums].sort((a, b) => a - b);
+  var stages = sorted.map(n => {
+    var info = nameByNum.get(n) || { num: n, name: `Stage ${n}`, icon: ICONS[n - 1] || `${n}` };
+    var pc = pcByNum.get(n) || 0;
+    var mo = moByNum.get(n) || 0;
     return { num: n, name: info.name, icon: info.icon, pc, mo, total: pc + mo };
   });
   return { stages };
 }
 
 function detectFormat(rows) {
-  let hasTemplateHeader = false, hasStep = false, hasTransposed = false;
-  for (let r = 0; r < rows.length; r++) {
-    const row = rows[r] || [];
-    let foundCh = false, foundDev = false;
-    for (let c = 0; c < row.length; c++) {
-      const cell = row[c];
+  var hasTemplateHeader = false, hasStep = false, hasTransposed = false;
+  for (var r = 0; r < rows.length; r++) {
+    var row = rows[r] || [];
+    var foundCh = false, foundDev = false;
+    for (var c = 0; c < row.length; c++) {
+      var cell = row[c];
       if (typeof cell !== "string") continue;
-      const t = cell.trim();
+      var t = cell.trim();
       if (t === "채널") foundCh = true;
       if (t === "디바이스") foundDev = true;
       if (STEP_ANY(t)) hasStep = true;
       if (/^행\s*레이블$/.test(t)) {
-        let abc = 0;
-        for (let cc = c + 1; cc < row.length; cc++) {
-          const v = row[cc];
+        var abc = 0;
+        for (var cc = c + 1; cc < row.length; cc++) {
+          var v = row[cc];
           if (typeof v === "string" && v.trim() && /^[A-Za-z]/.test(v.trim())) abc++;
         }
         if (abc >= 2) hasTransposed = true;
@@ -1505,14 +1501,14 @@ function detectFormat(rows) {
 }
 
 function rowsToStageData(rows) {
-  const fmt = detectFormat(rows);
-  let result;
+  var fmt = detectFormat(rows);
+  var result;
   if (fmt === "template") result = parseStages_template(rows);
   else if (fmt === "transposed") result = parseStages_transposed(rows);
   else if (fmt === "pivot") result = parseStages_pivot(rows);
   else {
-    for (const fn of [parseStages_template, parseStages_transposed, parseStages_pivot]) {
-      const r = fn(rows);
+    for (var fn of [parseStages_template, parseStages_transposed, parseStages_pivot]) {
+      var r = fn(rows);
       if (r.stages.length > 0) { result = r; break; }
     }
   }
@@ -1523,37 +1519,37 @@ function rowsToStageData(rows) {
 // Minimal .xlsx reader
 // ============================================================
 async function unzipXlsx(u8) {
-  const dv = new DataView(u8.buffer, u8.byteOffset, u8.byteLength);
-  const eocdSig = 0x06054b50;
-  let eocd = -1;
-  const scanFrom = Math.max(0, u8.length - 65557);
-  for (let i = u8.length - 22; i >= scanFrom; i--) {
+  var dv = new DataView(u8.buffer, u8.byteOffset, u8.byteLength);
+  var eocdSig = 0x06054b50;
+  var eocd = -1;
+  var scanFrom = Math.max(0, u8.length - 65557);
+  for (var i = u8.length - 22; i >= scanFrom; i--) {
     if (dv.getUint32(i, true) === eocdSig) { eocd = i; break; }
   }
   if (eocd < 0) throw new Error("올바른 .xlsx 파일이 아닙니다");
-  const cdOffset = dv.getUint32(eocd + 16, true);
-  const numEntries = dv.getUint16(eocd + 10, true);
-  const files = {};
-  let p = cdOffset;
-  for (let i = 0; i < numEntries; i++) {
+  var cdOffset = dv.getUint32(eocd + 16, true);
+  var numEntries = dv.getUint16(eocd + 10, true);
+  var files = {};
+  var p = cdOffset;
+  for (var i = 0; i < numEntries; i++) {
     if (dv.getUint32(p, true) !== 0x02014b50) break;
-    const compMethod = dv.getUint16(p + 10, true);
-    const compSize = dv.getUint32(p + 20, true);
-    const nameLen = dv.getUint16(p + 28, true);
-    const extraLen = dv.getUint16(p + 30, true);
-    const commentLen = dv.getUint16(p + 32, true);
-    const lho = dv.getUint32(p + 42, true);
-    const name = new TextDecoder("utf-8").decode(u8.subarray(p + 46, p + 46 + nameLen));
+    var compMethod = dv.getUint16(p + 10, true);
+    var compSize = dv.getUint32(p + 20, true);
+    var nameLen = dv.getUint16(p + 28, true);
+    var extraLen = dv.getUint16(p + 30, true);
+    var commentLen = dv.getUint16(p + 32, true);
+    var lho = dv.getUint32(p + 42, true);
+    var name = new TextDecoder("utf-8").decode(u8.subarray(p + 46, p + 46 + nameLen));
     p += 46 + nameLen + extraLen + commentLen;
     if (dv.getUint32(lho, true) !== 0x04034b50) continue;
-    const lNameLen = dv.getUint16(lho + 26, true);
-    const lExtraLen = dv.getUint16(lho + 28, true);
-    const dataStart = lho + 30 + lNameLen + lExtraLen;
-    const compData = u8.subarray(dataStart, dataStart + compSize);
-    let bytes;
+    var lNameLen = dv.getUint16(lho + 26, true);
+    var lExtraLen = dv.getUint16(lho + 28, true);
+    var dataStart = lho + 30 + lNameLen + lExtraLen;
+    var compData = u8.subarray(dataStart, dataStart + compSize);
+    var bytes;
     if (compMethod === 0) bytes = compData;
     else if (compMethod === 8) {
-      const stream = new Blob([compData]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+      var stream = new Blob([compData]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
       bytes = new Uint8Array(await new Response(stream).arrayBuffer());
     } else throw new Error("지원하지 않는 압축: " + compMethod);
     files[name] = bytes;
@@ -1562,65 +1558,65 @@ async function unzipXlsx(u8) {
 }
 
 function parseXlsxWorkbook(files) {
-  const decoder = new TextDecoder("utf-8");
-  const text = name => files[name] ? decoder.decode(files[name]) : null;
-  const sharedStrings = [];
+  var decoder = new TextDecoder("utf-8");
+  var text = name => files[name] ? decoder.decode(files[name]) : null;
+  var sharedStrings = [];
   if (files["xl/sharedStrings.xml"]) {
-    const doc = new DOMParser().parseFromString(text("xl/sharedStrings.xml"), "text/xml");
-    for (const si of doc.getElementsByTagName("si")) {
-      let str = "";
-      for (const t of si.getElementsByTagName("t")) str += t.textContent || "";
+    var doc = new DOMParser().parseFromString(text("xl/sharedStrings.xml"), "text/xml");
+    for (var si of doc.getElementsByTagName("si")) {
+      var str = "";
+      for (var t of si.getElementsByTagName("t")) str += t.textContent || "";
       sharedStrings.push(str);
     }
   }
-  const rid2target = {};
+  var rid2target = {};
   if (files["xl/_rels/workbook.xml.rels"]) {
-    const rdoc = new DOMParser().parseFromString(text("xl/_rels/workbook.xml.rels"), "text/xml");
-    for (const r of rdoc.getElementsByTagName("Relationship")) {
+    var rdoc = new DOMParser().parseFromString(text("xl/_rels/workbook.xml.rels"), "text/xml");
+    for (var r of rdoc.getElementsByTagName("Relationship")) {
       rid2target[r.getAttribute("Id")] = r.getAttribute("Target");
     }
   }
-  const sheets = [];
+  var sheets = [];
   if (files["xl/workbook.xml"]) {
-    const wdoc = new DOMParser().parseFromString(text("xl/workbook.xml"), "text/xml");
-    for (const s of wdoc.getElementsByTagName("sheet")) {
-      const name = s.getAttribute("name");
-      let rid = s.getAttribute("r:id");
+    var wdoc = new DOMParser().parseFromString(text("xl/workbook.xml"), "text/xml");
+    for (var s of wdoc.getElementsByTagName("sheet")) {
+      var name = s.getAttribute("name");
+      var rid = s.getAttribute("r:id");
       if (!rid) {
-        for (let i = 0; i < s.attributes.length; i++) {
+        for (var i = 0; i < s.attributes.length; i++) {
           if (s.attributes[i].localName === "id") { rid = s.attributes[i].value; break; }
         }
       }
-      const target = rid2target[rid];
+      var target = rid2target[rid];
       if (!target) continue;
       sheets.push({ name, file: target.startsWith("/") ? target.slice(1) : "xl/" + target });
     }
   }
   function colRefToIdx(ref) {
-    let n = 0;
-    for (const c of ref) n = n * 26 + (c.charCodeAt(0) - 64);
+    var n = 0;
+    for (var c of ref) n = n * 26 + (c.charCodeAt(0) - 64);
     return n - 1;
   }
   function readSheet(name) {
-    const sheet = sheets.find(s => s.name === name);
+    var sheet = sheets.find(s => s.name === name);
     if (!sheet) return null;
-    const xml = text(sheet.file);
+    var xml = text(sheet.file);
     if (!xml) return null;
-    const doc = new DOMParser().parseFromString(xml, "text/xml");
-    const result = [];
-    for (const row of doc.getElementsByTagName("row")) {
-      const rIdx = parseInt(row.getAttribute("r"), 10) - 1;
+    var doc = new DOMParser().parseFromString(xml, "text/xml");
+    var result = [];
+    for (var row of doc.getElementsByTagName("row")) {
+      var rIdx = parseInt(row.getAttribute("r"), 10) - 1;
       while (result.length <= rIdx) result.push([]);
-      const arr = result[rIdx];
-      for (const cell of row.getElementsByTagName("c")) {
-        const ref = cell.getAttribute("r");
-        const m = ref ? ref.match(/^[A-Z]+/) : null;
+      var arr = result[rIdx];
+      for (var cell of row.getElementsByTagName("c")) {
+        var ref = cell.getAttribute("r");
+        var m = ref ? ref.match(/^[A-Z]+/) : null;
         if (!m) continue;
-        const ci = colRefToIdx(m[0]);
-        const t = cell.getAttribute("t");
-        const vEl = cell.getElementsByTagName("v")[0];
-        const isEl = cell.getElementsByTagName("is")[0];
-        let val;
+        var ci = colRefToIdx(m[0]);
+        var t = cell.getAttribute("t");
+        var vEl = cell.getElementsByTagName("v")[0];
+        var isEl = cell.getElementsByTagName("is")[0];
+        var val;
         if (t === "s" && vEl) val = sharedStrings[parseInt(vEl.textContent, 10)];
         else if (t === "inlineStr" && isEl) val = isEl.textContent.trim();
         else if (t === "str" && vEl) val = vEl.textContent;
@@ -1636,18 +1632,18 @@ function parseXlsxWorkbook(files) {
 }
 
 function parseTSVToRows(text) {
-  const cleaned = String(text).replace(/ /g, " ");
-  const lines = cleaned.split(/\r?\n/);
-  const rows = [];
-  for (const raw of lines) {
+  var cleaned = String(text).replace(/ /g, " ");
+  var lines = cleaned.split(/\r?\n/);
+  var rows = [];
+  for (var raw of lines) {
     if (raw.trim() === "") { rows.push([]); continue; }
-    let cols;
+    var cols;
     if (raw.includes("\t")) cols = raw.split("\t");
     else cols = raw.split(/,(?![^"]*"\s*$)/);
-    const parsed = cols.map(c => {
-      const t = String(c == null ? "" : c).trim().replace(/^"|"$/g, "");
+    var parsed = cols.map(c => {
+      var t = String(c == null ? "" : c).trim().replace(/^"|"$/g, "");
       if (t === "" || t === "-" || t === "–" || t === "N/A") return null;
-      const numStr = t.replace(/,/g, "").replace(/%$/, "");
+      var numStr = t.replace(/,/g, "").replace(/%$/, "");
       if (/^-?\d+(\.\d+)?$/.test(numStr)) return parseFloat(numStr);
       return t;
     });
@@ -1659,7 +1655,7 @@ function parseTSVToRows(text) {
 // ============================================================
 // SVG renderer helpers
 // ============================================================
-const COLORS = {
+var COLORS = {
   arrowDark: "#5C6470",
   arrowLight: "#D1D5DB",
   arrowText: "#FFFFFF",
@@ -1693,9 +1689,9 @@ const COLORS = {
 
 function arrowPolygon(x, y, w, h) {
   // Pentagon with right-pointing tip
-  const tipW = h / 2;
-  const x1 = x, x2 = x + w - tipW, x3 = x + w;
-  const y1 = y, y2 = y + h, ymid = y + h / 2;
+  var tipW = h / 2;
+  var x1 = x, x2 = x + w - tipW, x3 = x + w;
+  var y1 = y, y2 = y + h, ymid = y + h / 2;
   return `${x1},${y1} ${x2},${y1} ${x3},${ymid} ${x2},${y2} ${x1},${y2}`;
 }
 
@@ -1703,28 +1699,28 @@ function smoothPath(points) {
   // Cardinal-ish smooth curve through given points using cubic bezier
   if (points.length === 0) return "";
   if (points.length === 1) return `M ${points[0][0]},${points[0][1]}`;
-  let d = `M ${points[0][0].toFixed(2)},${points[0][1].toFixed(2)}`;
-  for (let i = 0; i < points.length - 1; i++) {
-    const [x0, y0] = points[i];
-    const [x1, y1] = points[i + 1];
-    const dx = (x1 - x0) / 2;
-    const c1x = x0 + dx, c1y = y0;
-    const c2x = x1 - dx, c2y = y1;
+  var d = `M ${points[0][0].toFixed(2)},${points[0][1].toFixed(2)}`;
+  for (var i = 0; i < points.length - 1; i++) {
+    var [x0, y0] = points[i];
+    var [x1, y1] = points[i + 1];
+    var dx = (x1 - x0) / 2;
+    var c1x = x0 + dx, c1y = y0;
+    var c2x = x1 - dx, c2y = y1;
     d += ` C ${c1x.toFixed(2)},${c1y.toFixed(2)} ${c2x.toFixed(2)},${c2y.toFixed(2)} ${x1.toFixed(2)},${y1.toFixed(2)}`;
   }
   return d;
 }
 
 function drawStageArrows(out, stages, x0, y0, totalW, h) {
-  const N = stages.length;
-  const w = totalW / N; // fill width, no gap
-  for (let i = 0; i < N; i++) {
-    const x = x0 + i * w;
-    const isHighlight = i < 2;
-    const fill = isHighlight ? "#6B7280" : "#F3F4F6";
-    const textColor = isHighlight ? "#FFFFFF" : "#6B7280";
+  var N = stages.length;
+  var w = totalW / N; // fill width, no gap
+  for (var i = 0; i < N; i++) {
+    var x = x0 + i * w;
+    var isHighlight = i < 2;
+    var fill = isHighlight ? "#6B7280" : "#F3F4F6";
+    var textColor = isHighlight ? "#FFFFFF" : "#6B7280";
     out.push(`<polygon points="${arrowPolygon(x, y0, w, h)}" fill="${fill}"/>`);
-    const cx = x + (w - h / 2) / 2;
+    var cx = x + (w - h / 2) / 2;
     out.push(`<text x="${cx.toFixed(2)}" y="${(y0 + h / 2 + 7).toFixed(2)}" text-anchor="middle" font-size="20" font-weight="700" fill="${textColor}">${esc(stages[i].name)}</text>`);
   }
 }
@@ -1733,25 +1729,25 @@ function drawStageArrows(out, stages, x0, y0, totalW, h) {
 // (markers are at i*plotW/N positions, so drops are at midpoints = arrow centers)
 function drawDropOffInline(out, drops, x0, y0, totalW) {
   // drops: [{ count, ratePct, passPct }] one per stage transition (N-1 items for N stages)
-  const N = drops.length + 1; // total stages
-  const slotW = totalW / N; // each stage arrow's width
-  const labelW = Math.min(slotW * 0.92, 240);
-  const boxH = 56;
-  for (let i = 0; i < drops.length; i++) {
-    const d = drops[i];
-    const isHigh = i < 2;
-    const arrColor = isHigh ? COLORS.pinkArrow : COLORS.greyArrow;
-    const labelColor = isHigh ? COLORS.pinkLabel : "#6B7280";
-    const bg = isHigh ? COLORS.pinkBoxBg : COLORS.greyBoxBg;
-    const border = isHigh ? COLORS.pinkBoxBorder : COLORS.greyBoxBorder;
+  var N = drops.length + 1; // total stages
+  var slotW = totalW / N; // each stage arrow's width
+  var labelW = Math.min(slotW * 0.92, 240);
+  var boxH = 56;
+  for (var i = 0; i < drops.length; i++) {
+    var d = drops[i];
+    var isHigh = i < 2;
+    var arrColor = isHigh ? COLORS.pinkArrow : COLORS.greyArrow;
+    var labelColor = isHigh ? COLORS.pinkLabel : "#6B7280";
+    var bg = isHigh ? COLORS.pinkBoxBg : COLORS.greyBoxBg;
+    var border = isHigh ? COLORS.pinkBoxBorder : COLORS.greyBoxBorder;
     // Drop sits between marker i and marker i+1 — midpoint at center of arrow (i+1)
-    const cx = x0 + (i + 0.5) * slotW;
-    const lx = cx - labelW / 2;
+    var cx = x0 + (i + 0.5) * slotW;
+    var lx = cx - labelW / 2;
     // Rounded box background
     out.push(`<rect x="${lx.toFixed(2)}" y="${y0}" width="${labelW.toFixed(2)}" height="${boxH}" rx="10" ry="10" fill="${bg}" stroke="${border}" stroke-width="1"/>`);
     // Down arrow icon (left)
-    const arrX = lx + 18;
-    const arrY = y0 + boxH / 2;
+    var arrX = lx + 18;
+    var arrY = y0 + boxH / 2;
     out.push(`<path d="M ${arrX-6},${arrY-11} L ${arrX+6},${arrY-11} L ${arrX+6},${arrY-1} L ${arrX+11},${arrY-1} L ${arrX},${arrY+12} L ${arrX-11},${arrY-1} L ${arrX-6},${arrY-1} Z" fill="${arrColor}"/>`);
     // Left column: "Drop off" + "-Xnum명"
     out.push(`<text x="${(lx + 36).toFixed(2)}" y="${(y0 + 22).toFixed(2)}" font-size="13" font-weight="700" fill="${labelColor}">Drop off</text>`);
@@ -1766,31 +1762,31 @@ function drawDropOffBoxes(out, drops, x0, y0, totalW, boxH, opts) {
   // drops: [{ count, ratePct }, ...] one per gap (N-1)
   // Each box sits in the middle of its corresponding gap region
   // We position boxes evenly between stage centers
-  const N = drops.length + 1; // total stages
-  const slotW = totalW / N;
-  const arrowDown = opts && opts.arrowDown !== false; // arrow direction
-  for (let i = 0; i < drops.length; i++) {
-    const d = drops[i];
-    const isHigh = i < 2; // first 2 = pink highlighted
-    const bg = isHigh ? COLORS.pinkBoxBg : COLORS.greyBoxBg;
-    const border = isHigh ? COLORS.pinkBoxBorder : COLORS.greyBoxBorder;
-    const textColor = isHigh ? COLORS.pinkBoxText : COLORS.greyBoxText;
-    const arrColor = isHigh ? COLORS.pinkArrow : COLORS.greyArrow;
+  var N = drops.length + 1; // total stages
+  var slotW = totalW / N;
+  var arrowDown = opts && opts.arrowDown !== false; // arrow direction
+  for (var i = 0; i < drops.length; i++) {
+    var d = drops[i];
+    var isHigh = i < 2; // first 2 = pink highlighted
+    var bg = isHigh ? COLORS.pinkBoxBg : COLORS.greyBoxBg;
+    var border = isHigh ? COLORS.pinkBoxBorder : COLORS.greyBoxBorder;
+    var textColor = isHigh ? COLORS.pinkBoxText : COLORS.greyBoxText;
+    var arrColor = isHigh ? COLORS.pinkArrow : COLORS.greyArrow;
     // Center between stage i and i+1
-    const cx = x0 + (i + 1) * slotW;
-    const boxW = Math.min(slotW * 0.9, 280);
-    const boxX = cx - boxW / 2;
+    var cx = x0 + (i + 1) * slotW;
+    var boxW = Math.min(slotW * 0.9, 280);
+    var boxX = cx - boxW / 2;
     out.push(`<rect x="${boxX.toFixed(2)}" y="${y0}" width="${boxW.toFixed(2)}" height="${boxH}" rx="10" ry="10" fill="${bg}" stroke="${border}" stroke-width="1"/>`);
     // Down arrow icon (left side)
-    const arrX = boxX + 22;
-    const arrY = y0 + boxH / 2;
+    var arrX = boxX + 22;
+    var arrY = y0 + boxH / 2;
     if (arrowDown) {
       out.push(`<path d="M ${arrX-7},${arrY-8} L ${arrX+7},${arrY-8} L ${arrX+7},${arrY+2} L ${arrX+12},${arrY+2} L ${arrX},${arrY+12} L ${arrX-12},${arrY+2} L ${arrX-7},${arrY+2} Z" fill="${arrColor}"/>`);
     } else {
       out.push(`<path d="M ${arrX-7},${arrY+8} L ${arrX+7},${arrY+8} L ${arrX+7},${arrY-2} L ${arrX+12},${arrY-2} L ${arrX},${arrY-12} L ${arrX-12},${arrY-2} L ${arrX-7},${arrY-2} Z" fill="${arrColor}"/>`);
     }
     // Drop-off label + count + percent (laid out in a row inside the box)
-    const innerX = boxX + 50;
+    var innerX = boxX + 50;
     out.push(`<text x="${innerX}" y="${(y0 + boxH/2 - 4).toFixed(2)}" font-size="13" font-weight="700" fill="${textColor}">Drop off</text>`);
     out.push(`<text x="${innerX}" y="${(y0 + boxH/2 + 14).toFixed(2)}" font-size="13" fill="${textColor}">−${fmtNum(d.count)}명</text>`);
     out.push(`<text x="${(boxX + boxW - 18).toFixed(2)}" y="${(y0 + boxH/2 + 9).toFixed(2)}" text-anchor="end" font-size="22" font-weight="800" fill="#1F2937">${d.ratePct.toFixed(1)}%</text>`);
@@ -1801,29 +1797,29 @@ function drawDropOffBoxes(out, drops, x0, y0, totalW, boxH, opts) {
 // SVG renderer — Combined funnel chart (single pink area)
 // ============================================================
 function renderSVG_combined(data) {
-  const stages = data.stages;
+  var stages = data.stages;
   if (!stages || stages.length === 0) {
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 400" width="1600" height="400"><rect width="1600" height="400" fill="#ffffff"/><text x="800" y="200" text-anchor="middle" font-size="18" fill="#9ca3af">데이터가 없습니다</text></svg>`;
   }
-  const W = 1700, H = 700;
-  const padX = 80;
-  const arrowsY = 0, arrowsH = 60;
-  const dropTopY = arrowsY + arrowsH + 16;
-  const dropTopH = 50;
-  const plotTop = dropTopY + dropTopH + 30;
-  const plotBottom = H - 60;
-  const plotH = plotBottom - plotTop;
-  const totalW = W - padX * 2;
-  const N = stages.length;
+  var W = 1700, H = 700;
+  var padX = 80;
+  var arrowsY = 0, arrowsH = 60;
+  var dropTopY = arrowsY + arrowsH + 16;
+  var dropTopH = 50;
+  var plotTop = dropTopY + dropTopH + 30;
+  var plotBottom = H - 60;
+  var plotH = plotBottom - plotTop;
+  var totalW = W - padX * 2;
+  var N = stages.length;
 
-  const baseTotal = stages[0].total;
-  const yPercents = stages.map(s => pct(s.total, baseTotal));
+  var baseTotal = stages[0].total;
+  var yPercents = stages.map(s => pct(s.total, baseTotal));
   // Markers placed at boundaries between stage arrows (i * slotW), so the
   // value sits "between stages". Last marker sits at left edge of final arrow.
-  const xCenter = i => padX + i * (totalW / N);
-  const ys = p => plotBottom - (p / 100) * plotH;
+  var xCenter = i => padX + i * (totalW / N);
+  var ys = p => plotBottom - (p / 100) * plotH;
 
-  const out = [];
+  var out = [];
   out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif">`);
   // Gradient defs
   out.push(`<defs>`);
@@ -1835,39 +1831,39 @@ function renderSVG_combined(data) {
   drawStageArrows(out, stages, padX, arrowsY, totalW, arrowsH);
 
   // Inline drop-offs between stages (combined)
-  const combinedDrops = [];
-  for (let i = 0; i < N - 1; i++) {
-    const drop = stages[i].total - stages[i + 1].total;
-    const ratePct = pct(drop, stages[i].total);
+  var combinedDrops = [];
+  for (var i = 0; i < N - 1; i++) {
+    var drop = stages[i].total - stages[i + 1].total;
+    var ratePct = pct(drop, stages[i].total);
     combinedDrops.push({ count: drop, ratePct, passPct: 100 - ratePct });
   }
   drawDropOffInline(out, combinedDrops, padX, dropTopY, totalW);
 
   // Y axis (0%, 25%, 50%, 75%, 100%)
-  for (const p of [0, 25, 50, 75, 100]) {
-    const y = ys(p);
+  for (var p of [0, 25, 50, 75, 100]) {
+    var y = ys(p);
     out.push(`<line x1="${padX}" y1="${y.toFixed(2)}" x2="${padX + totalW}" y2="${y.toFixed(2)}" stroke="${COLORS.axisGrid}" stroke-width="1"/>`);
     out.push(`<text x="${padX - 12}" y="${(y + 4).toFixed(2)}" text-anchor="end" font-size="12" fill="${COLORS.axisLabel}">${p}%</text>`);
   }
 
   // Area path: from (xCenter(0), baselineY) → curve through stage points → (xCenter(N-1), baselineY) → close
-  const baselineY = ys(0);
-  const points = stages.map((s, i) => [xCenter(i), ys(yPercents[i])]);
-  const areaD = `M ${xCenter(0).toFixed(2)},${baselineY.toFixed(2)} L ${xCenter(0).toFixed(2)},${ys(yPercents[0]).toFixed(2)} ` +
+  var baselineY = ys(0);
+  var points = stages.map((s, i) => [xCenter(i), ys(yPercents[i])]);
+  var areaD = `M ${xCenter(0).toFixed(2)},${baselineY.toFixed(2)} L ${xCenter(0).toFixed(2)},${ys(yPercents[0]).toFixed(2)} ` +
                 smoothPath(points).replace(/^M [^ ]+ /, "") +
                 ` L ${xCenter(N-1).toFixed(2)},${baselineY.toFixed(2)} Z`;
   out.push(`<path d="${areaD}" fill="url(#grad-pink)"/>`);
   out.push(`<path d="${smoothPath(points)}" fill="none" stroke="${COLORS.pinkLine}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`);
   // Extend the line horizontally from last marker to the right edge
   {
-    const lastX = xCenter(N - 1);
-    const lastY = ys(yPercents[N - 1]);
+    var lastX = xCenter(N - 1);
+    var lastY = ys(yPercents[N - 1]);
     out.push(`<line x1="${lastX.toFixed(2)}" y1="${lastY.toFixed(2)}" x2="${(padX + totalW).toFixed(2)}" y2="${lastY.toFixed(2)}" stroke="${COLORS.pinkLine}" stroke-width="2.5" stroke-linecap="round"/>`);
   }
 
   // Stage markers + labels
-  for (let i = 0; i < N; i++) {
-    const cx = xCenter(i), cy = ys(yPercents[i]);
+  for (var i = 0; i < N; i++) {
+    var cx = xCenter(i), cy = ys(yPercents[i]);
     out.push(`<circle cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="6" fill="#FFFFFF" stroke="${COLORS.pinkLine}" stroke-width="2.5"/>`);
     if (i > 0) {
       // Show % label next to the marker
@@ -1884,36 +1880,36 @@ function renderSVG_combined(data) {
 // SVG renderer — PC vs MO mirror chart
 // ============================================================
 function renderSVG_pcmo(data) {
-  const stages = data.stages;
+  var stages = data.stages;
   if (!stages || stages.length === 0) {
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 400" width="1600" height="400"><rect width="1600" height="400" fill="#ffffff"/><text x="800" y="200" text-anchor="middle" font-size="18" fill="#9ca3af">데이터가 없습니다</text></svg>`;
   }
-  const W = 1700, H = 980;
-  const padX = 80;
-  const arrowsY = 0, arrowsH = 60;
-  const dropTopY = arrowsY + arrowsH + 16;
-  const dropTopH = 50;
-  const plotTop = dropTopY + dropTopH + 30;
-  const halfH = 240;
-  const midY = plotTop + halfH; // baseline (0% line)
-  const plotBottom = midY + halfH;
-  const dropBotY = plotBottom + 28;
-  const dropBotH = 50;
-  const totalW = W - padX * 2;
-  const N = stages.length;
+  var W = 1700, H = 980;
+  var padX = 80;
+  var arrowsY = 0, arrowsH = 60;
+  var dropTopY = arrowsY + arrowsH + 16;
+  var dropTopH = 50;
+  var plotTop = dropTopY + dropTopH + 30;
+  var halfH = 240;
+  var midY = plotTop + halfH; // baseline (0% line)
+  var plotBottom = midY + halfH;
+  var dropBotY = plotBottom + 28;
+  var dropBotH = 50;
+  var totalW = W - padX * 2;
+  var N = stages.length;
 
-  const pcBase = stages[0].pc;
-  const moBase = stages[0].mo;
-  const pcPct = stages.map(s => pct(s.pc, pcBase));
-  const moPct = stages.map(s => pct(s.mo, moBase));
+  var pcBase = stages[0].pc;
+  var moBase = stages[0].mo;
+  var pcPct = stages.map(s => pct(s.pc, pcBase));
+  var moPct = stages.map(s => pct(s.mo, moBase));
 
   // Markers placed at boundaries between stage arrows (i * slotW), so the
   // value sits "between stages". Last marker sits at left edge of final arrow.
-  const xCenter = i => padX + i * (totalW / N);
-  const ysPC = p => midY - (p / 100) * halfH;       // up from baseline
-  const ysMO = p => midY + (p / 100) * halfH;       // down from baseline
+  var xCenter = i => padX + i * (totalW / N);
+  var ysPC = p => midY - (p / 100) * halfH;       // up from baseline
+  var ysMO = p => midY + (p / 100) * halfH;       // down from baseline
 
-  const out = [];
+  var out = [];
   out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif">`);
   // Gradient defs (PC area: dark at top → transparent at baseline; MO area: transparent at baseline → dark at bottom)
   out.push(`<defs>`);
@@ -1926,23 +1922,23 @@ function renderSVG_pcmo(data) {
   drawStageArrows(out, stages, padX, arrowsY, totalW, arrowsH);
 
   // Top inline drop-off labels — PC drops between stages
-  const pcDrops = [];
-  for (let i = 0; i < N - 1; i++) {
-    const drop = stages[i].pc - stages[i + 1].pc;
-    const ratePct = pct(drop, stages[i].pc);
+  var pcDrops = [];
+  for (var i = 0; i < N - 1; i++) {
+    var drop = stages[i].pc - stages[i + 1].pc;
+    var ratePct = pct(drop, stages[i].pc);
     pcDrops.push({ count: drop, ratePct, passPct: 100 - ratePct });
   }
   drawDropOffInline(out, pcDrops, padX, dropTopY, totalW);
 
   // Y axis (left side) — PC top half
-  for (const p of [0, 25, 50, 75, 100]) {
-    const y = ysPC(p);
+  for (var p of [0, 25, 50, 75, 100]) {
+    var y = ysPC(p);
     out.push(`<line x1="${padX}" y1="${y.toFixed(2)}" x2="${padX + totalW}" y2="${y.toFixed(2)}" stroke="${COLORS.axisGrid}" stroke-width="1"/>`);
     out.push(`<text x="${padX - 12}" y="${(y + 4).toFixed(2)}" text-anchor="end" font-size="11" fill="${COLORS.axisLabel}">${p}%</text>`);
   }
   // Y axis MO bottom half
-  for (const p of [25, 50, 75, 100]) {
-    const y = ysMO(p);
+  for (var p of [25, 50, 75, 100]) {
+    var y = ysMO(p);
     out.push(`<line x1="${padX}" y1="${y.toFixed(2)}" x2="${padX + totalW}" y2="${y.toFixed(2)}" stroke="${COLORS.axisGrid}" stroke-width="1"/>`);
     out.push(`<text x="${padX - 12}" y="${(y + 4).toFixed(2)}" text-anchor="end" font-size="11" fill="${COLORS.axisLabel}">${p}%</text>`);
   }
@@ -1950,30 +1946,30 @@ function renderSVG_pcmo(data) {
   out.push(`<line x1="${padX}" y1="${midY.toFixed(2)}" x2="${padX + totalW}" y2="${midY.toFixed(2)}" stroke="${COLORS.baseline}" stroke-width="1.2"/>`);
 
   // PC area + line
-  const pcPoints = stages.map((s, i) => [xCenter(i), ysPC(pcPct[i])]);
-  const pcAreaD = `M ${xCenter(0).toFixed(2)},${midY.toFixed(2)} L ${xCenter(0).toFixed(2)},${ysPC(pcPct[0]).toFixed(2)} ` +
+  var pcPoints = stages.map((s, i) => [xCenter(i), ysPC(pcPct[i])]);
+  var pcAreaD = `M ${xCenter(0).toFixed(2)},${midY.toFixed(2)} L ${xCenter(0).toFixed(2)},${ysPC(pcPct[0]).toFixed(2)} ` +
                   smoothPath(pcPoints).replace(/^M [^ ]+ /, "") +
                   ` L ${xCenter(N-1).toFixed(2)},${midY.toFixed(2)} Z`;
   out.push(`<path d="${pcAreaD}" fill="url(#grad-pc)"/>`);
   out.push(`<path d="${smoothPath(pcPoints)}" fill="none" stroke="${COLORS.pcLine}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`);
   // PC line extension to the right edge
   {
-    const lastX = xCenter(N - 1);
-    const lastY = ysPC(pcPct[N - 1]);
+    var lastX = xCenter(N - 1);
+    var lastY = ysPC(pcPct[N - 1]);
     out.push(`<line x1="${lastX.toFixed(2)}" y1="${lastY.toFixed(2)}" x2="${(padX + totalW).toFixed(2)}" y2="${lastY.toFixed(2)}" stroke="${COLORS.pcLine}" stroke-width="2.5" stroke-linecap="round"/>`);
   }
 
   // MO area + line (mirror downward)
-  const moPoints = stages.map((s, i) => [xCenter(i), ysMO(moPct[i])]);
-  const moAreaD = `M ${xCenter(0).toFixed(2)},${midY.toFixed(2)} L ${xCenter(0).toFixed(2)},${ysMO(moPct[0]).toFixed(2)} ` +
+  var moPoints = stages.map((s, i) => [xCenter(i), ysMO(moPct[i])]);
+  var moAreaD = `M ${xCenter(0).toFixed(2)},${midY.toFixed(2)} L ${xCenter(0).toFixed(2)},${ysMO(moPct[0]).toFixed(2)} ` +
                   smoothPath(moPoints).replace(/^M [^ ]+ /, "") +
                   ` L ${xCenter(N-1).toFixed(2)},${midY.toFixed(2)} Z`;
   out.push(`<path d="${moAreaD}" fill="url(#grad-mo)"/>`);
   out.push(`<path d="${smoothPath(moPoints)}" fill="none" stroke="${COLORS.moLine}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`);
   // MO line extension to the right edge
   {
-    const lastX = xCenter(N - 1);
-    const lastY = ysMO(moPct[N - 1]);
+    var lastX = xCenter(N - 1);
+    var lastY = ysMO(moPct[N - 1]);
     out.push(`<line x1="${lastX.toFixed(2)}" y1="${lastY.toFixed(2)}" x2="${(padX + totalW).toFixed(2)}" y2="${lastY.toFixed(2)}" stroke="${COLORS.moLine}" stroke-width="2.5" stroke-linecap="round"/>`);
   }
 
@@ -1982,8 +1978,8 @@ function renderSVG_pcmo(data) {
   out.push(`<text x="${padX + 18}" y="${(plotBottom - 16).toFixed(2)}" font-size="56" font-weight="800" fill="${COLORS.moLine}" opacity="0.35">MO</text>`);
 
   // PC stage markers + labels (above each marker)
-  for (let i = 0; i < N; i++) {
-    const cx = xCenter(i), cy = ysPC(pcPct[i]);
+  for (var i = 0; i < N; i++) {
+    var cx = xCenter(i), cy = ysPC(pcPct[i]);
     out.push(`<circle cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="5.5" fill="#FFFFFF" stroke="${COLORS.pcLine}" stroke-width="2.5"/>`);
     if (i > 0) {
       out.push(`<text x="${cx.toFixed(2)}" y="${(cy - 22).toFixed(2)}" text-anchor="middle" font-size="16" font-weight="700" fill="${COLORS.pcLabel}">${pcPct[i].toFixed(2)}%</text>`);
@@ -1991,8 +1987,8 @@ function renderSVG_pcmo(data) {
     }
   }
   // MO stage markers + labels (below each marker)
-  for (let i = 0; i < N; i++) {
-    const cx = xCenter(i), cy = ysMO(moPct[i]);
+  for (var i = 0; i < N; i++) {
+    var cx = xCenter(i), cy = ysMO(moPct[i]);
     out.push(`<circle cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="5.5" fill="#FFFFFF" stroke="${COLORS.moLine}" stroke-width="2.5"/>`);
     if (i > 0) {
       out.push(`<text x="${cx.toFixed(2)}" y="${(cy + 18).toFixed(2)}" text-anchor="middle" font-size="16" font-weight="700" fill="${COLORS.moLabel}">${moPct[i].toFixed(2)}%</text>`);
@@ -2001,10 +1997,10 @@ function renderSVG_pcmo(data) {
   }
 
   // Bottom inline drop-off labels — MO drops between stages
-  const moDrops = [];
-  for (let i = 0; i < N - 1; i++) {
-    const drop = stages[i].mo - stages[i + 1].mo;
-    const ratePct = pct(drop, stages[i].mo);
+  var moDrops = [];
+  for (var i = 0; i < N - 1; i++) {
+    var drop = stages[i].mo - stages[i + 1].mo;
+    var ratePct = pct(drop, stages[i].mo);
     moDrops.push({ count: drop, ratePct, passPct: 100 - ratePct });
   }
   drawDropOffInline(out, moDrops, padX, dropBotY, totalW);
@@ -2022,17 +2018,17 @@ function renderSVG(data, opts) {
 // ============================================================
 // UI wiring
 // ============================================================
-let currentData = SEED;
+var currentData = SEED;
 
-const $chart = document.getElementById("st-chart");
-const $tsv = document.getElementById("st-tsv");
-const $apply = document.getElementById("st-apply");
-const $reset = document.getElementById("st-reset");
-const $download = document.getElementById("st-download");
-const $chartType = document.getElementById("st-chartType");
-const $status = document.getElementById("st-status");
-const $xlsx = document.getElementById("st-xlsxInput");
-const $filename = document.getElementById("st-filename");
+var $chart = document.getElementById("st-chart");
+var $tsv = document.getElementById("st-tsv");
+var $apply = document.getElementById("st-apply");
+var $reset = document.getElementById("st-reset");
+var $download = document.getElementById("st-download");
+var $chartType = document.getElementById("st-chartType");
+var $status = document.getElementById("st-status");
+var $xlsx = document.getElementById("st-xlsxInput");
+var $filename = document.getElementById("st-filename");
 
 function currentOpts() { return { chartType: $chartType.value }; }
 function rerender() { $chart.innerHTML = renderSVG(currentData, currentOpts()); }
@@ -2046,8 +2042,8 @@ rerender();
 setStatus(`현재 ${currentData.stages.length}단계 표시 중 (시드 데이터)`);
 
 $apply.addEventListener("click", () => {
-  const rows = parseTSVToRows($tsv.value);
-  const data = rowsToStageData(rows);
+  var rows = parseTSVToRows($tsv.value);
+  var data = rowsToStageData(rows);
   if (!data.stages.length) {
     setStatus("파싱 실패: 5단계 + PC/MO 디바이스가 분리된 데이터인지 확인하세요.", "err");
     return;
@@ -2067,20 +2063,20 @@ $reset.addEventListener("click", () => {
 $chartType.addEventListener("change", rerender);
 
 $xlsx.addEventListener("change", async (e) => {
-  const file = e.target.files && e.target.files[0];
+  var file = e.target.files && e.target.files[0];
   if (!file) return;
   $filename.textContent = file.name;
   setStatus(`엑셀 파싱 중: ${file.name}…`);
   try {
-    const buf = await file.arrayBuffer();
-    const u8 = new Uint8Array(buf);
-    const files = await unzipXlsx(u8);
-    const wb = parseXlsxWorkbook(files);
+    var buf = await file.arrayBuffer();
+    var u8 = new Uint8Array(buf);
+    var files = await unzipXlsx(u8);
+    var wb = parseXlsxWorkbook(files);
     if (!wb.sheets.length) throw new Error("시트를 찾을 수 없습니다");
-    let chosen = null, data = { stages: [] };
-    for (const s of wb.sheets) {
-      const rows = wb.readSheet(s.name) || [];
-      const d = rowsToStageData(rows);
+    var chosen = null, data = { stages: [] };
+    for (var s of wb.sheets) {
+      var rows = wb.readSheet(s.name) || [];
+      var d = rowsToStageData(rows);
       if (d.stages.length > 0) { chosen = s; data = d; break; }
     }
     if (!data.stages.length) throw new Error("5단계 + PC/MO 디바이스 분리된 데이터를 찾지 못했습니다");
@@ -2096,10 +2092,10 @@ $xlsx.addEventListener("change", async (e) => {
 });
 
 $download.addEventListener("click", () => {
-  const svg = renderSVG(currentData, currentOpts());
-  const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
+  var svg = renderSVG(currentData, currentOpts());
+  var blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
   a.href = url;
   a.download = $chartType.value === "pcmo"
     ? "funnel_dropoff_pc_vs_mobile.svg"
@@ -2110,13 +2106,17 @@ $download.addEventListener("click", () => {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
   setStatus("✓ SVG 다운로드 — Figma 캔버스에 드래그하세요");
 });
+  })();
+};
 </script>
 
-<script type="module">
+<script>
+window['__init_ty'] = function() {
+  (function() {
 // ============================================================
 // Seed data — from 유형 요약.xlsx
 // ============================================================
-const SEED = [
+var SEED = [
   { type: "너겟",       inflow: 198350, signups: 3450, signupStage: "가입신청완료" },
   { type: "모바일상시", inflow: 171573, signups: 369,  signupStage: "주문서접수완료" },
   { type: "아이폰",     inflow: 28099,  signups: 60,   signupStage: "주문서접수완료" },
@@ -2124,7 +2124,7 @@ const SEED = [
   { type: "단말별",     inflow: 229364, signups: 3132, signupStage: "주문서접수완료" }
 ].map(d => ({ ...d, rate: d.inflow > 0 ? d.signups / d.inflow * 100 : 0 }));
 
-const SEED_TSV = [
+var SEED_TSV = [
   "유형\t단계별\t4월",
   "너겟\t유입\t198350",
   "\t가입신청완료\t3450",
@@ -2153,9 +2153,9 @@ function formatK(n) {
 
 function niceNumStep(rough) {
   // Choose a "nice" step value near `rough` (1, 2, 2.5, 5 × 10^k)
-  const e = Math.floor(Math.log10(rough));
-  const m = rough / Math.pow(10, e);
-  let nm;
+  var e = Math.floor(Math.log10(rough));
+  var m = rough / Math.pow(10, e);
+  var nm;
   if (m < 1.5) nm = 1;
   else if (m < 3) nm = 2;
   else if (m < 7) nm = 5;
@@ -2163,8 +2163,8 @@ function niceNumStep(rough) {
   return nm * Math.pow(10, e);
 }
 
-const ENTRY_RE = /^(유입|시작|진입|방문|사용자|세션)/;
-const EXIT_RE  = /(가입|완료|접수|구매|결제|전환|등록|신청)/;
+var ENTRY_RE = /^(유입|시작|진입|방문|사용자|세션)/;
+var EXIT_RE  = /(가입|완료|접수|구매|결제|전환|등록|신청)/;
 
 // ============================================================
 // Type-summary data parser
@@ -2174,13 +2174,13 @@ const EXIT_RE  = /(가입|완료|접수|구매|결제|전환|등록|신청)/;
 // ============================================================
 function parseTypeSummary(rows) {
   // Find the header row
-  let headerRow = -1;
-  for (let r = 0; r < rows.length; r++) {
-    const row = rows[r] || [];
-    let hasType = false, hasStage = false;
-    for (const cell of row) {
+  var headerRow = -1;
+  for (var r = 0; r < rows.length; r++) {
+    var row = rows[r] || [];
+    var hasType = false, hasStage = false;
+    for (var cell of row) {
       if (typeof cell !== "string") continue;
-      const t = cell.trim();
+      var t = cell.trim();
       if (/^유형$/.test(t) || /^구분$/.test(t) || /^캠페인$/.test(t)) hasType = true;
       if (/단계별|항목|단계|구분|stage/i.test(t)) hasStage = true;
     }
@@ -2189,33 +2189,33 @@ function parseTypeSummary(rows) {
   if (headerRow < 0) return [];
 
   // Identify columns
-  const headers = rows[headerRow];
-  let typeCol = -1, stageCol = -1, valueCol = -1;
-  for (let c = 0; c < headers.length; c++) {
-    const h = headers[c];
+  var headers = rows[headerRow];
+  var typeCol = -1, stageCol = -1, valueCol = -1;
+  for (var c = 0; c < headers.length; c++) {
+    var h = headers[c];
     if (typeof h !== "string") continue;
-    const t = h.trim();
+    var t = h.trim();
     if (typeCol < 0 && (/^유형$/.test(t) || /^구분$/.test(t) || /^캠페인$/.test(t))) typeCol = c;
     else if (stageCol < 0 && /단계|항목|stage/i.test(t)) stageCol = c;
   }
   if (typeCol < 0 || stageCol < 0) return [];
   // Find a numeric column to the right of stage
-  for (let r = headerRow + 1; r < rows.length && valueCol < 0; r++) {
-    const row = rows[r] || [];
-    for (let c = stageCol + 1; c < row.length; c++) {
+  for (var r = headerRow + 1; r < rows.length && valueCol < 0; r++) {
+    var row = rows[r] || [];
+    for (var c = stageCol + 1; c < row.length; c++) {
       if (typeof row[c] === "number" && isFinite(row[c])) { valueCol = c; break; }
     }
   }
   if (valueCol < 0) return [];
 
   // Walk rows, grouping by type
-  const out = [];
-  let cur = null;
-  for (let r = headerRow + 1; r < rows.length; r++) {
-    const row = rows[r] || [];
-    const tRaw = row[typeCol];
-    const stage = row[stageCol];
-    const val = row[valueCol];
+  var out = [];
+  var cur = null;
+  for (var r = headerRow + 1; r < rows.length; r++) {
+    var row = rows[r] || [];
+    var tRaw = row[typeCol];
+    var stage = row[stageCol];
+    var val = row[valueCol];
 
     if (typeof tRaw === "string" && tRaw.trim()) {
       if (cur) out.push(cur);
@@ -2224,7 +2224,7 @@ function parseTypeSummary(rows) {
     if (!cur) continue;
     if (typeof val !== "number" || !isFinite(val)) continue;
     if (typeof stage !== "string") continue;
-    const st = stage.trim();
+    var st = stage.trim();
     if (!st) continue;
     if (ENTRY_RE.test(st)) cur.inflow = val;
     else if (EXIT_RE.test(st)) {
@@ -2249,37 +2249,37 @@ function parseTypeSummary(rows) {
 // Minimal .xlsx reader (DecompressionStream + DOMParser)
 // ============================================================
 async function unzipXlsx(u8) {
-  const dv = new DataView(u8.buffer, u8.byteOffset, u8.byteLength);
-  const eocdSig = 0x06054b50;
-  let eocd = -1;
-  const scanFrom = Math.max(0, u8.length - 65557);
-  for (let i = u8.length - 22; i >= scanFrom; i--) {
+  var dv = new DataView(u8.buffer, u8.byteOffset, u8.byteLength);
+  var eocdSig = 0x06054b50;
+  var eocd = -1;
+  var scanFrom = Math.max(0, u8.length - 65557);
+  for (var i = u8.length - 22; i >= scanFrom; i--) {
     if (dv.getUint32(i, true) === eocdSig) { eocd = i; break; }
   }
   if (eocd < 0) throw new Error("올바른 .xlsx 파일이 아닙니다");
-  const cdOffset = dv.getUint32(eocd + 16, true);
-  const numEntries = dv.getUint16(eocd + 10, true);
-  const files = {};
-  let p = cdOffset;
-  for (let i = 0; i < numEntries; i++) {
+  var cdOffset = dv.getUint32(eocd + 16, true);
+  var numEntries = dv.getUint16(eocd + 10, true);
+  var files = {};
+  var p = cdOffset;
+  for (var i = 0; i < numEntries; i++) {
     if (dv.getUint32(p, true) !== 0x02014b50) break;
-    const compMethod = dv.getUint16(p + 10, true);
-    const compSize = dv.getUint32(p + 20, true);
-    const nameLen = dv.getUint16(p + 28, true);
-    const extraLen = dv.getUint16(p + 30, true);
-    const commentLen = dv.getUint16(p + 32, true);
-    const lho = dv.getUint32(p + 42, true);
-    const name = new TextDecoder("utf-8").decode(u8.subarray(p + 46, p + 46 + nameLen));
+    var compMethod = dv.getUint16(p + 10, true);
+    var compSize = dv.getUint32(p + 20, true);
+    var nameLen = dv.getUint16(p + 28, true);
+    var extraLen = dv.getUint16(p + 30, true);
+    var commentLen = dv.getUint16(p + 32, true);
+    var lho = dv.getUint32(p + 42, true);
+    var name = new TextDecoder("utf-8").decode(u8.subarray(p + 46, p + 46 + nameLen));
     p += 46 + nameLen + extraLen + commentLen;
     if (dv.getUint32(lho, true) !== 0x04034b50) continue;
-    const lNameLen = dv.getUint16(lho + 26, true);
-    const lExtraLen = dv.getUint16(lho + 28, true);
-    const dataStart = lho + 30 + lNameLen + lExtraLen;
-    const compData = u8.subarray(dataStart, dataStart + compSize);
-    let bytes;
+    var lNameLen = dv.getUint16(lho + 26, true);
+    var lExtraLen = dv.getUint16(lho + 28, true);
+    var dataStart = lho + 30 + lNameLen + lExtraLen;
+    var compData = u8.subarray(dataStart, dataStart + compSize);
+    var bytes;
     if (compMethod === 0) bytes = compData;
     else if (compMethod === 8) {
-      const stream = new Blob([compData]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+      var stream = new Blob([compData]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
       bytes = new Uint8Array(await new Response(stream).arrayBuffer());
     } else throw new Error("지원하지 않는 압축: " + compMethod);
     files[name] = bytes;
@@ -2288,65 +2288,65 @@ async function unzipXlsx(u8) {
 }
 
 function parseXlsxWorkbook(files) {
-  const decoder = new TextDecoder("utf-8");
-  const text = name => files[name] ? decoder.decode(files[name]) : null;
-  const sharedStrings = [];
+  var decoder = new TextDecoder("utf-8");
+  var text = name => files[name] ? decoder.decode(files[name]) : null;
+  var sharedStrings = [];
   if (files["xl/sharedStrings.xml"]) {
-    const doc = new DOMParser().parseFromString(text("xl/sharedStrings.xml"), "text/xml");
-    for (const si of doc.getElementsByTagName("si")) {
-      let str = "";
-      for (const t of si.getElementsByTagName("t")) str += t.textContent || "";
+    var doc = new DOMParser().parseFromString(text("xl/sharedStrings.xml"), "text/xml");
+    for (var si of doc.getElementsByTagName("si")) {
+      var str = "";
+      for (var t of si.getElementsByTagName("t")) str += t.textContent || "";
       sharedStrings.push(str);
     }
   }
-  const rid2target = {};
+  var rid2target = {};
   if (files["xl/_rels/workbook.xml.rels"]) {
-    const rdoc = new DOMParser().parseFromString(text("xl/_rels/workbook.xml.rels"), "text/xml");
-    for (const r of rdoc.getElementsByTagName("Relationship")) {
+    var rdoc = new DOMParser().parseFromString(text("xl/_rels/workbook.xml.rels"), "text/xml");
+    for (var r of rdoc.getElementsByTagName("Relationship")) {
       rid2target[r.getAttribute("Id")] = r.getAttribute("Target");
     }
   }
-  const sheets = [];
+  var sheets = [];
   if (files["xl/workbook.xml"]) {
-    const wdoc = new DOMParser().parseFromString(text("xl/workbook.xml"), "text/xml");
-    for (const s of wdoc.getElementsByTagName("sheet")) {
-      const name = s.getAttribute("name");
-      let rid = s.getAttribute("r:id");
+    var wdoc = new DOMParser().parseFromString(text("xl/workbook.xml"), "text/xml");
+    for (var s of wdoc.getElementsByTagName("sheet")) {
+      var name = s.getAttribute("name");
+      var rid = s.getAttribute("r:id");
       if (!rid) {
-        for (let i = 0; i < s.attributes.length; i++) {
+        for (var i = 0; i < s.attributes.length; i++) {
           if (s.attributes[i].localName === "id") { rid = s.attributes[i].value; break; }
         }
       }
-      const target = rid2target[rid];
+      var target = rid2target[rid];
       if (!target) continue;
       sheets.push({ name, file: target.startsWith("/") ? target.slice(1) : "xl/" + target });
     }
   }
   function colRefToIdx(ref) {
-    let n = 0;
-    for (const c of ref) n = n * 26 + (c.charCodeAt(0) - 64);
+    var n = 0;
+    for (var c of ref) n = n * 26 + (c.charCodeAt(0) - 64);
     return n - 1;
   }
   function readSheet(name) {
-    const sheet = sheets.find(s => s.name === name);
+    var sheet = sheets.find(s => s.name === name);
     if (!sheet) return null;
-    const xml = text(sheet.file);
+    var xml = text(sheet.file);
     if (!xml) return null;
-    const doc = new DOMParser().parseFromString(xml, "text/xml");
-    const result = [];
-    for (const row of doc.getElementsByTagName("row")) {
-      const rIdx = parseInt(row.getAttribute("r"), 10) - 1;
+    var doc = new DOMParser().parseFromString(xml, "text/xml");
+    var result = [];
+    for (var row of doc.getElementsByTagName("row")) {
+      var rIdx = parseInt(row.getAttribute("r"), 10) - 1;
       while (result.length <= rIdx) result.push([]);
-      const arr = result[rIdx];
-      for (const cell of row.getElementsByTagName("c")) {
-        const ref = cell.getAttribute("r");
-        const m = ref ? ref.match(/^[A-Z]+/) : null;
+      var arr = result[rIdx];
+      for (var cell of row.getElementsByTagName("c")) {
+        var ref = cell.getAttribute("r");
+        var m = ref ? ref.match(/^[A-Z]+/) : null;
         if (!m) continue;
-        const ci = colRefToIdx(m[0]);
-        const t = cell.getAttribute("t");
-        const vEl = cell.getElementsByTagName("v")[0];
-        const isEl = cell.getElementsByTagName("is")[0];
-        let val;
+        var ci = colRefToIdx(m[0]);
+        var t = cell.getAttribute("t");
+        var vEl = cell.getElementsByTagName("v")[0];
+        var isEl = cell.getElementsByTagName("is")[0];
+        var val;
         if (t === "s" && vEl) val = sharedStrings[parseInt(vEl.textContent, 10)];
         else if (t === "inlineStr" && isEl) val = isEl.textContent.trim();
         else if (t === "str" && vEl) val = vEl.textContent;
@@ -2365,18 +2365,18 @@ function parseXlsxWorkbook(files) {
 // TSV → 2D rows
 // ============================================================
 function parseTSVToRows(text) {
-  const cleaned = String(text).replace(/ /g, " ");
-  const lines = cleaned.split(/\r?\n/);
-  const rows = [];
-  for (const raw of lines) {
+  var cleaned = String(text).replace(/ /g, " ");
+  var lines = cleaned.split(/\r?\n/);
+  var rows = [];
+  for (var raw of lines) {
     if (raw.trim() === "") { rows.push([]); continue; }
-    let cols;
+    var cols;
     if (raw.includes("\t")) cols = raw.split("\t");
     else cols = raw.split(/,(?![^"]*"\s*$)/);
-    const parsed = cols.map(c => {
-      const t = String(c == null ? "" : c).trim().replace(/^"|"$/g, "");
+    var parsed = cols.map(c => {
+      var t = String(c == null ? "" : c).trim().replace(/^"|"$/g, "");
       if (t === "" || t === "-" || t === "–" || t === "N/A") return null;
-      const numStr = t.replace(/,/g, "").replace(/%$/, "");
+      var numStr = t.replace(/,/g, "").replace(/%$/, "");
       if (/^-?\d+(\.\d+)?$/.test(numStr)) return parseFloat(numStr);
       return t;
     });
@@ -2390,8 +2390,8 @@ function parseTSVToRows(text) {
 // ============================================================
 function niceLogHigh(v) {
   if (v <= 0) return 10;
-  const e = Math.floor(Math.log10(v));
-  const m = v / Math.pow(10, e);
+  var e = Math.floor(Math.log10(v));
+  var m = v / Math.pow(10, e);
   if (m <= 1) return Math.pow(10, e);
   if (m <= 2) return 2 * Math.pow(10, e);
   if (m <= 3) return 3 * Math.pow(10, e);
@@ -2399,10 +2399,10 @@ function niceLogHigh(v) {
   return Math.pow(10, e + 1);
 }
 function niceLogTicks(lo, hi) {
-  const ticks = [];
-  for (let e = Math.floor(Math.log10(lo)); e <= Math.ceil(Math.log10(hi)); e++) {
-    for (const m of [1, 3]) {
-      const v = m * Math.pow(10, e);
+  var ticks = [];
+  for (var e = Math.floor(Math.log10(lo)); e <= Math.ceil(Math.log10(hi)); e++) {
+    for (var m of [1, 3]) {
+      var v = m * Math.pow(10, e);
       if (v >= lo && v <= hi) ticks.push(v);
     }
   }
@@ -2417,27 +2417,27 @@ function niceLogTicks(lo, hi) {
 // ============================================================
 function renderSVG_matrix(data, opts) {
   opts = opts || {};
-  const isGray = (opts.palette || "grayscale") !== "default" || true; // matrix defaults to grayscale style
-  const W = 1400, H = 800;
-  const margin = { top: 130, right: 100, bottom: 90, left: 140 };
-  const plotW = W - margin.left - margin.right;
-  const plotH = H - margin.top - margin.bottom;
+  var isGray = (opts.palette || "grayscale") !== "default" || true; // matrix defaults to grayscale style
+  var W = 1400, H = 800;
+  var margin = { top: 130, right: 100, bottom: 90, left: 140 };
+  var plotW = W - margin.left - margin.right;
+  var plotH = H - margin.top - margin.bottom;
 
   if (!data || data.length === 0) {
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"><rect width="${W}" height="${H}" fill="#ffffff"/><text x="${W/2}" y="${H/2}" text-anchor="middle" font-size="18" fill="#9ca3af">데이터가 없습니다</text></svg>`;
   }
 
   // X domain (log)
-  const inflows = data.map(d => d.inflow);
-  const minIn = Math.min(...inflows), maxIn = Math.max(...inflows);
-  const xmin = Math.pow(10, Math.floor(Math.log10(minIn)));
-  const xmax = niceLogHigh(maxIn);
-  const xticks = niceLogTicks(xmin, xmax);
+  var inflows = data.map(d => d.inflow);
+  var minIn = Math.min(...inflows), maxIn = Math.max(...inflows);
+  var xmin = Math.pow(10, Math.floor(Math.log10(minIn)));
+  var xmax = niceLogHigh(maxIn);
+  var xticks = niceLogTicks(xmin, xmax);
 
   // Y domain (linear) — fine-grained for low rates
-  const rates = data.map(d => d.rate);
-  const maxRate = Math.max(...rates, 0.01);
-  let ystep;
+  var rates = data.map(d => d.rate);
+  var maxRate = Math.max(...rates, 0.01);
+  var ystep;
   if (maxRate <= 1) ystep = 0.2;
   else if (maxRate <= 2.5) ystep = 0.5;
   else if (maxRate <= 6) ystep = 1;
@@ -2445,27 +2445,27 @@ function renderSVG_matrix(data, opts) {
   else if (maxRate <= 25) ystep = 5;
   else if (maxRate <= 50) ystep = 10;
   else ystep = 20;
-  const ymaxLabel = Math.max(ystep, Math.ceil(maxRate / ystep) * ystep);
-  const ymax = Math.max(ymaxLabel + ystep * 0.5, maxRate * 1.2);
-  const yticks = [];
-  for (let i = 0; i <= ymaxLabel + 0.0001; i += ystep) yticks.push(+i.toFixed(3));
+  var ymaxLabel = Math.max(ystep, Math.ceil(maxRate / ystep) * ystep);
+  var ymax = Math.max(ymaxLabel + ystep * 0.5, maxRate * 1.2);
+  var yticks = [];
+  for (var i = 0; i <= ymaxLabel + 0.0001; i += ystep) yticks.push(+i.toFixed(3));
 
   // Scales
-  const xs = v => margin.left + (Math.log10(v) - Math.log10(xmin)) / (Math.log10(xmax) - Math.log10(xmin)) * plotW;
-  const ys = v => margin.top + (1 - v / ymax) * plotH;
+  var xs = v => margin.left + (Math.log10(v) - Math.log10(xmin)) / (Math.log10(xmax) - Math.log10(xmin)) * plotW;
+  var ys = v => margin.top + (1 - v / ymax) * plotH;
 
-  const maxSig = Math.max(...data.map(d => d.signups), 1);
-  const rs = v => 18 + Math.sqrt(v / maxSig) * 75;
+  var maxSig = Math.max(...data.map(d => d.signups), 1);
+  var rs = v => 18 + Math.sqrt(v / maxSig) * 75;
 
   // Color (grayscale, single tone)
-  const C = {
+  var C = {
     fill: "rgba(180,180,180,0.30)",
     stroke: "#9CA3AF",
     dot: "#374151",
     label: "#1F2937",
     meta: "#374151"
   };
-  const TXT = {
+  var TXT = {
     titleBg: "#5C6470",
     subtitle: "#7B8194",
     axisLabel: "#6B7280",
@@ -2473,12 +2473,12 @@ function renderSVG_matrix(data, opts) {
     grid: "#E5E7EB"
   };
 
-  const out = [];
+  var out = [];
   out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif">`);
   out.push(`<rect x="0" y="0" width="${W}" height="${H}" fill="#ffffff"/>`);
 
   // Title pill
-  const titleText = "유형별 포지션 매트릭스: 유입 부피 × 최종 전환율";
+  var titleText = "유형별 포지션 매트릭스: 유입 부피 × 최종 전환율";
   out.push(`<rect x="32" y="28" rx="22" ry="22" width="540" height="44" fill="${TXT.titleBg}"/>`);
   out.push(`<text x="60" y="56" font-size="20" font-weight="700" fill="#ffffff">${esc(titleText)}</text>`);
 
@@ -2490,51 +2490,51 @@ function renderSVG_matrix(data, opts) {
   out.push(`<text x="${margin.left + plotW / 2}" y="${H - 28}" text-anchor="middle" font-size="14" font-weight="600" fill="${TXT.axisLabel}">유입 수</text>`);
 
   // Grid + ticks
-  for (const t of xticks) {
-    const x = xs(t);
+  for (var t of xticks) {
+    var x = xs(t);
     out.push(`<line x1="${x.toFixed(2)}" y1="${margin.top}" x2="${x.toFixed(2)}" y2="${margin.top + plotH}" stroke="${TXT.grid}" stroke-width="1"/>`);
     out.push(`<text x="${x.toFixed(2)}" y="${margin.top + plotH + 30}" text-anchor="middle" font-size="13" fill="${TXT.tickLabel}">${t.toLocaleString()}</text>`);
   }
-  for (const t of yticks) {
-    const y = ys(t);
+  for (var t of yticks) {
+    var y = ys(t);
     out.push(`<line x1="${margin.left}" y1="${y.toFixed(2)}" x2="${margin.left + plotW}" y2="${y.toFixed(2)}" stroke="${TXT.grid}" stroke-width="1"/>`);
     out.push(`<text x="${margin.left - 14}" y="${(y + 5).toFixed(2)}" text-anchor="end" font-size="13" fill="${TXT.tickLabel}">${(t).toFixed(ystep < 1 ? 1 : 0)}%</text>`);
   }
 
   // Bubbles
-  const bubbles = data.map(d => ({
+  var bubbles = data.map(d => ({
     d, cx: xs(d.inflow), cy: ys(d.rate), r: rs(d.signups)
   }));
-  for (const b of bubbles) {
+  for (var b of bubbles) {
     out.push(`<circle cx="${b.cx.toFixed(2)}" cy="${b.cy.toFixed(2)}" r="${b.r.toFixed(2)}" fill="${C.fill}" stroke="${C.stroke}" stroke-width="2"/>`);
     out.push(`<circle cx="${b.cx.toFixed(2)}" cy="${b.cy.toFixed(2)}" r="3" fill="${C.dot}"/>`);
   }
 
   // Label placement (above by default; below if "above" overlaps another bubble)
-  const labelW = 220, labelH = 44;
+  var labelW = 220, labelH = 44;
   function boxIntersectsAnyBubble(box, exclude) {
-    for (const b of bubbles) {
+    for (var b of bubbles) {
       if (b === exclude) continue;
-      const closestX = Math.max(box.x, Math.min(b.cx, box.x + box.w));
-      const closestY = Math.max(box.y, Math.min(b.cy, box.y + box.h));
-      const dx = b.cx - closestX, dy = b.cy - closestY;
+      var closestX = Math.max(box.x, Math.min(b.cx, box.x + box.w));
+      var closestY = Math.max(box.y, Math.min(b.cy, box.y + box.h));
+      var dx = b.cx - closestX, dy = b.cy - closestY;
       if (dx * dx + dy * dy < b.r * b.r) return true;
     }
     return false;
   }
-  for (const b of bubbles) {
-    const aboveTop = b.cy - b.r - labelH - 6;
-    const belowTop = b.cy + b.r + 6;
-    const boxAbove = { x: b.cx - labelW / 2, y: aboveTop, w: labelW, h: labelH };
-    const boxBelow = { x: b.cx - labelW / 2, y: belowTop, w: labelW, h: labelH };
+  for (var b of bubbles) {
+    var aboveTop = b.cy - b.r - labelH - 6;
+    var belowTop = b.cy + b.r + 6;
+    var boxAbove = { x: b.cx - labelW / 2, y: aboveTop, w: labelW, h: labelH };
+    var boxBelow = { x: b.cx - labelW / 2, y: belowTop, w: labelW, h: labelH };
     // Allow labels to extend slightly above plot area (into the subtitle gap)
-    const aboveOk = aboveTop >= 105 && !boxIntersectsAnyBubble(boxAbove, b);
-    const belowOk = belowTop + labelH < H - 20 && !boxIntersectsAnyBubble(boxBelow, b);
-    let pos = "above";
+    var aboveOk = aboveTop >= 105 && !boxIntersectsAnyBubble(boxAbove, b);
+    var belowOk = belowTop + labelH < H - 20 && !boxIntersectsAnyBubble(boxBelow, b);
+    var pos = "above";
     if (!aboveOk && belowOk) pos = "below";
     else if (!aboveOk && !belowOk) pos = "below";
 
-    let nameY, valY;
+    var nameY, valY;
     if (pos === "above") {
       nameY = b.cy - b.r - 28;
       valY = b.cy - b.r - 10;
@@ -2555,29 +2555,29 @@ function renderSVG_matrix(data, opts) {
 // ============================================================
 function renderSVG_combo(data, opts) {
   opts = opts || {};
-  const palette = opts.palette || "default";
-  const isGray = palette === "grayscale";
+  var palette = opts.palette || "default";
+  var isGray = palette === "grayscale";
 
-  const W = 1600, ROWS = data.length;
-  const margin = { top: 200, right: 150, bottom: 110, left: 130 };
-  const plotH = 500;
-  const plotW = W - margin.left - margin.right;
-  const H = margin.top + plotH + margin.bottom;
+  var W = 1600, ROWS = data.length;
+  var margin = { top: 200, right: 150, bottom: 110, left: 130 };
+  var plotH = 500;
+  var plotW = W - margin.left - margin.right;
+  var H = margin.top + plotH + margin.bottom;
 
   if (!data || ROWS === 0) {
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} 400" width="${W}" height="400"><rect width="${W}" height="400" fill="#ffffff"/><text x="${W/2}" y="200" text-anchor="middle" font-size="18" fill="#9ca3af">데이터가 없습니다</text></svg>`;
   }
 
   // Left axis (counts)
-  const maxLeft = Math.max(...data.map(d => d.inflow));
-  const leftStep = niceNumStep(maxLeft / 5);
-  const leftMax = Math.ceil(maxLeft / leftStep) * leftStep;
-  const leftTicks = [];
-  for (let v = 0; v <= leftMax; v += leftStep) leftTicks.push(v);
+  var maxLeft = Math.max(...data.map(d => d.inflow));
+  var leftStep = niceNumStep(maxLeft / 5);
+  var leftMax = Math.ceil(maxLeft / leftStep) * leftStep;
+  var leftTicks = [];
+  for (var v = 0; v <= leftMax; v += leftStep) leftTicks.push(v);
 
   // Right axis (rate %)
-  const maxRate = Math.max(...data.map(d => d.rate), 0.01);
-  let rateStep;
+  var maxRate = Math.max(...data.map(d => d.rate), 0.01);
+  var rateStep;
   if (maxRate <= 1) rateStep = 0.2;
   else if (maxRate <= 2.5) rateStep = 0.5;
   else if (maxRate <= 6) rateStep = 1;
@@ -2585,22 +2585,22 @@ function renderSVG_combo(data, opts) {
   else if (maxRate <= 25) rateStep = 5;
   else if (maxRate <= 50) rateStep = 10;
   else rateStep = 20;
-  const rateMax = Math.max(rateStep, Math.ceil(maxRate / rateStep) * rateStep);
-  const rateTicks = [];
-  for (let v = 0; v <= rateMax; v += rateStep) rateTicks.push(+v.toFixed(2));
+  var rateMax = Math.max(rateStep, Math.ceil(maxRate / rateStep) * rateStep);
+  var rateTicks = [];
+  for (var v = 0; v <= rateMax; v += rateStep) rateTicks.push(+v.toFixed(2));
 
   // Scales
-  const slotW = plotW / ROWS;
-  const xs = i => margin.left + (i + 0.5) * slotW;
-  const ysL = v => margin.top + (1 - v / leftMax) * plotH;
-  const ysR = v => margin.top + (1 - v / rateMax) * plotH;
-  const baseline = ysL(0);
+  var slotW = plotW / ROWS;
+  var xs = i => margin.left + (i + 0.5) * slotW;
+  var ysL = v => margin.top + (1 - v / leftMax) * plotH;
+  var ysR = v => margin.top + (1 - v / rateMax) * plotH;
+  var baseline = ysL(0);
 
   // Bar widths
-  const barInflow = Math.min(slotW * 0.55, 110);
-  const barSignup = barInflow * 0.7;
+  var barInflow = Math.min(slotW * 0.55, 110);
+  var barSignup = barInflow * 0.7;
 
-  const COLORS = isGray ? {
+  var COLORS = isGray ? {
     inflow: "#D1D5DB",
     inflowStroke: "#9CA3AF",
     signup: "#4B5563",
@@ -2616,7 +2616,7 @@ function renderSVG_combo(data, opts) {
     dotStroke: "#DC3A8E"
   };
 
-  const TXT = {
+  var TXT = {
     titleBg: "#5C6470",
     legend: "#374151",
     legendDesc: "#6B7280",
@@ -2632,32 +2632,32 @@ function renderSVG_combo(data, opts) {
   };
 
   // Find most-common signup stage label for the legend
-  const stageCounts = {};
-  for (const d of data) {
+  var stageCounts = {};
+  for (var d of data) {
     if (d.signupStage) stageCounts[d.signupStage] = (stageCounts[d.signupStage] || 0) + 1;
   }
-  let signupLegendLabel = "최종 전환수";
-  let best = 0;
-  for (const [k, v] of Object.entries(stageCounts)) {
+  var signupLegendLabel = "최종 전환수";
+  var best = 0;
+  for (var [k, v] of Object.entries(stageCounts)) {
     if (v > best) { best = v; signupLegendLabel = k; }
   }
 
-  const out = [];
+  var out = [];
   out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif">`);
   out.push(`<rect x="0" y="0" width="${W}" height="${H}" fill="#ffffff"/>`);
 
   // Title pill
-  const titleText = "유형별 유입 · 가입 · 최종 전환율";
+  var titleText = "유형별 유입 · 가입 · 최종 전환율";
   out.push(`<rect x="32" y="28" rx="22" ry="22" width="450" height="44" fill="${TXT.titleBg}"/>`);
   out.push(`<text x="60" y="56" font-size="20" font-weight="700" fill="#ffffff">${esc(titleText)}</text>`);
 
   // Legend (single row beneath the title)
-  const legendY = 110;
+  var legendY = 110;
   out.push(`<text x="32" y="${legendY}" font-size="14" fill="${TXT.legendDesc}">막대 = 유입수 / 최종 전환수 (좌축) · 라인 = 최종 전환율 % (우축)</text>`);
 
   // Legend swatches row at y=legendY+30
-  const swY = legendY + 28;
-  let swX = 32;
+  var swY = legendY + 28;
+  var swX = 32;
   // Inflow swatch (gray rect)
   out.push(`<rect x="${swX}" y="${swY - 12}" width="32" height="14" fill="${COLORS.inflow}" stroke="${COLORS.inflowStroke}"/>`);
   out.push(`<text x="${swX + 40}" y="${swY}" font-size="14" font-weight="600" fill="${TXT.legend}">유입</text>`);
@@ -2676,51 +2676,51 @@ function renderSVG_combo(data, opts) {
   out.push(`<text x="${margin.left + plotW + 5}" y="${margin.top - 14}" font-size="12" fill="${TXT.rateAxisLabel}">최종 전환율 (%)</text>`);
 
   // Horizontal grid lines (left tick positions)
-  for (const t of leftTicks) {
-    const y = ysL(t);
+  for (var t of leftTicks) {
+    var y = ysL(t);
     out.push(`<line x1="${margin.left}" y1="${y.toFixed(2)}" x2="${margin.left + plotW}" y2="${y.toFixed(2)}" stroke="${TXT.grid}" stroke-width="1"/>`);
     out.push(`<text x="${margin.left - 10}" y="${(y + 4).toFixed(2)}" text-anchor="end" font-size="13" fill="${TXT.tickLabel}">${formatK(t)}</text>`);
   }
   // Right axis tick labels
-  for (const t of rateTicks) {
-    const y = ysR(t);
+  for (var t of rateTicks) {
+    var y = ysR(t);
     out.push(`<text x="${margin.left + plotW + 10}" y="${(y + 4).toFixed(2)}" font-size="13" fill="${COLORS.line}">${(t).toFixed(rateStep < 1 ? 1 : (rateStep < 0.5 ? 2 : 0))}%</text>`);
   }
 
   // Bars + value labels
-  for (let i = 0; i < ROWS; i++) {
-    const d = data[i];
-    const cx = xs(i);
+  for (var i = 0; i < ROWS; i++) {
+    var d = data[i];
+    var cx = xs(i);
     // Inflow bar
-    const inY = ysL(d.inflow);
-    const inH = baseline - inY;
+    var inY = ysL(d.inflow);
+    var inH = baseline - inY;
     out.push(`<rect x="${(cx - barInflow / 2).toFixed(2)}" y="${inY.toFixed(2)}" width="${barInflow.toFixed(2)}" height="${inH.toFixed(2)}" fill="${COLORS.inflow}" stroke="${COLORS.inflowStroke}" stroke-width="1"/>`);
     // Inflow label (above bar)
     out.push(`<text x="${cx.toFixed(2)}" y="${(inY - 10).toFixed(2)}" text-anchor="middle" font-size="14" font-weight="700" fill="${TXT.valueLabel}">${d.inflow.toLocaleString()}</text>`);
 
     // Signup bar (drawn on top, narrower)
-    const sgY = ysL(d.signups);
-    const sgH = baseline - sgY;
+    var sgY = ysL(d.signups);
+    var sgH = baseline - sgY;
     out.push(`<rect x="${(cx - barSignup / 2).toFixed(2)}" y="${sgY.toFixed(2)}" width="${barSignup.toFixed(2)}" height="${Math.max(2, sgH).toFixed(2)}" rx="1.5" ry="1.5" fill="${COLORS.signup}"/>`);
     // Signup label (above signup bar)
     out.push(`<text x="${cx.toFixed(2)}" y="${(sgY - 10).toFixed(2)}" text-anchor="middle" font-size="14" font-weight="700" fill="${COLORS.signup}">${d.signups.toLocaleString()}</text>`);
   }
 
   // Rate line (polyline through all dots)
-  const linePts = data.map((d, i) => `${xs(i).toFixed(2)},${ysR(d.rate).toFixed(2)}`).join(" ");
+  var linePts = data.map((d, i) => `${xs(i).toFixed(2)},${ysR(d.rate).toFixed(2)}`).join(" ");
   out.push(`<polyline points="${linePts}" fill="none" stroke="${COLORS.line}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`);
   // Rate dots + labels
-  for (let i = 0; i < ROWS; i++) {
-    const d = data[i];
-    const px = xs(i), py = ysR(d.rate);
+  for (var i = 0; i < ROWS; i++) {
+    var d = data[i];
+    var px = xs(i), py = ysR(d.rate);
     out.push(`<circle cx="${px.toFixed(2)}" cy="${py.toFixed(2)}" r="6" fill="${COLORS.dotFill}" stroke="${COLORS.dotStroke}" stroke-width="2.5"/>`);
     // Position the rate label so it doesn't overlap with the inflow value label
-    const inY = ysL(d.inflow);
-    const labelAbove = py - 16; // default
+    var inY = ysL(d.inflow);
+    var labelAbove = py - 16; // default
     // If too close to inflow label (which sits at inY-10..inY-22 roughly), put it elsewhere
-    let labelY = labelAbove;
-    let labelAnchor = "middle";
-    let labelX = px;
+    var labelY = labelAbove;
+    var labelAnchor = "middle";
+    var labelX = px;
     if (Math.abs(labelY - (inY - 16)) < 18) {
       // Shift left or right to avoid overlap
       labelX = px + 14;
@@ -2731,8 +2731,8 @@ function renderSVG_combo(data, opts) {
   }
 
   // X axis category labels
-  const labelY = baseline + 28;
-  for (let i = 0; i < ROWS; i++) {
+  var labelY = baseline + 28;
+  for (var i = 0; i < ROWS; i++) {
     out.push(`<text x="${xs(i).toFixed(2)}" y="${labelY.toFixed(2)}" text-anchor="middle" font-size="14" font-weight="600" fill="${TXT.catLabel}">${esc(data[i].type)}</text>`);
   }
 
@@ -2749,19 +2749,19 @@ function renderSVG(data, opts) {
 // ============================================================
 // UI wiring
 // ============================================================
-let currentData = SEED.slice();
+var currentData = SEED.slice();
 
-const $chart = document.getElementById("ty-chart");
-const $tsv = document.getElementById("ty-tsv");
-const $apply = document.getElementById("ty-apply");
-const $reset = document.getElementById("ty-reset");
-const $download = document.getElementById("ty-download");
-const $palette = document.getElementById("ty-palette");
-const $paletteLabel = document.getElementById("ty-paletteLabel");
-const $chartType = document.getElementById("ty-chartType");
-const $status = document.getElementById("ty-status");
-const $xlsx = document.getElementById("ty-xlsxInput");
-const $filename = document.getElementById("ty-filename");
+var $chart = document.getElementById("ty-chart");
+var $tsv = document.getElementById("ty-tsv");
+var $apply = document.getElementById("ty-apply");
+var $reset = document.getElementById("ty-reset");
+var $download = document.getElementById("ty-download");
+var $palette = document.getElementById("ty-palette");
+var $paletteLabel = document.getElementById("ty-paletteLabel");
+var $chartType = document.getElementById("ty-chartType");
+var $status = document.getElementById("ty-status");
+var $xlsx = document.getElementById("ty-xlsxInput");
+var $filename = document.getElementById("ty-filename");
 
 function currentOpts() {
   return { palette: $palette.value, chartType: $chartType.value };
@@ -2781,8 +2781,8 @@ rerender();
 setStatus(`현재 ${currentData.length}개 유형 표시 중 (시드 데이터)`);
 
 $apply.addEventListener("click", () => {
-  const rows = parseTSVToRows($tsv.value);
-  const data = parseTypeSummary(rows);
+  var rows = parseTSVToRows($tsv.value);
+  var data = parseTypeSummary(rows);
   if (!data.length) {
     setStatus("파싱 실패: 헤더(유형 / 단계별)와 유입/전환 단계 행을 확인하세요.", "err");
     return;
@@ -2803,20 +2803,20 @@ $palette.addEventListener("change", rerender);
 $chartType.addEventListener("change", rerender);
 
 $xlsx.addEventListener("change", async (e) => {
-  const file = e.target.files && e.target.files[0];
+  var file = e.target.files && e.target.files[0];
   if (!file) return;
   $filename.textContent = file.name;
   setStatus(`엑셀 파싱 중: ${file.name}…`);
   try {
-    const buf = await file.arrayBuffer();
-    const u8 = new Uint8Array(buf);
-    const files = await unzipXlsx(u8);
-    const wb = parseXlsxWorkbook(files);
+    var buf = await file.arrayBuffer();
+    var u8 = new Uint8Array(buf);
+    var files = await unzipXlsx(u8);
+    var wb = parseXlsxWorkbook(files);
     if (!wb.sheets.length) throw new Error("시트를 찾을 수 없습니다");
-    let chosen = null, data = [];
-    for (const s of wb.sheets) {
-      const rows = wb.readSheet(s.name) || [];
-      const d = parseTypeSummary(rows);
+    var chosen = null, data = [];
+    for (var s of wb.sheets) {
+      var rows = wb.readSheet(s.name) || [];
+      var d = parseTypeSummary(rows);
       if (d.length > 0) { chosen = s; data = d; break; }
     }
     if (!data.length) throw new Error("유형/단계별 형식의 데이터를 찾지 못했습니다");
@@ -2832,10 +2832,10 @@ $xlsx.addEventListener("change", async (e) => {
 });
 
 $download.addEventListener("click", () => {
-  const svg = renderSVG(currentData, currentOpts());
-  const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
+  var svg = renderSVG(currentData, currentOpts());
+  var blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
   a.href = url;
   a.download = $chartType.value === "matrix"
     ? "type_position_matrix.svg"
@@ -2846,13 +2846,17 @@ $download.addEventListener("click", () => {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
   setStatus("✓ SVG 다운로드 — Figma 캔버스에 드래그하세요");
 });
+  })();
+};
 </script>
 
-<script type="module">
+<script>
+window['__init_ld'] = function() {
+  (function() {
 // ============================================================
 // Seed data — from 랜딩별 비교.xlsx
 // ============================================================
-const STAGE_INFO = [
+var STAGE_INFO = [
   { num: 1, icon: "①", name: "커머스인입" },
   { num: 2, icon: "②", name: "정보탐색" },
   { num: 3, icon: "③", name: "주문시도" },
@@ -2860,7 +2864,7 @@ const STAGE_INFO = [
   { num: 5, icon: "⑤", name: "가입신청완료" }
 ];
 
-const SEED = {
+var SEED = {
   total: {
     name: "너겟 전체",
     overall: [79340, 20458, 3624, 1980, 1380],
@@ -2886,7 +2890,7 @@ const SEED = {
 };
 
 // Color palette
-const COLORS = {
+var COLORS = {
   green:  { line: "#3CAA78", area: "rgba(60,170,120,0.20)", grad0: "#3CAA78", grad1: "#3CAA78" },
   purple: { line: "#785FD2", area: "rgba(120,95,210,0.18)", grad0: "#785FD2", grad1: "#785FD2" },
   guide:  { line: "#9CA3AF", area: "rgba(156,163,175,0.10)", strokeDash: "4,4" },
@@ -2901,7 +2905,7 @@ const COLORS = {
 };
 
 // Device-chart specific colors (used in renderSVG_device only)
-const DEVICE_COLORS = [
+var DEVICE_COLORS = [
   { fill: "#A5CDFF", line: "#A5CDFF" }, // campaign 1 = 너겟메인
   { fill: "#B09CF0", line: "#B09CF0" }  // campaign 2 = 기획전
 ];
@@ -2916,18 +2920,18 @@ function fmtNum(n) { return Math.round(n).toLocaleString(); }
 function pct(part, whole) { return whole > 0 ? part / whole * 100 : 0; }
 
 function arrowPolygon(x, y, w, h) {
-  const tipW = h / 2;
+  var tipW = h / 2;
   return `${x},${y} ${x + w - tipW},${y} ${x + w},${y + h / 2} ${x + w - tipW},${y + h} ${x},${y + h}`;
 }
 
 function smoothPath(points) {
   if (points.length === 0) return "";
   if (points.length === 1) return `M ${points[0][0]},${points[0][1]}`;
-  let d = `M ${points[0][0].toFixed(2)},${points[0][1].toFixed(2)}`;
-  for (let i = 0; i < points.length - 1; i++) {
-    const [x0, y0] = points[i];
-    const [x1, y1] = points[i + 1];
-    const dx = (x1 - x0) / 2;
+  var d = `M ${points[0][0].toFixed(2)},${points[0][1].toFixed(2)}`;
+  for (var i = 0; i < points.length - 1; i++) {
+    var [x0, y0] = points[i];
+    var [x1, y1] = points[i + 1];
+    var dx = (x1 - x0) / 2;
     d += ` C ${(x0+dx).toFixed(2)},${y0.toFixed(2)} ${(x1-dx).toFixed(2)},${y1.toFixed(2)} ${x1.toFixed(2)},${y1.toFixed(2)}`;
   }
   return d;
@@ -2935,20 +2939,20 @@ function smoothPath(points) {
 
 function drawStageArrows(out, stageNames, x0, y0, totalW, h, opts) {
   opts = opts || {};
-  const N = stageNames.length;
-  const w = totalW / N;
-  const numbered = opts.numbered || []; // indices of arrows that get a number prefix (e.g., [0,1] for "1" and "2")
-  for (let i = 0; i < N; i++) {
-    const x = x0 + i * w;
-    const isHighlight = i < 2;
-    const fill = isHighlight ? COLORS.arrowDark : COLORS.arrowLight;
-    const textColor = isHighlight ? COLORS.arrowText : COLORS.arrowTextLight;
+  var N = stageNames.length;
+  var w = totalW / N;
+  var numbered = opts.numbered || []; // indices of arrows that get a number prefix (e.g., [0,1] for "1" and "2")
+  for (var i = 0; i < N; i++) {
+    var x = x0 + i * w;
+    var isHighlight = i < 2;
+    var fill = isHighlight ? COLORS.arrowDark : COLORS.arrowLight;
+    var textColor = isHighlight ? COLORS.arrowText : COLORS.arrowTextLight;
     out.push(`<polygon points="${arrowPolygon(x, y0, w, h)}" fill="${fill}"/>`);
-    const cx = x + (w - h / 2) / 2;
-    let label = stageNames[i];
+    var cx = x + (w - h / 2) / 2;
+    var label = stageNames[i];
     if (numbered.includes(i)) {
       // Show "N  StageName" with the number to the left
-      const n = i + 1;
+      var n = i + 1;
       out.push(`<text x="${(x + 26).toFixed(2)}" y="${(y0 + h/2 + 7).toFixed(2)}" font-size="20" font-weight="500" fill="${isHighlight ? '#D1D5DB' : '#9CA3AF'}">${n}</text>`);
       out.push(`<text x="${(cx + 16).toFixed(2)}" y="${(y0 + h/2 + 7).toFixed(2)}" text-anchor="middle" font-size="20" font-weight="700" fill="${textColor}">${esc(label)}</text>`);
     } else {
@@ -2962,27 +2966,27 @@ function drawStageArrows(out, stageNames, x0, y0, totalW, h, opts) {
 // ============================================================
 function renderSVG_type(data, opts) {
   opts = opts || {};
-  const showGuide = opts.showGuide !== false;
-  const W = 1800, H = 760;
-  const padX = 60;
-  const arrowsY = 16, arrowsH = 60;
-  const statsY = arrowsY + arrowsH + 20;
-  const statsH = 80;
-  const plotTop = statsY + statsH + 16;
-  const plotBottom = H - 80;
-  const plotH = plotBottom - plotTop;
-  const totalW = W - padX * 2;
-  const N = STAGE_INFO.length;
+  var showGuide = opts.showGuide !== false;
+  var W = 1800, H = 760;
+  var padX = 60;
+  var arrowsY = 16, arrowsH = 60;
+  var statsY = arrowsY + arrowsH + 20;
+  var statsH = 80;
+  var plotTop = statsY + statsH + 16;
+  var plotBottom = H - 80;
+  var plotH = plotBottom - plotTop;
+  var totalW = W - padX * 2;
+  var N = STAGE_INFO.length;
 
-  const stageNames = STAGE_INFO.map(s => s.name);
-  const xCenter = i => padX + i * (totalW / N);
-  const ys = p => plotBottom - (p / 100) * plotH;
+  var stageNames = STAGE_INFO.map(s => s.name);
+  var xCenter = i => padX + i * (totalW / N);
+  var ys = p => plotBottom - (p / 100) * plotH;
 
   // Compute % per stage based on stage-1 base (per campaign)
-  const totalPcts = data.total.overall.map(v => pct(v, data.total.overall[0]));
-  const campaignPcts = data.campaigns.map(c => c.overall.map(v => pct(v, c.overall[0])));
+  var totalPcts = data.total.overall.map(v => pct(v, data.total.overall[0]));
+  var campaignPcts = data.campaigns.map(c => c.overall.map(v => pct(v, c.overall[0])));
 
-  const out = [];
+  var out = [];
   out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif">`);
   // Gradient defs
   out.push(`<defs>`);
@@ -2997,21 +3001,21 @@ function renderSVG_type(data, opts) {
 
   // Top-left campaign labels (one per campaign, color-coded)
   // and Top-right stat boxes for each campaign
-  const labelY = statsY + 24;
-  for (let i = 0; i < data.campaigns.length; i++) {
-    const c = data.campaigns[i];
-    const col = COLORS[c.colorKey];
+  var labelY = statsY + 24;
+  for (var i = 0; i < data.campaigns.length; i++) {
+    var c = data.campaigns[i];
+    var col = COLORS[c.colorKey];
     // Stat box at top-right: place 2 boxes stacked horizontally
-    const boxX = padX + totalW - 360 - i * 380;
-    const boxY = statsY;
-    const boxW = 360, boxH = 60;
+    var boxX = padX + totalW - 360 - i * 380;
+    var boxY = statsY;
+    var boxW = 360, boxH = 60;
     out.push(`<rect x="${boxX}" y="${boxY}" width="${boxW}" height="${boxH}" rx="10" ry="10" fill="${i === 0 ? 'rgba(60,170,120,0.10)' : 'rgba(120,95,210,0.10)'}" stroke="${col.line}" stroke-opacity="0.3" stroke-width="1"/>`);
     out.push(`<text x="${boxX + boxW/2}" y="${boxY + 22}" text-anchor="middle" font-size="14" font-weight="700" fill="${col.line}">${esc(c.name)}</text>`);
     // Mini stats: 커머스인입 → 가입신청완료 → 최종전환%
-    const inflow = c.overall[0];
-    const signup = c.overall[c.overall.length - 1];
-    const rate = pct(signup, inflow);
-    const tx1 = boxX + 72, tx2 = boxX + 192, tx3 = boxX + 300;
+    var inflow = c.overall[0];
+    var signup = c.overall[c.overall.length - 1];
+    var rate = pct(signup, inflow);
+    var tx1 = boxX + 72, tx2 = boxX + 192, tx3 = boxX + 300;
     out.push(`<text x="${tx1}" y="${boxY + 42}" text-anchor="middle" font-size="11" fill="#6B7280">커머스인입</text>`);
     out.push(`<text x="${tx1}" y="${boxY + 56}" text-anchor="middle" font-size="14" font-weight="700" fill="#1F2937">${fmtNum(inflow)}</text>`);
     out.push(`<text x="${(tx1 + tx2)/2}" y="${boxY + 50}" text-anchor="middle" font-size="14" fill="#9CA3AF">▸</text>`);
@@ -3027,39 +3031,39 @@ function renderSVG_type(data, opts) {
   out.push(`<text x="${(xCenter(2) - 10).toFixed(2)}" y="${(ys(50) - 10).toFixed(2)}" font-size="16" font-weight="700" fill="${COLORS.green.line}">${esc(data.campaigns[0].name)}</text>`);
 
   // Y axis grid + labels (0, 25, 50, 75, 100)
-  for (const p of [0, 25, 50, 75, 100]) {
-    const y = ys(p);
+  for (var p of [0, 25, 50, 75, 100]) {
+    var y = ys(p);
     out.push(`<line x1="${padX}" y1="${y.toFixed(2)}" x2="${padX + totalW}" y2="${y.toFixed(2)}" stroke="${COLORS.axisGrid}" stroke-width="1" stroke-dasharray="${p === 0 ? '0' : '3,3'}"/>`);
     out.push(`<text x="${(padX - 12).toFixed(2)}" y="${(y + 4).toFixed(2)}" text-anchor="end" font-size="12" fill="${COLORS.axisLabel}">${p}%</text>`);
   }
 
   // Vertical guide lines at each marker x position
-  for (let i = 0; i < N; i++) {
-    const x = xCenter(i);
+  for (var i = 0; i < N; i++) {
+    var x = xCenter(i);
     out.push(`<line x1="${x.toFixed(2)}" y1="${plotTop}" x2="${x.toFixed(2)}" y2="${plotBottom}" stroke="${COLORS.axisGrid}" stroke-width="1" stroke-dasharray="3,3"/>`);
   }
 
-  const baselineY = ys(0);
+  var baselineY = ys(0);
 
   // Helper to draw an area + line for a given % series + color
   function drawAreaLine(percents, gradId, lineColor, dashed) {
-    const points = percents.map((p, i) => [xCenter(i), ys(p)]);
-    const areaD = `M ${xCenter(0).toFixed(2)},${baselineY.toFixed(2)} L ${xCenter(0).toFixed(2)},${ys(percents[0]).toFixed(2)} ` +
+    var points = percents.map((p, i) => [xCenter(i), ys(p)]);
+    var areaD = `M ${xCenter(0).toFixed(2)},${baselineY.toFixed(2)} L ${xCenter(0).toFixed(2)},${ys(percents[0]).toFixed(2)} ` +
                   smoothPath(points).replace(/^M [^ ]+ /, "") +
                   ` L ${xCenter(N-1).toFixed(2)},${baselineY.toFixed(2)} Z`;
     out.push(`<path d="${areaD}" fill="url(#${gradId})"/>`);
     out.push(`<path d="${smoothPath(points)}" fill="none" stroke="${lineColor}" stroke-width="${dashed ? 2 : 2.5}" stroke-linejoin="round" stroke-linecap="round"${dashed ? ' stroke-dasharray="6,4"' : ''}/>`);
     // Extend line to the right edge
-    const lastX = xCenter(N-1), lastY = ys(percents[N-1]);
+    var lastX = xCenter(N-1), lastY = ys(percents[N-1]);
     out.push(`<line x1="${lastX.toFixed(2)}" y1="${lastY.toFixed(2)}" x2="${(padX + totalW).toFixed(2)}" y2="${lastY.toFixed(2)}" stroke="${lineColor}" stroke-width="${dashed ? 2 : 2.5}" stroke-linecap="round"${dashed ? ' stroke-dasharray="6,4"' : ''}/>`);
   }
 
   // Draw guide first (gray), then campaign 2 (purple, dashed), then campaign 1 (green, solid)
   if (showGuide) {
     // Guide as gray DASHED LINE only (no area fill, just outline guide)
-    const points = totalPcts.map((p, i) => [xCenter(i), ys(p)]);
+    var points = totalPcts.map((p, i) => [xCenter(i), ys(p)]);
     out.push(`<path d="${smoothPath(points)}" fill="none" stroke="${COLORS.guide.line}" stroke-width="1.5" stroke-dasharray="${COLORS.guide.strokeDash}" stroke-linejoin="round" stroke-linecap="round"/>`);
-    const lastX = xCenter(N-1), lastY = ys(totalPcts[N-1]);
+    var lastX = xCenter(N-1), lastY = ys(totalPcts[N-1]);
     out.push(`<line x1="${lastX.toFixed(2)}" y1="${lastY.toFixed(2)}" x2="${(padX + totalW).toFixed(2)}" y2="${lastY.toFixed(2)}" stroke="${COLORS.guide.line}" stroke-width="1.5" stroke-dasharray="${COLORS.guide.strokeDash}" stroke-linecap="round"/>`);
   }
   // Campaign 2 (purple, dashed line + light area)
@@ -3069,12 +3073,12 @@ function renderSVG_type(data, opts) {
 
   // Markers + labels for each campaign at each stage (skip stage 0)
   function drawMarkersAndLabels(percents, values, colorKey, above) {
-    const col = COLORS[colorKey];
-    for (let i = 1; i < N; i++) {
-      const cx = xCenter(i), cy = ys(percents[i]);
+    var col = COLORS[colorKey];
+    for (var i = 1; i < N; i++) {
+      var cx = xCenter(i), cy = ys(percents[i]);
       out.push(`<circle cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="6" fill="#FFFFFF" stroke="${col.line}" stroke-width="2.5"/>`);
-      const ly = above ? cy - 22 : cy + 30;
-      const ly2 = above ? cy - 8 : cy + 44;
+      var ly = above ? cy - 22 : cy + 30;
+      var ly2 = above ? cy - 8 : cy + 44;
       out.push(`<text x="${cx.toFixed(2)}" y="${ly.toFixed(2)}" text-anchor="middle" font-size="20" font-weight="800" fill="${col.line}">${percents[i].toFixed(percents[i] < 1 ? 2 : 1)}%</text>`);
       out.push(`<text x="${cx.toFixed(2)}" y="${ly2.toFixed(2)}" text-anchor="middle" font-size="13" fill="#6B7280">${fmtNum(values[i])}명</text>`);
     }
@@ -3094,12 +3098,12 @@ function renderSVG_type(data, opts) {
 // ============================================================
 function renderSVG_device(data, opts) {
   opts = opts || {};
-  const showGuide = opts.showGuide !== false;
-  const W = 1800, H = 880;
-  const panelW = (W - 60) / 2;
-  const panelGap = 30;
+  var showGuide = opts.showGuide !== false;
+  var W = 1800, H = 880;
+  var panelW = (W - 60) / 2;
+  var panelGap = 30;
 
-  const out = [];
+  var out = [];
   out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif">`);
   out.push(`<rect width="${W}" height="${H}" fill="#ffffff"/>`);
 
@@ -3112,55 +3116,55 @@ function renderSVG_device(data, opts) {
 }
 
 function drawDevicePanel(out, data, deviceKey, x0, y0, panelW, panelH, showGuide) {
-  const N = STAGE_INFO.length;
-  const stageNames = STAGE_INFO.map(s => s.name);
+  var N = STAGE_INFO.length;
+  var stageNames = STAGE_INFO.map(s => s.name);
 
   // Panel header (white background)
   out.push(`<rect x="${x0}" y="${y0}" width="${panelW}" height="${panelH}" rx="14" ry="14" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>`);
   // Device label
-  const devLabel = deviceKey === "pc" ? "PC" : "MO";
+  var devLabel = deviceKey === "pc" ? "PC" : "MO";
   out.push(`<rect x="${x0 + 18}" y="${y0 + 14}" width="60" height="28" rx="14" ry="14" fill="#F3F4F6" stroke="#E5E7EB"/>`);
   out.push(`<text x="${x0 + 48}" y="${y0 + 33}" text-anchor="middle" font-size="14" font-weight="700" fill="#374151">${devLabel}</text>`);
 
   // Legends (campaign swatches with DEVICE_COLORS)
-  const legY = y0 + 26;
-  let legX = x0 + 100;
-  for (let i = 0; i < data.campaigns.length; i++) {
-    const c = data.campaigns[i];
-    const dcol = DEVICE_COLORS[i];
+  var legY = y0 + 26;
+  var legX = x0 + 100;
+  for (var i = 0; i < data.campaigns.length; i++) {
+    var c = data.campaigns[i];
+    var dcol = DEVICE_COLORS[i];
     out.push(`<rect x="${legX}" y="${legY - 8}" width="14" height="14" rx="3" ry="3" fill="${dcol.fill}"/>`);
-    const inflow = c[deviceKey][0];
-    const signup = c[deviceKey][c[deviceKey].length - 1];
-    const rate = pct(signup, inflow);
-    const labelTxt = `${c.name} (${deviceKey === 'pc' ? '인입' : '시작'} ${fmtNum(inflow)}명 · 최종 ${rate.toFixed(2)}%)`;
+    var inflow = c[deviceKey][0];
+    var signup = c[deviceKey][c[deviceKey].length - 1];
+    var rate = pct(signup, inflow);
+    var labelTxt = `${c.name} (${deviceKey === 'pc' ? '인입' : '시작'} ${fmtNum(inflow)}명 · 최종 ${rate.toFixed(2)}%)`;
     out.push(`<text x="${legX + 22}" y="${legY + 4}" font-size="12" font-weight="600" fill="#374151">${esc(labelTxt)}</text>`);
     legX += 12 + 14 + 12 + (labelTxt.length * 6.6);
   }
 
   // Plot area inside panel
-  const plotPadX = 56;
-  const arrowsRowY = y0 + 60;
-  const arrowsH = 36;
-  const plotTop = arrowsRowY + arrowsH + 24;
-  const plotBottom = y0 + panelH - 40;
-  const plotH = plotBottom - plotTop;
-  const plotL = x0 + plotPadX;
-  const plotW = panelW - plotPadX * 2;
-  const slotW = plotW / N;
+  var plotPadX = 56;
+  var arrowsRowY = y0 + 60;
+  var arrowsH = 36;
+  var plotTop = arrowsRowY + arrowsH + 24;
+  var plotBottom = y0 + panelH - 40;
+  var plotH = plotBottom - plotTop;
+  var plotL = x0 + plotPadX;
+  var plotW = panelW - plotPadX * 2;
+  var slotW = plotW / N;
 
   // Stage arrows (slim version inside panel)
-  for (let i = 0; i < N; i++) {
-    const sx = plotL + i * slotW;
-    const isHi = i < 2;
-    const fill = isHi ? COLORS.arrowDark : COLORS.arrowLight;
-    const tcol = isHi ? "#FFFFFF" : "#6B7280";
+  for (var i = 0; i < N; i++) {
+    var sx = plotL + i * slotW;
+    var isHi = i < 2;
+    var fill = isHi ? COLORS.arrowDark : COLORS.arrowLight;
+    var tcol = isHi ? "#FFFFFF" : "#6B7280";
     out.push(`<polygon points="${arrowPolygon(sx, arrowsRowY, slotW, arrowsH)}" fill="${fill}"/>`);
     out.push(`<text x="${(sx + slotW/2 - arrowsH/4).toFixed(2)}" y="${(arrowsRowY + arrowsH/2 + 5).toFixed(2)}" text-anchor="middle" font-size="13" font-weight="700" fill="${tcol}">${esc(stageNames[i])}</text>`);
   }
 
   // Y axis 0-100%
-  for (const p of [0, 25, 50, 75, 100]) {
-    const y = plotBottom - (p / 100) * plotH;
+  for (var p of [0, 25, 50, 75, 100]) {
+    var y = plotBottom - (p / 100) * plotH;
     out.push(`<line x1="${plotL}" y1="${y.toFixed(2)}" x2="${plotL + plotW}" y2="${y.toFixed(2)}" stroke="${COLORS.axisGrid}" stroke-width="1" stroke-dasharray="${p === 0 ? '0' : '3,3'}"/>`);
     out.push(`<text x="${(plotL - 8).toFixed(2)}" y="${(y + 4).toFixed(2)}" text-anchor="end" font-size="11" fill="${COLORS.axisLabel}">${p}%</text>`);
   }
@@ -3169,7 +3173,7 @@ function drawDevicePanel(out, data, deviceKey, x0, y0, panelW, panelH, showGuide
   // stage 0 is just the 100% baseline (no bar)
   // Width: bars at each stage, 2 sub-bars (one per campaign), or overlaid
   // Use overlaid bars: campaign 1 (semi-transparent blue), campaign 2 (semi-transparent purple), guide (gray outline)
-  const barWidth = slotW * 0.42;
+  var barWidth = slotW * 0.42;
 
   function passPct(arr, i) {
     if (i === 0) return 100;
@@ -3183,109 +3187,109 @@ function drawDevicePanel(out, data, deviceKey, x0, y0, panelW, panelH, showGuide
 
   // Draw stage 1 (커머스인입) faded reference bar (always 100%, gray background)
   {
-    const sx = plotL + 0 * slotW;
-    const cx = sx + slotW / 2;
-    const by = ys(100);
-    const bh = plotBottom - by;
-    const bx = cx - barWidth / 2;
+    var sx = plotL + 0 * slotW;
+    var cx = sx + slotW / 2;
+    var by = ys(100);
+    var bh = plotBottom - by;
+    var bx = cx - barWidth / 2;
     out.push(`<rect x="${bx.toFixed(2)}" y="${by.toFixed(2)}" width="${barWidth.toFixed(2)}" height="${bh.toFixed(2)}" rx="3" ry="3" fill="#E5E7EB" opacity="0.55"/>`);
   }
 
   // Draw bars for each campaign — OVERLAPPING at same X with SAME WIDTH.
   // Larger value drawn first (back), smaller drawn last (front). Both solid colors.
-  for (let i = 1; i < N; i++) {
-    const sx = plotL + i * slotW;
-    const cx = sx + slotW / 2;
-    const c1p = passPct(data.campaigns[0][deviceKey], i);
-    const c2p = passPct(data.campaigns[1][deviceKey], i);
-    const c1col = DEVICE_COLORS[0], c2col = DEVICE_COLORS[1];
+  for (var i = 1; i < N; i++) {
+    var sx = plotL + i * slotW;
+    var cx = sx + slotW / 2;
+    var c1p = passPct(data.campaigns[0][deviceKey], i);
+    var c2p = passPct(data.campaigns[1][deviceKey], i);
+    var c1col = DEVICE_COLORS[0], c2col = DEVICE_COLORS[1];
     // Sort: bigger drawn first (back), smaller drawn last (front, fully covers bottom)
-    const items = (c1p >= c2p)
+    var items = (c1p >= c2p)
       ? [{ pct: c1p, col: c1col }, { pct: c2p, col: c2col }]
       : [{ pct: c2p, col: c2col }, { pct: c1p, col: c1col }];
-    for (const it of items) {
+    for (var it of items) {
       if (it.pct <= 0) continue;
-      const by = ys(it.pct);
-      const bh = plotBottom - by;
-      const bx = cx - barWidth / 2;
+      var by = ys(it.pct);
+      var bh = plotBottom - by;
+      var bx = cx - barWidth / 2;
       out.push(`<rect x="${bx.toFixed(2)}" y="${by.toFixed(2)}" width="${barWidth.toFixed(2)}" height="${Math.max(2, bh).toFixed(2)}" rx="3" ry="3" fill="${it.col.fill}"/>`);
     }
     // Value labels (above each bar — c1 on left, c2 on right)
     {
-      const by1 = ys(c1p), by2 = ys(c2p);
+      var by1 = ys(c1p), by2 = ys(c2p);
       out.push(`<text x="${(cx - 2).toFixed(2)}" y="${(by1 - 8).toFixed(2)}" text-anchor="end" font-size="11" font-weight="700" fill="${c1col.line}">${c1p.toFixed(1)}%</text>`);
       out.push(`<text x="${(cx + 4).toFixed(2)}" y="${(by2 - 8).toFixed(2)}" text-anchor="start" font-size="11" font-weight="700" fill="${c2col.line}">${c2p.toFixed(1)}%</text>`);
     }
   }
 
   // Connecting lines between bar tops (one polyline per campaign, using DEVICE_COLORS)
-  for (let ci = 0; ci < data.campaigns.length; ci++) {
-    const c = data.campaigns[ci];
-    const col = DEVICE_COLORS[ci];
-    const arr = c[deviceKey];
-    const points = [];
-    for (let i = 0; i < N; i++) {
-      const sx = plotL + i * slotW;
-      const cx = sx + slotW / 2;
-      const p = passPct(arr, i);
+  for (var ci = 0; ci < data.campaigns.length; ci++) {
+    var c = data.campaigns[ci];
+    var col = DEVICE_COLORS[ci];
+    var arr = c[deviceKey];
+    var points = [];
+    for (var i = 0; i < N; i++) {
+      var sx = plotL + i * slotW;
+      var cx = sx + slotW / 2;
+      var p = passPct(arr, i);
       points.push([cx, ys(p)]);
     }
-    const linePts = points.map(p => `${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(" ");
+    var linePts = points.map(p => `${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(" ");
     out.push(`<polyline points="${linePts}" fill="none" stroke="${col.line}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`);
-    for (const [x, y] of points) {
+    for (var [x, y] of points) {
       out.push(`<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="4" fill="#FFFFFF" stroke="${col.line}" stroke-width="2"/>`);
     }
   }
 
   // Gray dashed line for 너겟 전체 (passing rate guide) — drawn AFTER bars/lines so it's on top
   if (showGuide) {
-    const totalArr = data.total[deviceKey];
-    const points = [];
-    for (let i = 0; i < N; i++) {
-      const sx = plotL + i * slotW;
-      const cx = sx + slotW / 2;
-      const p = passPct(totalArr, i);
+    var totalArr = data.total[deviceKey];
+    var points = [];
+    for (var i = 0; i < N; i++) {
+      var sx = plotL + i * slotW;
+      var cx = sx + slotW / 2;
+      var p = passPct(totalArr, i);
       points.push([cx, ys(p)]);
     }
-    const linePts = points.map(p => `${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(" ");
+    var linePts = points.map(p => `${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(" ");
     out.push(`<polyline points="${linePts}" fill="none" stroke="${COLORS.guide.line}" stroke-width="1.5" stroke-dasharray="5,4" stroke-linejoin="round" stroke-linecap="round"/>`);
-    for (const [x, y] of points) {
+    for (var [x, y] of points) {
       out.push(`<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="3" fill="#FFFFFF" stroke="${COLORS.guide.line}" stroke-width="1.5"/>`);
     }
   }
 
   // Drop-off labels — first 2 drops (i=1, i=2) get highlighted rounded box, rest get small text
-  for (let i = 1; i < N; i++) {
-    const sx = plotL + i * slotW;
-    const cx = sx + slotW / 2;
-    const c1Drop = dropPct(data.campaigns[0][deviceKey], i);
-    const c2Drop = dropPct(data.campaigns[1][deviceKey], i);
-    const c1col = DEVICE_COLORS[0];
-    const c2col = DEVICE_COLORS[1];
-    const isHigh = i <= 2; // first 2 transitions highlighted
+  for (var i = 1; i < N; i++) {
+    var sx = plotL + i * slotW;
+    var cx = sx + slotW / 2;
+    var c1Drop = dropPct(data.campaigns[0][deviceKey], i);
+    var c2Drop = dropPct(data.campaigns[1][deviceKey], i);
+    var c1col = DEVICE_COLORS[0];
+    var c2col = DEVICE_COLORS[1];
+    var isHigh = i <= 2; // first 2 transitions highlighted
 
     if (isHigh) {
       // Rounded white box with shadow, positioned to the left of this stage (in the gap)
-      const boxW = 130, boxH = 64;
-      const boxX = cx - slotW/2 - boxW/2 + 18; // center in the gap area between stages
-      const boxY = ys(50) - boxH / 2; // vertical center around 50% height
+      var boxW = 130, boxH = 64;
+      var boxX = cx - slotW/2 - boxW/2 + 18; // center in the gap area between stages
+      var boxY = ys(50) - boxH / 2; // vertical center around 50% height
       out.push(`<g>`);
       out.push(`<rect x="${(boxX + 2).toFixed(2)}" y="${(boxY + 3).toFixed(2)}" width="${boxW}" height="${boxH}" rx="10" ry="10" fill="#000" opacity="0.06"/>`);
       out.push(`<rect x="${boxX.toFixed(2)}" y="${boxY.toFixed(2)}" width="${boxW}" height="${boxH}" rx="10" ry="10" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>`);
       // Campaign 1 row
-      const r1y = boxY + 22;
+      var r1y = boxY + 22;
       out.push(`<rect x="${(boxX + 14).toFixed(2)}" y="${(r1y - 8).toFixed(2)}" width="10" height="10" rx="2" ry="2" fill="${c1col.line}"/>`);
       out.push(`<text x="${(boxX + 32).toFixed(2)}" y="${(r1y + 2).toFixed(2)}" font-size="11" font-weight="700" fill="${c1col.line}">↓</text>`);
       out.push(`<text x="${(boxX + boxW - 14).toFixed(2)}" y="${(r1y + 3).toFixed(2)}" text-anchor="end" font-size="16" font-weight="800" fill="#1F2937">${c1Drop.toFixed(1)}%</text>`);
       // Campaign 2 row
-      const r2y = boxY + 48;
+      var r2y = boxY + 48;
       out.push(`<rect x="${(boxX + 14).toFixed(2)}" y="${(r2y - 8).toFixed(2)}" width="10" height="10" rx="2" ry="2" fill="${c2col.line}"/>`);
       out.push(`<text x="${(boxX + 32).toFixed(2)}" y="${(r2y + 2).toFixed(2)}" font-size="11" font-weight="700" fill="${c2col.line}">↓</text>`);
       out.push(`<text x="${(boxX + boxW - 14).toFixed(2)}" y="${(r2y + 3).toFixed(2)}" text-anchor="end" font-size="16" font-weight="800" fill="#1F2937">${c2Drop.toFixed(1)}%</text>`);
       out.push(`</g>`);
     } else {
       // Small inline text below the bars (gray)
-      const dropY = plotBottom + 16;
+      var dropY = plotBottom + 16;
       out.push(`<text x="${cx.toFixed(2)}" y="${dropY.toFixed(2)}" text-anchor="middle" font-size="11" fill="#9CA3AF">↓ ${c1Drop.toFixed(1)}%</text>`);
       out.push(`<text x="${cx.toFixed(2)}" y="${(dropY + 14).toFixed(2)}" text-anchor="middle" font-size="11" fill="#9CA3AF">↓ ${c2Drop.toFixed(1)}%</text>`);
     }
@@ -3302,37 +3306,37 @@ function renderSVG(data, opts) {
 // Minimal .xlsx reader (DecompressionStream + DOMParser)
 // ============================================================
 async function unzipXlsx(u8) {
-  const dv = new DataView(u8.buffer, u8.byteOffset, u8.byteLength);
-  const eocdSig = 0x06054b50;
-  let eocd = -1;
-  const scanFrom = Math.max(0, u8.length - 65557);
-  for (let i = u8.length - 22; i >= scanFrom; i--) {
+  var dv = new DataView(u8.buffer, u8.byteOffset, u8.byteLength);
+  var eocdSig = 0x06054b50;
+  var eocd = -1;
+  var scanFrom = Math.max(0, u8.length - 65557);
+  for (var i = u8.length - 22; i >= scanFrom; i--) {
     if (dv.getUint32(i, true) === eocdSig) { eocd = i; break; }
   }
   if (eocd < 0) throw new Error("올바른 .xlsx 파일이 아닙니다");
-  const cdOffset = dv.getUint32(eocd + 16, true);
-  const numEntries = dv.getUint16(eocd + 10, true);
-  const files = {};
-  let p = cdOffset;
-  for (let i = 0; i < numEntries; i++) {
+  var cdOffset = dv.getUint32(eocd + 16, true);
+  var numEntries = dv.getUint16(eocd + 10, true);
+  var files = {};
+  var p = cdOffset;
+  for (var i = 0; i < numEntries; i++) {
     if (dv.getUint32(p, true) !== 0x02014b50) break;
-    const compMethod = dv.getUint16(p + 10, true);
-    const compSize = dv.getUint32(p + 20, true);
-    const nameLen = dv.getUint16(p + 28, true);
-    const extraLen = dv.getUint16(p + 30, true);
-    const commentLen = dv.getUint16(p + 32, true);
-    const lho = dv.getUint32(p + 42, true);
-    const name = new TextDecoder("utf-8").decode(u8.subarray(p + 46, p + 46 + nameLen));
+    var compMethod = dv.getUint16(p + 10, true);
+    var compSize = dv.getUint32(p + 20, true);
+    var nameLen = dv.getUint16(p + 28, true);
+    var extraLen = dv.getUint16(p + 30, true);
+    var commentLen = dv.getUint16(p + 32, true);
+    var lho = dv.getUint32(p + 42, true);
+    var name = new TextDecoder("utf-8").decode(u8.subarray(p + 46, p + 46 + nameLen));
     p += 46 + nameLen + extraLen + commentLen;
     if (dv.getUint32(lho, true) !== 0x04034b50) continue;
-    const lNameLen = dv.getUint16(lho + 26, true);
-    const lExtraLen = dv.getUint16(lho + 28, true);
-    const dataStart = lho + 30 + lNameLen + lExtraLen;
-    const compData = u8.subarray(dataStart, dataStart + compSize);
-    let bytes;
+    var lNameLen = dv.getUint16(lho + 26, true);
+    var lExtraLen = dv.getUint16(lho + 28, true);
+    var dataStart = lho + 30 + lNameLen + lExtraLen;
+    var compData = u8.subarray(dataStart, dataStart + compSize);
+    var bytes;
     if (compMethod === 0) bytes = compData;
     else if (compMethod === 8) {
-      const stream = new Blob([compData]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+      var stream = new Blob([compData]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
       bytes = new Uint8Array(await new Response(stream).arrayBuffer());
     } else throw new Error("지원하지 않는 압축: " + compMethod);
     files[name] = bytes;
@@ -3341,61 +3345,61 @@ async function unzipXlsx(u8) {
 }
 
 function parseXlsxWorkbook(files) {
-  const decoder = new TextDecoder("utf-8");
-  const text = name => files[name] ? decoder.decode(files[name]) : null;
-  const sharedStrings = [];
+  var decoder = new TextDecoder("utf-8");
+  var text = name => files[name] ? decoder.decode(files[name]) : null;
+  var sharedStrings = [];
   if (files["xl/sharedStrings.xml"]) {
-    const doc = new DOMParser().parseFromString(text("xl/sharedStrings.xml"), "text/xml");
-    for (const si of doc.getElementsByTagName("si")) {
-      let str = "";
-      for (const t of si.getElementsByTagName("t")) str += t.textContent || "";
+    var doc = new DOMParser().parseFromString(text("xl/sharedStrings.xml"), "text/xml");
+    for (var si of doc.getElementsByTagName("si")) {
+      var str = "";
+      for (var t of si.getElementsByTagName("t")) str += t.textContent || "";
       sharedStrings.push(str);
     }
   }
-  const rid2target = {};
+  var rid2target = {};
   if (files["xl/_rels/workbook.xml.rels"]) {
-    const rdoc = new DOMParser().parseFromString(text("xl/_rels/workbook.xml.rels"), "text/xml");
-    for (const r of rdoc.getElementsByTagName("Relationship")) {
+    var rdoc = new DOMParser().parseFromString(text("xl/_rels/workbook.xml.rels"), "text/xml");
+    for (var r of rdoc.getElementsByTagName("Relationship")) {
       rid2target[r.getAttribute("Id")] = r.getAttribute("Target");
     }
   }
-  const sheets = [];
+  var sheets = [];
   if (files["xl/workbook.xml"]) {
-    const wdoc = new DOMParser().parseFromString(text("xl/workbook.xml"), "text/xml");
-    for (const s of wdoc.getElementsByTagName("sheet")) {
-      const name = s.getAttribute("name");
-      let rid = s.getAttribute("r:id");
+    var wdoc = new DOMParser().parseFromString(text("xl/workbook.xml"), "text/xml");
+    for (var s of wdoc.getElementsByTagName("sheet")) {
+      var name = s.getAttribute("name");
+      var rid = s.getAttribute("r:id");
       if (!rid) {
-        for (let i = 0; i < s.attributes.length; i++) {
+        for (var i = 0; i < s.attributes.length; i++) {
           if (s.attributes[i].localName === "id") { rid = s.attributes[i].value; break; }
         }
       }
-      const target = rid2target[rid];
+      var target = rid2target[rid];
       if (!target) continue;
       sheets.push({ name, file: target.startsWith("/") ? target.slice(1) : "xl/" + target });
     }
   }
-  function colRefToIdx(ref) { let n = 0; for (const c of ref) n = n * 26 + (c.charCodeAt(0) - 64); return n - 1; }
+  function colRefToIdx(ref) { var n = 0; for (var c of ref) n = n * 26 + (c.charCodeAt(0) - 64); return n - 1; }
   function readSheet(name) {
-    const sheet = sheets.find(s => s.name === name);
+    var sheet = sheets.find(s => s.name === name);
     if (!sheet) return null;
-    const xml = text(sheet.file);
+    var xml = text(sheet.file);
     if (!xml) return null;
-    const doc = new DOMParser().parseFromString(xml, "text/xml");
-    const result = [];
-    for (const row of doc.getElementsByTagName("row")) {
-      const rIdx = parseInt(row.getAttribute("r"), 10) - 1;
+    var doc = new DOMParser().parseFromString(xml, "text/xml");
+    var result = [];
+    for (var row of doc.getElementsByTagName("row")) {
+      var rIdx = parseInt(row.getAttribute("r"), 10) - 1;
       while (result.length <= rIdx) result.push([]);
-      const arr = result[rIdx];
-      for (const cell of row.getElementsByTagName("c")) {
-        const ref = cell.getAttribute("r");
-        const m = ref ? ref.match(/^[A-Z]+/) : null;
+      var arr = result[rIdx];
+      for (var cell of row.getElementsByTagName("c")) {
+        var ref = cell.getAttribute("r");
+        var m = ref ? ref.match(/^[A-Z]+/) : null;
         if (!m) continue;
-        const ci = colRefToIdx(m[0]);
-        const t = cell.getAttribute("t");
-        const vEl = cell.getElementsByTagName("v")[0];
-        const isEl = cell.getElementsByTagName("is")[0];
-        let val;
+        var ci = colRefToIdx(m[0]);
+        var t = cell.getAttribute("t");
+        var vEl = cell.getElementsByTagName("v")[0];
+        var isEl = cell.getElementsByTagName("is")[0];
+        var val;
         if (t === "s" && vEl) val = sharedStrings[parseInt(vEl.textContent, 10)];
         else if (t === "inlineStr" && isEl) val = isEl.textContent.trim();
         else if (t === "str" && vEl) val = vEl.textContent;
@@ -3417,49 +3421,49 @@ function parseXlsxWorkbook(files) {
 function parseLandingComparison(rows) {
   // Find the section markers and stage rows
   // Each block has: device label row → "행 레이블 / 총합계" header rows (cols 1+2, 4+5, 7+8) → 5 stage rows
-  const STEP_RE = /[①②③④⑤]/;
+  var STEP_RE = /[①②③④⑤]/;
 
   function parseBlock(startRow) {
     // Find first row with a step pattern at col 1
-    let firstStep = -1;
-    for (let r = startRow; r < Math.min(rows.length, startRow + 12); r++) {
-      const v = (rows[r] || [])[1];
+    var firstStep = -1;
+    for (var r = startRow; r < Math.min(rows.length, startRow + 12); r++) {
+      var v = (rows[r] || [])[1];
       if (typeof v === "string" && STEP_RE.test(v)) { firstStep = r; break; }
     }
     if (firstStep < 0) return null;
     // Read 5 stages from cols 1, 2 (전체); 4, 5 (MOWEB); 7, 8 (PC)
-    const overall = [], mo = [], pc = [];
-    for (let i = 0; i < 5; i++) {
-      const r = rows[firstStep + i] || [];
-      const o = r[2], m = r[5], p = r[8];
+    var overall = [], mo = [], pc = [];
+    for (var i = 0; i < 5; i++) {
+      var r = rows[firstStep + i] || [];
+      var o = r[2], m = r[5], p = r[8];
       if (typeof o !== "number" || typeof m !== "number" || typeof p !== "number") return null;
       overall.push(o); mo.push(m); pc.push(p);
     }
     return { overall, mo, pc, endRow: firstStep + 5 };
   }
 
-  let total = null;
-  const campaigns = [];
+  var total = null;
+  var campaigns = [];
 
-  for (let r = 0; r < rows.length; r++) {
-    const a = (rows[r] || [])[1];
+  for (var r = 0; r < rows.length; r++) {
+    var a = (rows[r] || [])[1];
     if (typeof a !== "string") continue;
-    const t = a.trim();
+    var t = a.trim();
     // [1] section
     if (/^\[1\]/.test(t) || /디바이스별.*전체.*너겟/.test(t)) {
-      const blk = parseBlock(r + 1);
+      var blk = parseBlock(r + 1);
       if (blk) {
         total = { name: "너겟 전체", overall: blk.overall, mo: blk.mo, pc: blk.pc };
       }
       continue;
     }
     // Sub-campaign in [2] section: matches "1) 너겟 메인", "2) 기획전 (82173)", etc.
-    const sub = t.match(/^\d\)\s*(.+)/);
+    var sub = t.match(/^\d\)\s*(.+)/);
     if (sub) {
-      const campaignName = sub[1].trim();
-      const blk = parseBlock(r + 1);
+      var campaignName = sub[1].trim();
+      var blk = parseBlock(r + 1);
       if (blk) {
-        const colorKey = campaigns.length === 0 ? "green" : "purple";
+        var colorKey = campaigns.length === 0 ? "green" : "purple";
         campaigns.push({
           name: campaignName,
           colorKey,
@@ -3476,16 +3480,16 @@ function parseLandingComparison(rows) {
 // ============================================================
 // UI wiring
 // ============================================================
-let currentData = SEED;
+var currentData = SEED;
 
-const $chart = document.getElementById("ld-chart");
-const $download = document.getElementById("ld-download");
-const $chartType = document.getElementById("ld-chartType");
-const $showGuide = document.getElementById("ld-showGuide");
-const $reset = document.getElementById("ld-reset");
-const $status = document.getElementById("ld-status");
-const $xlsx = document.getElementById("ld-xlsxInput");
-const $filename = document.getElementById("ld-filename");
+var $chart = document.getElementById("ld-chart");
+var $download = document.getElementById("ld-download");
+var $chartType = document.getElementById("ld-chartType");
+var $showGuide = document.getElementById("ld-showGuide");
+var $reset = document.getElementById("ld-reset");
+var $status = document.getElementById("ld-status");
+var $xlsx = document.getElementById("ld-xlsxInput");
+var $filename = document.getElementById("ld-filename");
 
 function currentOpts() { return { chartType: $chartType.value, showGuide: $showGuide.checked }; }
 function rerender() { $chart.innerHTML = renderSVG(currentData, currentOpts()); }
@@ -3506,20 +3510,20 @@ $reset.addEventListener("click", () => {
 [$chartType, $showGuide].forEach(el => el.addEventListener("change", rerender));
 
 $xlsx.addEventListener("change", async (e) => {
-  const file = e.target.files && e.target.files[0];
+  var file = e.target.files && e.target.files[0];
   if (!file) return;
   $filename.textContent = file.name;
   setStatus(`엑셀 파싱 중: ${file.name}…`);
   try {
-    const buf = await file.arrayBuffer();
-    const u8 = new Uint8Array(buf);
-    const files = await unzipXlsx(u8);
-    const wb = parseXlsxWorkbook(files);
+    var buf = await file.arrayBuffer();
+    var u8 = new Uint8Array(buf);
+    var files = await unzipXlsx(u8);
+    var wb = parseXlsxWorkbook(files);
     if (!wb.sheets.length) throw new Error("시트가 없습니다");
-    let parsed = null;
-    for (const s of wb.sheets) {
-      const rows = wb.readSheet(s.name) || [];
-      const r = parseLandingComparison(rows);
+    var parsed = null;
+    for (var s of wb.sheets) {
+      var rows = wb.readSheet(s.name) || [];
+      var r = parseLandingComparison(rows);
       if (r) { parsed = { sheet: s.name, data: r }; break; }
     }
     if (!parsed) throw new Error("랜딩별 비교 형식의 데이터를 찾지 못했습니다");
@@ -3535,10 +3539,10 @@ $xlsx.addEventListener("change", async (e) => {
 });
 
 $download.addEventListener("click", () => {
-  const svg = renderSVG(currentData, currentOpts());
-  const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
+  var svg = renderSVG(currentData, currentOpts());
+  var blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
   a.href = url;
   a.download = $chartType.value === "device"
     ? "landing_compare_pc_mo.svg"
@@ -3549,6 +3553,8 @@ $download.addEventListener("click", () => {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
   setStatus("✓ SVG 다운로드 — Figma 캔버스에 드래그하세요");
 });
+  })();
+};
 </script>
 
 </body>
