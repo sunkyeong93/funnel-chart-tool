@@ -76,9 +76,9 @@ textarea:focus{outline:2px solid #2563eb;outline-offset:-1px;border-color:#2563e
     <h1>퍼널 분석 차트 도구</h1>
     <p class="sub">엑셀 데이터 → SVG 차트 자동 추출 → Figma 드래그</p>
     <div class="grid">
+      <div class="card" onclick="showDetail('ty')"><span class="icon">📋</span><h2>유형 요약</h2><p>막대 + 라인 콤보 / 포지션 매트릭스 (버블)</p><span class="arr">열기 →</span></div>
       <div class="card" onclick="showDetail('ch')"><span class="icon">📊</span><h2>채널 분석</h2><p>채널 포지션 매트릭스 / PC vs Mobile 가로 막대</p><span class="arr">열기 →</span></div>
       <div class="card" onclick="showDetail('st')"><span class="icon">📉</span><h2>단계별 이탈 분석</h2><p>종합 영역 / PC vs Mobile 미러 차트</p><span class="arr">열기 →</span></div>
-      <div class="card" onclick="showDetail('ty')"><span class="icon">📋</span><h2>유형 요약</h2><p>막대 + 라인 콤보 / 포지션 매트릭스 (버블)</p><span class="arr">열기 →</span></div>
       <div class="card" onclick="showDetail('ld')"><span class="icon">🏷️</span><h2>랜딩별 비교</h2><p>유형별 영역 / PC + Mobile 디바이스</p><span class="arr">열기 →</span></div>
     </div>
     <div class="footer-bar">
@@ -91,9 +91,9 @@ textarea:focus{outline:2px solid #2563eb;outline-offset:-1px;border-color:#2563e
 <div id="view-detail">
   <nav class="detail-nav">
     <button class="back-btn" onclick="showIndex()">← 목록으로</button>
+    <button class="tab-btn" data-id="ty" onclick="switchTab('ty')">📋 유형 요약</button>
     <button class="tab-btn" data-id="ch" onclick="switchTab('ch')">📊 채널 분석</button>
     <button class="tab-btn" data-id="st" onclick="switchTab('st')">📉 단계별 이탈</button>
-    <button class="tab-btn" data-id="ty" onclick="switchTab('ty')">📋 유형 요약</button>
     <button class="tab-btn" data-id="ld" onclick="switchTab('ld')">🏷️ 랜딩별 비교</button>
   </nav>
 
