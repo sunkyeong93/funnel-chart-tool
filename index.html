@@ -13,19 +13,19 @@ body{background:#fff;color:#1f2937;font-family:-apple-system,BlinkMacSystemFont,
 #view-index h1{font-size:28px;font-weight:700;margin:0 0 8px;color:#111827;letter-spacing:-0.01em;}
 #view-index .sub{color:#6b7280;font-size:15px;margin:0 0 40px;}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:32px;}
-.card{padding:24px;background:#fff;border:1px solid #e5e7eb;border-radius:12px;cursor:pointer;transition:all .15s;}
+.card{padding:24px;background:#fff;border:1px solid #D2D2D7;border-radius:8px;cursor:pointer;transition:all .15s;}
 .card:hover{border-color:#9ca3af;box-shadow:0 4px 12px rgba(0,0,0,.06);transform:translateY(-1px);}
 .card .icon{font-size:24px;margin-bottom:8px;display:block;}
 .card h2{font-size:17px;font-weight:700;margin:0 0 6px;color:#111827;}
 .card p{margin:0;color:#6b7280;font-size:13px;}
 .card .arr{display:inline-block;margin-top:14px;color:#2563eb;font-size:13px;font-weight:600;}
-.footer-bar{padding:16px 20px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.footer-bar{padding:16px 20px;background:#F5F5F7;border:1px solid #D2D2D7;border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
 .footer-bar span{color:#6b7280;font-size:13px;}
 .dl-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:#fff;border:1px solid #d1d5db;border-radius:8px;color:#1f2937;text-decoration:none;font-size:13px;font-weight:600;transition:all .15s;}
 .dl-btn:hover{border-color:#9ca3af;background:#f3f4f6;}
 #view-detail{display:none;}
-.detail-nav{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:stretch;padding:0 20px;gap:2px;}
-.back-btn{display:flex;align-items:center;gap:6px;padding:0 16px;height:48px;background:none;border:none;border-right:1px solid #e5e7eb;color:#6b7280;font:inherit;font-size:13px;font-weight:600;cursor:pointer;margin-right:8px;white-space:nowrap;transition:color .12s;}
+.detail-nav{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid #D2D2D7;display:flex;align-items:stretch;padding:0 20px;gap:2px;}
+.back-btn{display:flex;align-items:center;gap:6px;padding:0 16px;height:48px;background:none;border:none;border-right:1px solid #D2D2D7;color:#6b7280;font:inherit;font-size:13px;font-weight:600;cursor:pointer;margin-right:8px;white-space:nowrap;transition:color .12s;}
 .back-btn:hover{color:#111827;}
 .tab-btn{display:flex;align-items:center;gap:6px;height:48px;padding:0 14px;background:none;border:none;border-bottom:2px solid transparent;color:#6b7280;font:inherit;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:color .12s,border-color .12s;}
 .tab-btn:hover{color:#111827;}
@@ -35,7 +35,7 @@ body{background:#fff;color:#1f2937;font-family:-apple-system,BlinkMacSystemFont,
 .tab-panel .inner{max-width:1280px;margin:0 auto;padding:20px;}
 .tab-panel header h1{font-size:20px;font-weight:700;margin:0 0 6px;color:#111827;}
 .tab-panel header p{margin:0 0 18px;color:#6b7280;font-size:13px;}
-.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 14px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;margin-bottom:14px;}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 14px;background:#F5F5F7;border:1px solid #D2D2D7;border-radius:8px;margin-bottom:14px;}
 .toolbar .grow{flex:1 1 auto;}
 .toolbar label.inline{display:inline-flex;align-items:center;gap:6px;color:#4b5563;font-size:13px;}
 button,select{font:inherit;border-radius:8px;border:1px solid #d1d5db;padding:8px 14px;background:#fff;color:#1f2937;cursor:pointer;transition:all .15s;}
@@ -44,7 +44,7 @@ button.primary{background:#2563eb;color:#fff;border-color:#2563eb;font-weight:60
 button.primary:hover{background:#1d4ed8;border-color:#1d4ed8;}
 button.ghost{background:transparent;border-color:transparent;color:#6b7280;}
 button.ghost:hover{background:#f3f4f6;color:#1f2937;}
-details.data-panel{background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:0 14px;margin-bottom:16px;}
+details.data-panel{background:#F5F5F7;border:1px solid #D2D2D7;border-radius:8px;padding:0 14px;margin-bottom:16px;}
 details.data-panel>summary{cursor:pointer;padding:12px 0;font-weight:600;color:#374151;list-style:none;}
 details.data-panel>summary::before{content:"▸ ";color:#9ca3af;}
 details.data-panel[open]>summary::before{content:"▾ ";}
@@ -59,7 +59,7 @@ details.data-panel .hint{color:#6b7280;font-size:12px;margin:0 0 8px;}
 textarea{width:100%;min-height:180px;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;font-family:ui-monospace,monospace;font-size:12px;line-height:1.5;background:#fff;color:#111827;resize:vertical;}
 textarea:focus{outline:2px solid #2563eb;outline-offset:-1px;border-color:#2563eb;}
 .actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
-.chart-wrap{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:8px;overflow:auto;}
+.chart-wrap{background:#fff;border:1px solid #D2D2D7;border-radius:8px;padding:8px;overflow:auto;}
 .chart-wrap svg{display:block;max-width:100%;height:auto;}
 .status{margin-top:8px;font-size:12px;min-height:18px;}
 .status.ok{color:#059669;}
@@ -399,7 +399,7 @@ var PALETTES = {
     _default:    { fill: "rgba(156,163,175,0.40)", stroke: "#9CA3AF" }
   },
   grayscale: {
-    _default: { fill: "rgba(160,160,160,0.40)", stroke: "#6b7280" }
+    _default: { fill: "rgba(160,160,160,0.40)", stroke: "#6E6E73" }
   }
 };
 
@@ -811,13 +811,13 @@ function renderSVG_matrix(data, opts) {
   var showMedian = opts.showMedian !== false;
   var showQuadrants = opts.showQuadrants !== false;
 
-  var W = 1400, H = 800;
-  var margin = { top: 110, right: 110, bottom: 100, left: 130 };
+  var W = 830, H = 540;
+  var margin = { top: 80, right: 70, bottom: 70, left: 90 };
   var plotW = W - margin.left - margin.right;
   var plotH = H - margin.top - margin.bottom;
 
   if (!data || data.length === 0) {
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"><rect width="${W}" height="${H}" fill="#ffffff"/><text x="${W/2}" y="${H/2}" text-anchor="middle" font-size="18" fill="#9ca3af">데이터가 없습니다</text></svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"><rect width="${W}" height="${H}" fill="#ffffff"/><text x="${W/2}" y="${H/2}" text-anchor="middle" font-size="16" fill="#9ca3af">데이터가 없습니다</text></svg>`;
   }
 
   var inflows = data.map(d => d.total.inflow);
@@ -850,16 +850,14 @@ function renderSVG_matrix(data, opts) {
 
   var TXT = {
     titleBg: "#5C6470", subtitle: "#7B8194", axisLabel: "#C8447F",
-    tickLabel: "#9CA3AF", grid: "#E5E7EB", median: "#D1D5DB",
+    tickLabel: "#9CA3AF", grid: "#D2D2D7", median: "#D1D5DB",
     label: "#374151", quadHigh: "#9F6FE0", quadLow: "#9CA3AF"
   };
   var out = [];
   out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif">`);
   out.push(`<rect x="0" y="0" width="${W}" height="${H}" fill="#ffffff"/>`);
-  out.push(`<rect x="32" y="28" rx="22" ry="22" width="540" height="44" fill="${TXT.titleBg}"/>`);
-  out.push(`<text x="60" y="56" font-size="20" font-weight="700" fill="#ffffff">${esc("채널 포지션 매트릭스: 유입 부피 × 최종 전환율")}</text>`);
-  out.push(`<text x="32" y="96" font-size="15" fill="${TXT.subtitle}">X=1단계 유입수 (log) · Y=최종 전환율(%) · 버블 크기=최종 가입자 수 · 합산(PC+Mobile)</text>`);
-  out.push(`<text transform="translate(46,${margin.top + plotH/2}) rotate(-90)" text-anchor="middle" font-size="14" font-weight="600" fill="${TXT.axisLabel}">최종 전환율 (%)</text>`);
+  out.push(`<text x="32" y="68" font-size="13" fill="${TXT.subtitle}">X=1단계 유입수 (log) · Y=최종 전환율(%) · 버블 크기=최종 가입자 수 · 합산(PC+Mobile)</text>`);
+  out.push(`<text transform="translate(46,${margin.top + plotH/2}) rotate(-90)" text-anchor="middle" font-size="12" font-weight="600" fill="${TXT.axisLabel}">최종 전환율 (%)</text>`);
   out.push(`<text x="${margin.left + plotW/2}" y="${H - 30}" text-anchor="middle" font-size="14" font-weight="600" fill="${TXT.axisLabel}">유입 수</text>`);
 
   for (var t of xticks) {
@@ -931,12 +929,12 @@ function renderSVG_bars(data, opts) {
   var showAvg = opts.showAvg !== false;
 
   if (!data || data.length === 0) {
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 400" width="1400" height="400"><rect width="1400" height="400" fill="#ffffff"/><text x="700" y="200" text-anchor="middle" font-size="18" fill="#9ca3af">데이터가 없습니다</text></svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 400" width="1400" height="400"><rect width="1400" height="400" fill="#ffffff"/><text x="700" y="200" text-anchor="middle" font-size="16" fill="#9ca3af">데이터가 없습니다</text></svg>`;
   }
   var colorOf = ch => palette[ch] || palette._default || { fill: "rgba(150,150,150,0.4)", stroke: "#888" };
-  var ROW_H = 150;
-  var W = 1600;
-  var margin = { top: 200, right: 100, bottom: 90, left: 240 };
+  var ROW_H = 100;
+  var W = 830;
+  var margin = { top: 90, right: 60, bottom: 50, left: 160 };
   var plotW = W - margin.left - margin.right;
   var plotH = data.length * ROW_H;
   var H = margin.top + plotH + margin.bottom;
@@ -962,15 +960,13 @@ function renderSVG_bars(data, opts) {
   var TXT = {
     titleBg: "#5C6470", subtitle: "#7B8194", axisLabel: "#C8447F",
     avg: "#C8447F", avgLine: "#DC3A8E",
-    tickLabel: "#9CA3AF", grid: "#E5E7EB",
-    channelName: "#1F2937", metaSignup: "#9CA3AF", deviceLabel: "#6B7280"
+    tickLabel: "#9CA3AF", grid: "#D2D2D7",
+    channelName: "#1D1D1F", metaSignup: "#9CA3AF", deviceLabel: "#6E6E73"
   };
   var out = [];
   out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif">`);
   out.push(`<rect x="0" y="0" width="${W}" height="${H}" fill="#ffffff"/>`);
-  out.push(`<rect x="32" y="28" rx="22" ry="22" width="500" height="44" fill="${TXT.titleBg}"/>`);
-  out.push(`<text x="60" y="56" font-size="20" font-weight="700" fill="#ffffff">${esc("채널별 최종 전환율 — PC vs Mobile")}</text>`);
-  out.push(`<text x="32" y="100" font-size="15" fill="${TXT.subtitle}">채널별 각 퍼널 단계 사용자 수 및 단계 통과율</text>`);
+  out.push(`<text x="${W - 32}" y="52" font-size="12" text-anchor="end" fill="${TXT.subtitle}">채널별 각 퍼널 단계 사용자 수 및 단계 통과율</text>`);
 
   for (var t of xticks) {
     var x = xs(t);
@@ -979,8 +975,8 @@ function renderSVG_bars(data, opts) {
 
   if (showAvg) {
     var avgX = xs(avgRate);
-    out.push(`<line x1="${avgX.toFixed(2)}" y1="${margin.top - 30}" x2="${avgX.toFixed(2)}" y2="${margin.top + plotH}" stroke="${TXT.avgLine}" stroke-width="1.5" stroke-dasharray="6,4"/>`);
-    out.push(`<text x="${avgX.toFixed(2)}" y="${margin.top - 38}" text-anchor="middle" font-size="14" font-weight="700" fill="${TXT.avg}">합산 평균 ${avgRate.toFixed(2)}%</text>`);
+    out.push(`<line x1="${avgX.toFixed(2)}" y1="${margin.top}" x2="${avgX.toFixed(2)}" y2="${margin.top + plotH}" stroke="${TXT.avgLine}" stroke-width="1.5" stroke-dasharray="6,4"/>`);
+    out.push(`<text x="${avgX.toFixed(2)}" y="${margin.top - 8}" text-anchor="middle" font-size="12" font-weight="700" fill="${TXT.avg}">합산 평균 ${avgRate.toFixed(2)}%</text>`);
   }
 
   for (var i = 0; i < data.length; i++) {
@@ -988,26 +984,26 @@ function renderSVG_bars(data, opts) {
     var c = colorOf(d.channel);
     var yTop = margin.top + i * ROW_H;
     var labelX = margin.left;
-    out.push(`<text x="${labelX}" y="${yTop + 22}" font-size="20" font-weight="700" fill="${TXT.channelName}">${esc(d.channel)}</text>`);
-    out.push(`<text x="${labelX + 220}" y="${yTop + 22}" font-size="16" font-weight="700" fill="${c.stroke}">합산 ${d.total.rate.toFixed(2)}%</text>`);
-    out.push(`<text x="${labelX + 380}" y="${yTop + 22}" font-size="14" fill="${TXT.metaSignup}">가입 ${d.total.signups.toLocaleString()}명</text>`);
-    var pcY = yTop + 48;
+    out.push(`<text x="${labelX}" y="${yTop + 14}" font-size="16" font-weight="700" fill="${TXT.channelName}">${esc(d.channel)}</text>`);
+    out.push(`<text x="${labelX + 200}" y="${yTop + 14}" font-size="14" font-weight="700" fill="${c.stroke}">합산 ${d.total.rate.toFixed(2)}%</text>`);
+    out.push(`<text x="${labelX + 360}" y="${yTop + 14}" font-size="12" fill="${TXT.metaSignup}">가입 ${d.total.signups.toLocaleString()}명</text>`);
+    var pcY = yTop + 26;
     var pcW = Math.max(0, xs(d.pc.rate) - margin.left);
     out.push(`<text x="${labelX - 16}" y="${pcY + 16}" text-anchor="end" font-size="12" font-weight="600" fill="${TXT.deviceLabel}">PC</text>`);
-    out.push(`<rect x="${labelX}" y="${pcY}" width="${pcW.toFixed(2)}" height="22" rx="2" ry="2" fill="${c.stroke}" opacity="0.9"/>`);
+    out.push(`<rect x="${labelX}" y="${pcY}" width="${pcW.toFixed(2)}" height="22" rx="4" ry="4" fill="${c.stroke}" opacity="0.9"/>`);
     out.push(`<text x="${(labelX + pcW + 8).toFixed(2)}" y="${pcY + 17}" font-size="14" font-weight="700" fill="${c.stroke}">${d.pc.rate.toFixed(2)}%</text>`);
-    var moY = yTop + 88;
+    var moY = yTop + 58;
     var moW = Math.max(0, xs(d.mo.rate) - margin.left);
     out.push(`<text x="${labelX - 16}" y="${moY + 16}" text-anchor="end" font-size="12" font-weight="600" fill="${TXT.deviceLabel}">Mo</text>`);
-    out.push(`<rect x="${labelX}" y="${moY}" width="${moW.toFixed(2)}" height="22" rx="2" ry="2" fill="${c.fill}"/>`);
+    out.push(`<rect x="${labelX}" y="${moY}" width="${moW.toFixed(2)}" height="22" rx="4" ry="4" fill="${c.fill}"/>`);
     out.push(`<text x="${(labelX + moW + 8).toFixed(2)}" y="${moY + 17}" font-size="14" font-weight="700" fill="${c.stroke}">${d.mo.rate.toFixed(2)}%</text>`);
   }
 
-  var axisY = margin.top + plotH + 28;
+  var axisY = margin.top + plotH + 20;
   for (var t of xticks) {
     out.push(`<text x="${xs(t).toFixed(2)}" y="${axisY}" text-anchor="middle" font-size="13" fill="${TXT.tickLabel}">${t}%</text>`);
   }
-  out.push(`<text x="${margin.left + plotW / 2}" y="${H - 24}" text-anchor="middle" font-size="14" font-weight="600" fill="${TXT.axisLabel}">최종 전환율 (%)</text>`);
+  out.push(`<text x="${margin.left + plotW / 2}" y="${H - 10}" text-anchor="middle" font-size="12" font-weight="600" fill="${TXT.axisLabel}">최종 전환율 (%)</text>`);
   out.push(`</svg>`);
   return out.join("\n");
 }
@@ -1664,7 +1660,7 @@ var COLORS = {
   arrowDark: "#5C6470",
   arrowLight: "#D1D5DB",
   arrowText: "#FFFFFF",
-  arrowTextLight: "#6B7280",
+  arrowTextLight: "#6E6E73",
   // Pink (#E81C7A) + light pink (#FFEAF4)
   pinkArea: "rgba(232,28,122,0.12)",
   pinkLine: "#E81C7A",
@@ -1674,18 +1670,18 @@ var COLORS = {
   pinkBoxText: "#E81C7A",
   pinkArrow: "#E81C7A",
   greyBoxBg: "#F3F4F6",
-  greyBoxBorder: "#E5E7EB",
+  greyBoxBorder: "#D2D2D7",
   greyBoxText: "#374151",
   greyArrow: "#9CA3AF",
   // PC green (#3CAA78)
-  pcArea: "rgba(60,170,120,0.15)",
-  pcLine: "#3CAA78",
-  pcLabel: "#3CAA78",
+  pcArea: "rgba(165,205,255,0.35)",
+  pcLine: "#2369DC",
+  pcLabel: "#2369DC",
   // MO purple (#785FD2)
-  moArea: "rgba(120,95,210,0.15)",
-  moLine: "#785FD2",
-  moLabel: "#785FD2",
-  axisGrid: "#E5E7EB",
+  moArea: "rgba(176,156,240,0.35)",
+  moLine: "#6E50D2",
+  moLabel: "#6E50D2",
+  axisGrid: "#D2D2D7",
   axisLabel: "#9CA3AF",
   valueLabel: "#374151",
   metaLabel: "#9CA3AF",
@@ -1722,8 +1718,8 @@ function drawStageArrows(out, stages, x0, y0, totalW, h) {
   for (var i = 0; i < N; i++) {
     var x = x0 + i * w;
     var isHighlight = i < 2;
-    var fill = isHighlight ? "#6B7280" : "#F3F4F6";
-    var textColor = isHighlight ? "#FFFFFF" : "#6B7280";
+    var fill = isHighlight ? "#6E6E73" : "#F3F4F6";
+    var textColor = isHighlight ? "#FFFFFF" : "#6E6E73";
     out.push(`<polygon points="${arrowPolygon(x, y0, w, h)}" fill="${fill}"/>`);
     var cx = x + (w - h / 2) / 2;
     out.push(`<text x="${cx.toFixed(2)}" y="${(y0 + h / 2 + 7).toFixed(2)}" text-anchor="middle" font-size="20" font-weight="700" fill="${textColor}">${esc(stages[i].name)}</text>`);
@@ -1736,30 +1732,30 @@ function drawDropOffInline(out, drops, x0, y0, totalW) {
   // drops: [{ count, ratePct, passPct }] one per stage transition (N-1 items for N stages)
   var N = drops.length + 1; // total stages
   var slotW = totalW / N; // each stage arrow's width
-  var labelW = Math.min(slotW * 0.92, 240);
+  var labelW = Math.min(slotW * 0.9, 240);
   var boxH = 56;
   for (var i = 0; i < drops.length; i++) {
     var d = drops[i];
     var isHigh = i < 2;
     var arrColor = isHigh ? COLORS.pinkArrow : COLORS.greyArrow;
-    var labelColor = isHigh ? COLORS.pinkLabel : "#6B7280";
+    var labelColor = isHigh ? COLORS.pinkLabel : "#6E6E73";
     var bg = isHigh ? COLORS.pinkBoxBg : COLORS.greyBoxBg;
     var border = isHigh ? COLORS.pinkBoxBorder : COLORS.greyBoxBorder;
     // Drop sits between marker i and marker i+1 — midpoint at center of arrow (i+1)
     var cx = x0 + (i + 0.5) * slotW;
     var lx = cx - labelW / 2;
     // Rounded box background
-    out.push(`<rect x="${lx.toFixed(2)}" y="${y0}" width="${labelW.toFixed(2)}" height="${boxH}" rx="10" ry="10" fill="${bg}" stroke="${border}" stroke-width="1"/>`);
+    out.push(`<rect x="${lx.toFixed(2)}" y="${y0}" width="${labelW.toFixed(2)}" height="${boxH}" rx="8" ry="8" fill="${bg}" stroke="${border}" stroke-width="1"/>`);
     // Down arrow icon (left)
     var arrX = lx + 18;
     var arrY = y0 + boxH / 2;
     out.push(`<path d="M ${arrX-6},${arrY-11} L ${arrX+6},${arrY-11} L ${arrX+6},${arrY-1} L ${arrX+11},${arrY-1} L ${arrX},${arrY+12} L ${arrX-11},${arrY-1} L ${arrX-6},${arrY-1} Z" fill="${arrColor}"/>`);
     // Left column: "Drop off" + "-Xnum명"
     out.push(`<text x="${(lx + 36).toFixed(2)}" y="${(y0 + 22).toFixed(2)}" font-size="13" font-weight="700" fill="${labelColor}">Drop off</text>`);
-    out.push(`<text x="${(lx + 36).toFixed(2)}" y="${(y0 + 40).toFixed(2)}" font-size="12" fill="#6B7280">−${fmtNum(d.count)}명</text>`);
+    out.push(`<text x="${(lx + 36).toFixed(2)}" y="${(y0 + 40).toFixed(2)}" font-size="12" fill="#6E6E73">−${fmtNum(d.count)}명</text>`);
     // Right column: BIG % + 통과 X%
-    out.push(`<text x="${(lx + labelW - 12).toFixed(2)}" y="${(y0 + 26).toFixed(2)}" text-anchor="end" font-size="22" font-weight="800" fill="#1F2937">${d.ratePct.toFixed(1)}%</text>`);
-    out.push(`<text x="${(lx + labelW - 12).toFixed(2)}" y="${(y0 + 44).toFixed(2)}" text-anchor="end" font-size="12" fill="#6B7280">통과 ${d.passPct.toFixed(1)}%</text>`);
+    out.push(`<text x="${(lx + labelW - 12).toFixed(2)}" y="${(y0 + 26).toFixed(2)}" text-anchor="end" font-size="20" font-weight="800" fill="#1D1D1F">${d.ratePct.toFixed(1)}%</text>`);
+    out.push(`<text x="${(lx + labelW - 12).toFixed(2)}" y="${(y0 + 44).toFixed(2)}" text-anchor="end" font-size="12" fill="#6E6E73">통과 ${d.passPct.toFixed(1)}%</text>`);
   }
 }
 
@@ -1781,7 +1777,7 @@ function drawDropOffBoxes(out, drops, x0, y0, totalW, boxH, opts) {
     var cx = x0 + (i + 1) * slotW;
     var boxW = Math.min(slotW * 0.9, 280);
     var boxX = cx - boxW / 2;
-    out.push(`<rect x="${boxX.toFixed(2)}" y="${y0}" width="${boxW.toFixed(2)}" height="${boxH}" rx="10" ry="10" fill="${bg}" stroke="${border}" stroke-width="1"/>`);
+    out.push(`<rect x="${boxX.toFixed(2)}" y="${y0}" width="${boxW.toFixed(2)}" height="${boxH}" rx="8" ry="8" fill="${bg}" stroke="${border}" stroke-width="1"/>`);
     // Down arrow icon (left side)
     var arrX = boxX + 22;
     var arrY = y0 + boxH / 2;
@@ -1794,7 +1790,7 @@ function drawDropOffBoxes(out, drops, x0, y0, totalW, boxH, opts) {
     var innerX = boxX + 50;
     out.push(`<text x="${innerX}" y="${(y0 + boxH/2 - 4).toFixed(2)}" font-size="13" font-weight="700" fill="${textColor}">Drop off</text>`);
     out.push(`<text x="${innerX}" y="${(y0 + boxH/2 + 14).toFixed(2)}" font-size="13" fill="${textColor}">−${fmtNum(d.count)}명</text>`);
-    out.push(`<text x="${(boxX + boxW - 18).toFixed(2)}" y="${(y0 + boxH/2 + 9).toFixed(2)}" text-anchor="end" font-size="22" font-weight="800" fill="#1F2937">${d.ratePct.toFixed(1)}%</text>`);
+    out.push(`<text x="${(boxX + boxW - 18).toFixed(2)}" y="${(y0 + boxH/2 + 9).toFixed(2)}" text-anchor="end" font-size="20" font-weight="800" fill="#1D1D1F">${d.ratePct.toFixed(1)}%</text>`);
   }
 }
 
@@ -1804,15 +1800,15 @@ function drawDropOffBoxes(out, drops, x0, y0, totalW, boxH, opts) {
 function renderSVG_combined(data) {
   var stages = data.stages;
   if (!stages || stages.length === 0) {
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 400" width="1600" height="400"><rect width="1600" height="400" fill="#ffffff"/><text x="800" y="200" text-anchor="middle" font-size="18" fill="#9ca3af">데이터가 없습니다</text></svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 400" width="1600" height="400"><rect width="1600" height="400" fill="#ffffff"/><text x="800" y="200" text-anchor="middle" font-size="16" fill="#9ca3af">데이터가 없습니다</text></svg>`;
   }
-  var W = 1700, H = 700;
-  var padX = 80;
-  var arrowsY = 0, arrowsH = 60;
-  var dropTopY = arrowsY + arrowsH + 16;
-  var dropTopH = 50;
-  var plotTop = dropTopY + dropTopH + 30;
-  var plotBottom = H - 60;
+  var W = 1740, H = 440;
+  var padX = 60;
+  var arrowsY = 0, arrowsH = 50;
+  var dropTopY = arrowsY + arrowsH + 10;
+  var dropTopH = 44;
+  var plotTop = dropTopY + dropTopH + 16;
+  var plotBottom = H - 40;
   var plotH = plotBottom - plotTop;
   var totalW = W - padX * 2;
   var N = stages.length;
@@ -1826,6 +1822,7 @@ function renderSVG_combined(data) {
 
   var out = [];
   out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif">`);
+  out.push(`<rect x="0" y="0" width="${W}" height="${H}" fill="#ffffff"/>`);
   // Gradient defs
   out.push(`<defs>`);
   out.push(`<linearGradient id="grad-pink" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E81C7A" stop-opacity="0.40"/><stop offset="100%" stop-color="#E81C7A" stop-opacity="0.02"/></linearGradient>`);
@@ -1872,7 +1869,7 @@ function renderSVG_combined(data) {
     out.push(`<circle cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="6" fill="#FFFFFF" stroke="${COLORS.pinkLine}" stroke-width="2.5"/>`);
     if (i > 0) {
       // Show % label next to the marker
-      out.push(`<text x="${cx.toFixed(2)}" y="${(cy - 22).toFixed(2)}" text-anchor="middle" font-size="18" font-weight="700" fill="${COLORS.pinkLabel}">${yPercents[i].toFixed(1)}%</text>`);
+      out.push(`<text x="${cx.toFixed(2)}" y="${(cy - 22).toFixed(2)}" text-anchor="middle" font-size="16" font-weight="700" fill="${COLORS.pinkLabel}">${yPercents[i].toFixed(1)}%</text>`);
       out.push(`<text x="${cx.toFixed(2)}" y="${(cy - 6).toFixed(2)}" text-anchor="middle" font-size="13" fill="${COLORS.metaLabel}">${fmtNum(stages[i].total)}명</text>`);
     }
   }
@@ -1887,15 +1884,15 @@ function renderSVG_combined(data) {
 function renderSVG_pcmo(data) {
   var stages = data.stages;
   if (!stages || stages.length === 0) {
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 400" width="1600" height="400"><rect width="1600" height="400" fill="#ffffff"/><text x="800" y="200" text-anchor="middle" font-size="18" fill="#9ca3af">데이터가 없습니다</text></svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 400" width="1600" height="400"><rect width="1600" height="400" fill="#ffffff"/><text x="800" y="200" text-anchor="middle" font-size="16" fill="#9ca3af">데이터가 없습니다</text></svg>`;
   }
-  var W = 1700, H = 980;
-  var padX = 80;
-  var arrowsY = 0, arrowsH = 60;
-  var dropTopY = arrowsY + arrowsH + 16;
-  var dropTopH = 50;
-  var plotTop = dropTopY + dropTopH + 30;
-  var halfH = 240;
+  var W = 1740, H = 880;
+  var padX = 60;
+  var arrowsY = 0, arrowsH = 50;
+  var dropTopY = arrowsY + arrowsH + 10;
+  var dropTopH = 44;
+  var plotTop = dropTopY + dropTopH + 16;
+  var halfH = 200;
   var midY = plotTop + halfH; // baseline (0% line)
   var plotBottom = midY + halfH;
   var dropBotY = plotBottom + 28;
@@ -1916,10 +1913,11 @@ function renderSVG_pcmo(data) {
 
   var out = [];
   out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif">`);
+  out.push(`<rect x="0" y="0" width="${W}" height="${H}" fill="#ffffff"/>`);
   // Gradient defs (PC area: dark at top → transparent at baseline; MO area: transparent at baseline → dark at bottom)
   out.push(`<defs>`);
-  out.push(`<linearGradient id="grad-pc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3CAA78" stop-opacity="0.40"/><stop offset="100%" stop-color="#3CAA78" stop-opacity="0.02"/></linearGradient>`);
-  out.push(`<linearGradient id="grad-mo" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#785FD2" stop-opacity="0.02"/><stop offset="100%" stop-color="#785FD2" stop-opacity="0.40"/></linearGradient>`);
+  out.push(`<linearGradient id="grad-pc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2369DC" stop-opacity="0.40"/><stop offset="100%" stop-color="#2369DC" stop-opacity="0.02"/></linearGradient>`);
+  out.push(`<linearGradient id="grad-mo" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6E50D2" stop-opacity="0.02"/><stop offset="100%" stop-color="#6E50D2" stop-opacity="0.40"/></linearGradient>`);
   out.push(`</defs>`);
   out.push(`<rect width="${W}" height="${H}" fill="#ffffff"/>`);
 
@@ -1939,16 +1937,16 @@ function renderSVG_pcmo(data) {
   for (var p of [0, 25, 50, 75, 100]) {
     var y = ysPC(p);
     out.push(`<line x1="${padX}" y1="${y.toFixed(2)}" x2="${padX + totalW}" y2="${y.toFixed(2)}" stroke="${COLORS.axisGrid}" stroke-width="1"/>`);
-    out.push(`<text x="${padX - 12}" y="${(y + 4).toFixed(2)}" text-anchor="end" font-size="11" fill="${COLORS.axisLabel}">${p}%</text>`);
+    out.push(`<text x="${padX - 12}" y="${(y + 4).toFixed(2)}" text-anchor="end" font-size="12" fill="${COLORS.axisLabel}">${p}%</text>`);
   }
   // Y axis MO bottom half
   for (var p of [25, 50, 75, 100]) {
     var y = ysMO(p);
     out.push(`<line x1="${padX}" y1="${y.toFixed(2)}" x2="${padX + totalW}" y2="${y.toFixed(2)}" stroke="${COLORS.axisGrid}" stroke-width="1"/>`);
-    out.push(`<text x="${padX - 12}" y="${(y + 4).toFixed(2)}" text-anchor="end" font-size="11" fill="${COLORS.axisLabel}">${p}%</text>`);
+    out.push(`<text x="${padX - 12}" y="${(y + 4).toFixed(2)}" text-anchor="end" font-size="12" fill="${COLORS.axisLabel}">${p}%</text>`);
   }
   // Mid baseline
-  out.push(`<line x1="${padX}" y1="${midY.toFixed(2)}" x2="${padX + totalW}" y2="${midY.toFixed(2)}" stroke="${COLORS.baseline}" stroke-width="1.2"/>`);
+  out.push(`<line x1="${padX}" y1="${midY.toFixed(2)}" x2="${padX + totalW}" y2="${midY.toFixed(2)}" stroke="${COLORS.baseline}" stroke-width="1.5"/>`);
 
   // PC area + line
   var pcPoints = stages.map((s, i) => [xCenter(i), ysPC(pcPct[i])]);
@@ -1979,13 +1977,13 @@ function renderSVG_pcmo(data) {
   }
 
   // Side labels (PC, MO) — large + faded
-  out.push(`<text x="${padX + 18}" y="${(plotTop + 80).toFixed(2)}" font-size="56" font-weight="800" fill="${COLORS.pcLine}" opacity="0.35">PC</text>`);
-  out.push(`<text x="${padX + 18}" y="${(plotBottom - 16).toFixed(2)}" font-size="56" font-weight="800" fill="${COLORS.moLine}" opacity="0.35">MO</text>`);
+  out.push(`<text x="${padX + 18}" y="${(plotTop + 80).toFixed(2)}" font-size="32" font-weight="800" fill="${COLORS.pcLine}" opacity="0.35">PC</text>`);
+  out.push(`<text x="${padX + 18}" y="${(plotBottom - 16).toFixed(2)}" font-size="32" font-weight="800" fill="${COLORS.moLine}" opacity="0.35">MO</text>`);
 
   // PC stage markers + labels (above each marker)
   for (var i = 0; i < N; i++) {
     var cx = xCenter(i), cy = ysPC(pcPct[i]);
-    out.push(`<circle cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="5.5" fill="#FFFFFF" stroke="${COLORS.pcLine}" stroke-width="2.5"/>`);
+    out.push(`<circle cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="6" fill="#FFFFFF" stroke="${COLORS.pcLine}" stroke-width="2.5"/>`);
     if (i > 0) {
       out.push(`<text x="${cx.toFixed(2)}" y="${(cy - 22).toFixed(2)}" text-anchor="middle" font-size="16" font-weight="700" fill="${COLORS.pcLabel}">${pcPct[i].toFixed(2)}%</text>`);
       out.push(`<text x="${cx.toFixed(2)}" y="${(cy - 8).toFixed(2)}" text-anchor="middle" font-size="12" fill="${COLORS.metaLabel}">${fmtNum(stages[i].pc)}명</text>`);
@@ -1994,7 +1992,7 @@ function renderSVG_pcmo(data) {
   // MO stage markers + labels (below each marker)
   for (var i = 0; i < N; i++) {
     var cx = xCenter(i), cy = ysMO(moPct[i]);
-    out.push(`<circle cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="5.5" fill="#FFFFFF" stroke="${COLORS.moLine}" stroke-width="2.5"/>`);
+    out.push(`<circle cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="6" fill="#FFFFFF" stroke="${COLORS.moLine}" stroke-width="2.5"/>`);
     if (i > 0) {
       out.push(`<text x="${cx.toFixed(2)}" y="${(cy + 18).toFixed(2)}" text-anchor="middle" font-size="16" font-weight="700" fill="${COLORS.moLabel}">${moPct[i].toFixed(2)}%</text>`);
       out.push(`<text x="${cx.toFixed(2)}" y="${(cy + 32).toFixed(2)}" text-anchor="middle" font-size="12" fill="${COLORS.metaLabel}">${fmtNum(stages[i].mo)}명</text>`);
@@ -2423,13 +2421,13 @@ function niceLogTicks(lo, hi) {
 function renderSVG_matrix(data, opts) {
   opts = opts || {};
   var isGray = (opts.palette || "grayscale") !== "default" || true; // matrix defaults to grayscale style
-  var W = 1400, H = 800;
-  var margin = { top: 130, right: 100, bottom: 90, left: 140 };
+  var W = 830, H = 540;
+  var margin = { top: 80, right: 60, bottom: 60, left: 90 };
   var plotW = W - margin.left - margin.right;
   var plotH = H - margin.top - margin.bottom;
 
   if (!data || data.length === 0) {
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"><rect width="${W}" height="${H}" fill="#ffffff"/><text x="${W/2}" y="${H/2}" text-anchor="middle" font-size="18" fill="#9ca3af">데이터가 없습니다</text></svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"><rect width="${W}" height="${H}" fill="#ffffff"/><text x="${W/2}" y="${H/2}" text-anchor="middle" font-size="16" fill="#9ca3af">데이터가 없습니다</text></svg>`;
   }
 
   // X domain (log)
@@ -2467,25 +2465,21 @@ function renderSVG_matrix(data, opts) {
     fill: "rgba(180,180,180,0.30)",
     stroke: "#9CA3AF",
     dot: "#374151",
-    label: "#1F2937",
+    label: "#1D1D1F",
     meta: "#374151"
   };
   var TXT = {
     titleBg: "#5C6470",
     subtitle: "#7B8194",
-    axisLabel: "#6B7280",
+    axisLabel: "#6E6E73",
     tickLabel: "#9CA3AF",
-    grid: "#E5E7EB"
+    grid: "#D2D2D7"
   };
 
   var out = [];
   out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif">`);
   out.push(`<rect x="0" y="0" width="${W}" height="${H}" fill="#ffffff"/>`);
 
-  // Title pill
-  var titleText = "유형별 포지션 매트릭스: 유입 부피 × 최종 전환율";
-  out.push(`<rect x="32" y="28" rx="22" ry="22" width="540" height="44" fill="${TXT.titleBg}"/>`);
-  out.push(`<text x="60" y="56" font-size="20" font-weight="700" fill="#ffffff">${esc(titleText)}</text>`);
 
   // Subtitle
   out.push(`<text x="32" y="98" font-size="15" fill="${TXT.subtitle}">X=커머스 인입 (log) · Y=최종 전환율(%) · 버블 크기=최종 전환 수</text>`);
@@ -2563,14 +2557,14 @@ function renderSVG_combo(data, opts) {
   var palette = opts.palette || "default";
   var isGray = palette === "grayscale";
 
-  var W = 1600, ROWS = data.length;
-  var margin = { top: 200, right: 150, bottom: 110, left: 130 };
-  var plotH = 500;
+  var W = 830, ROWS = data.length;
+  var margin = { top: 120, right: 70, bottom: 60, left: 70 };
+  var plotH = 360;
   var plotW = W - margin.left - margin.right;
-  var H = margin.top + plotH + margin.bottom;
+  var H = 540;
 
   if (!data || ROWS === 0) {
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} 400" width="${W}" height="400"><rect width="${W}" height="400" fill="#ffffff"/><text x="${W/2}" y="200" text-anchor="middle" font-size="18" fill="#9ca3af">데이터가 없습니다</text></svg>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} 400" width="${W}" height="400"><rect width="${W}" height="400" fill="#ffffff"/><text x="${W/2}" y="200" text-anchor="middle" font-size="16" fill="#9ca3af">데이터가 없습니다</text></svg>`;
   }
 
   // Left axis (counts)
@@ -2602,18 +2596,18 @@ function renderSVG_combo(data, opts) {
   var baseline = ysL(0);
 
   // Bar widths
-  var barInflow = Math.min(slotW * 0.55, 110);
-  var barSignup = barInflow * 0.7;
+  var barInflow = Math.min(slotW * 0.5, 110);
+  var barSignup = barInflow;
 
   var COLORS = isGray ? {
     inflow: "#D1D5DB",
     inflowStroke: "#9CA3AF",
     signup: "#4B5563",
-    line: "#6B7280",
+    line: "#6E6E73",
     dotFill: "#FFFFFF",
-    dotStroke: "#6B7280"
+    dotStroke: "#6E6E73"
   } : {
-    inflow: "#E5E7EB",
+    inflow: "#D2D2D7",
     inflowStroke: "#D1D5DB",
     signup: "#1E3A6B",
     line: "#DC3A8E",
@@ -2624,13 +2618,13 @@ function renderSVG_combo(data, opts) {
   var TXT = {
     titleBg: "#5C6470",
     legend: "#374151",
-    legendDesc: "#6B7280",
+    legendDesc: "#6E6E73",
     axisLabel: "#C8447F",
-    leftAxisLabel: "#6B7280",
+    leftAxisLabel: "#6E6E73",
     rateAxisLabel: COLORS.line,
     tickLabel: "#9CA3AF",
     rateTickLabel: COLORS.line,
-    grid: "#E5E7EB",
+    grid: "#D2D2D7",
     valueLabel: "#374151",
     rateValue: COLORS.line,
     catLabel: "#374151"
@@ -2651,34 +2645,26 @@ function renderSVG_combo(data, opts) {
   out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif">`);
   out.push(`<rect x="0" y="0" width="${W}" height="${H}" fill="#ffffff"/>`);
 
-  // Title pill
-  var titleText = "유형별 유입 · 가입 · 최종 전환율";
-  out.push(`<rect x="32" y="28" rx="22" ry="22" width="450" height="44" fill="${TXT.titleBg}"/>`);
-  out.push(`<text x="60" y="56" font-size="20" font-weight="700" fill="#ffffff">${esc(titleText)}</text>`);
 
   // Legend (single row beneath the title)
-  var legendY = 110;
-  out.push(`<text x="32" y="${legendY}" font-size="14" fill="${TXT.legendDesc}">막대 = 유입수 / 최종 전환수 (좌축) · 라인 = 최종 전환율 % (우축)</text>`);
-
-  // Legend swatches row at y=legendY+30
-  var swY = legendY + 28;
+  // Legend — 설명 + 스와치 한 줄 나란히
+  var swY = 24;
+  out.push(`<text x="32" y="${swY}" font-size="11" fill="${TXT.legendDesc}">막대 = 유입수 / 최종 전환수 (좌축) · 라인 = 최종 전환율 % (우축)</text>`);
   var swX = 32;
-  // Inflow swatch (gray rect)
-  out.push(`<rect x="${swX}" y="${swY - 12}" width="32" height="14" fill="${COLORS.inflow}" stroke="${COLORS.inflowStroke}"/>`);
-  out.push(`<text x="${swX + 40}" y="${swY}" font-size="14" font-weight="600" fill="${TXT.legend}">유입</text>`);
-  swX += 100;
-  // Signup swatch (navy rect)
-  out.push(`<rect x="${swX}" y="${swY - 12}" width="32" height="14" fill="${COLORS.signup}"/>`);
-  out.push(`<text x="${swX + 40}" y="${swY}" font-size="14" font-weight="600" fill="${TXT.legend}">${esc(signupLegendLabel)}</text>`);
-  swX += 60 + signupLegendLabel.length * 14;
-  // Line+dot swatch
-  out.push(`<line x1="${swX}" y1="${swY - 5}" x2="${swX + 30}" y2="${swY - 5}" stroke="${COLORS.line}" stroke-width="2.5"/>`);
-  out.push(`<circle cx="${swX + 15}" cy="${swY - 5}" r="5" fill="${COLORS.dotFill}" stroke="${COLORS.line}" stroke-width="2.5"/>`);
-  out.push(`<text x="${swX + 40}" y="${swY}" font-size="14" font-weight="600" fill="${COLORS.line}">최종 전환율</text>`);
+  var swY2 = swY + 24;
+  out.push(`<rect x="${swX}" y="${swY2 - 10}" width="22" height="12" fill="${COLORS.inflow}" stroke="${COLORS.inflowStroke}"/>`);
+  out.push(`<text x="${swX + 28}" y="${swY2}" font-size="11" font-weight="600" fill="${TXT.legend}">유입</text>`);
+  swX += 72;
+  out.push(`<rect x="${swX}" y="${swY2 - 10}" width="22" height="12" fill="${COLORS.signup}"/>`);
+  out.push(`<text x="${swX + 28}" y="${swY2}" font-size="11" font-weight="600" fill="${TXT.legend}">${esc(signupLegendLabel)}</text>`);
+  swX += 52 + signupLegendLabel.length * 7;
+  out.push(`<line x1="${swX}" y1="${swY2 - 5}" x2="${swX + 22}" y2="${swY2 - 5}" stroke="${COLORS.line}" stroke-width="2"/>`);
+  out.push(`<circle cx="${swX + 11}" cy="${swY2 - 5}" r="3" fill="${COLORS.dotFill}" stroke="${COLORS.line}" stroke-width="2"/>`);
+  out.push(`<text x="${swX + 28}" y="${swY2}" font-size="11" font-weight="600" fill="${COLORS.line}">최종 전환율</text>`);
 
   // Axis titles
-  out.push(`<text x="${margin.left - 80}" y="${margin.top - 14}" font-size="12" fill="${TXT.leftAxisLabel}">유입 / 전환 (명)</text>`);
-  out.push(`<text x="${margin.left + plotW + 5}" y="${margin.top - 14}" font-size="12" fill="${TXT.rateAxisLabel}">최종 전환율 (%)</text>`);
+  out.push(`<text x="${margin.left}" y="${margin.top - 8}" font-size="11" fill="${TXT.leftAxisLabel}">유입 / 전환 (명)</text>`);
+  out.push(`<text x="${margin.left + plotW + 5}" y="${margin.top - 8}" font-size="11" fill="${TXT.rateAxisLabel}">최종 전환율 (%)</text>`);
 
   // Horizontal grid lines (left tick positions)
   for (var t of leftTicks) {
@@ -2706,7 +2692,7 @@ function renderSVG_combo(data, opts) {
     // Signup bar (drawn on top, narrower)
     var sgY = ysL(d.signups);
     var sgH = baseline - sgY;
-    out.push(`<rect x="${(cx - barSignup / 2).toFixed(2)}" y="${sgY.toFixed(2)}" width="${barSignup.toFixed(2)}" height="${Math.max(2, sgH).toFixed(2)}" rx="1.5" ry="1.5" fill="${COLORS.signup}"/>`);
+    out.push(`<rect x="${(cx - barSignup / 2).toFixed(2)}" y="${sgY.toFixed(2)}" width="${barSignup.toFixed(2)}" height="${Math.max(2, sgH).toFixed(2)}" rx="4" ry="4" fill="${COLORS.signup}"/>`);
     // Signup label (above signup bar)
     out.push(`<text x="${cx.toFixed(2)}" y="${(sgY - 10).toFixed(2)}" text-anchor="middle" font-size="14" font-weight="700" fill="${COLORS.signup}">${d.signups.toLocaleString()}</text>`);
   }
@@ -2896,23 +2882,23 @@ var SEED = {
 
 // Color palette
 var COLORS = {
-  green:  { line: "#3CAA78", area: "rgba(60,170,120,0.20)", grad0: "#3CAA78", grad1: "#3CAA78" },
-  purple: { line: "#785FD2", area: "rgba(120,95,210,0.18)", grad0: "#785FD2", grad1: "#785FD2" },
-  guide:  { line: "#9CA3AF", area: "rgba(156,163,175,0.10)", strokeDash: "4,4" },
-  arrowDark: "#6B7280",
+  green:  { line: "#4A9E47", area: "rgba(178,220,175,0.35)", grad0: "#4A9E47", grad1: "#4A9E47" },
+  purple: { line: "#6E50D2", area: "rgba(176,156,240,0.35)", grad0: "#6E50D2", grad1: "#6E50D2" },
+  guide:  { line: "#9CA3AF", area: "rgba(156,163,175,0.10)", strokeDash: '4,4' },
+  arrowDark: "#6E6E73",
   arrowLight: "#F3F4F6",
   arrowText: "#FFFFFF",
-  arrowTextLight: "#6B7280",
-  axisGrid: "#E5E7EB",
+  arrowTextLight: "#6E6E73",
+  axisGrid: "#D2D2D7",
   axisLabel: "#9CA3AF",
-  valueLabel: "#1F2937",
+  valueLabel: "#1D1D1F",
   metaLabel: "#9CA3AF"
 };
 
 // Device-chart specific colors (used in renderSVG_device only)
 var DEVICE_COLORS = [
-  { fill: "#A5CDFF", line: "#A5CDFF" }, // campaign 1 = 너겟메인
-  { fill: "#B09CF0", line: "#B09CF0" }  // campaign 2 = 기획전
+  { fill: "#A5CDFF", line: "#2369DC" }, // campaign 1 = 너겟메인
+  { fill: "#B09CF0", line: "#6E50D2" }  // campaign 2 = 기획전
 ];
 
 // ============================================================
@@ -2972,13 +2958,13 @@ function drawStageArrows(out, stageNames, x0, y0, totalW, h, opts) {
 function renderSVG_type(data, opts) {
   opts = opts || {};
   var showGuide = opts.showGuide !== false;
-  var W = 1800, H = 760;
-  var padX = 60;
-  var arrowsY = 16, arrowsH = 60;
-  var statsY = arrowsY + arrowsH + 20;
-  var statsH = 80;
-  var plotTop = statsY + statsH + 16;
-  var plotBottom = H - 80;
+  var W = 1740, H = 440;
+  var padX = 50;
+  var arrowsY = 10, arrowsH = 46;
+  var statsY = arrowsY + arrowsH + 10;
+  var statsH = 0;
+  var plotTop = statsY + statsH;
+  var plotBottom = H - 50;
   var plotH = plotBottom - plotTop;
   var totalW = W - padX * 2;
   var N = STAGE_INFO.length;
@@ -2993,6 +2979,7 @@ function renderSVG_type(data, opts) {
 
   var out = [];
   out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif">`);
+  out.push(`<rect x="0" y="0" width="${W}" height="${H}" fill="#ffffff"/>`);
   // Gradient defs
   out.push(`<defs>`);
   out.push(`<linearGradient id="grad-cmp1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${COLORS.green.line}" stop-opacity="0.30"/><stop offset="100%" stop-color="${COLORS.green.line}" stop-opacity="0.02"/></linearGradient>`);
@@ -3011,41 +2998,45 @@ function renderSVG_type(data, opts) {
     var c = data.campaigns[i];
     var col = COLORS[c.colorKey];
     // Stat box at top-right: place 2 boxes stacked horizontally
-    var boxX = padX + totalW - 360 - i * 380;
-    var boxY = statsY;
-    var boxW = 360, boxH = 60;
-    out.push(`<rect x="${boxX}" y="${boxY}" width="${boxW}" height="${boxH}" rx="10" ry="10" fill="${i === 0 ? 'rgba(60,170,120,0.10)' : 'rgba(120,95,210,0.10)'}" stroke="${col.line}" stroke-opacity="0.3" stroke-width="1"/>`);
-    out.push(`<text x="${boxX + boxW/2}" y="${boxY + 22}" text-anchor="middle" font-size="14" font-weight="700" fill="${col.line}">${esc(c.name)}</text>`);
-    // Mini stats: 커머스인입 → 가입신청완료 → 최종전환%
+    var boxX = padX + totalW - 320 - i * 340;
+    var boxY = plotTop + 8;
+    var boxW = 320, boxH = 70;
+    out.push(`<rect x="${boxX}" y="${boxY}" width="${boxW}" height="${boxH}" rx="8" ry="8" fill="${i === 0 ? 'rgba(178,220,175,0.30)' : 'rgba(120,95,210,0.10)'}" stroke="${col.line}" stroke-opacity="0.3" stroke-width="1"/>`);
+    // 캠페인명
+    out.push(`<text x="${boxX + boxW/2}" y="${boxY + 18}" text-anchor="middle" font-size="12" font-weight="700" fill="${col.line}">${esc(c.name)}</text>`);
+    // 구분선
+    out.push(`<line x1="${boxX + 16}" y1="${boxY + 26}" x2="${boxX + boxW - 16}" y2="${boxY + 26}" stroke="${col.line}" stroke-opacity="0.2" stroke-width="1"/>`);
     var inflow = c.overall[0];
     var signup = c.overall[c.overall.length - 1];
     var rate = pct(signup, inflow);
-    var tx1 = boxX + 72, tx2 = boxX + 192, tx3 = boxX + 300;
-    out.push(`<text x="${tx1}" y="${boxY + 42}" text-anchor="middle" font-size="11" fill="#6B7280">커머스인입</text>`);
-    out.push(`<text x="${tx1}" y="${boxY + 56}" text-anchor="middle" font-size="14" font-weight="700" fill="#1F2937">${fmtNum(inflow)}</text>`);
-    out.push(`<text x="${(tx1 + tx2)/2}" y="${boxY + 50}" text-anchor="middle" font-size="14" fill="#9CA3AF">▸</text>`);
-    out.push(`<text x="${tx2}" y="${boxY + 42}" text-anchor="middle" font-size="11" fill="#6B7280">가입신청완료</text>`);
-    out.push(`<text x="${tx2}" y="${boxY + 56}" text-anchor="middle" font-size="14" font-weight="700" fill="#1F2937">${fmtNum(signup)}</text>`);
-    out.push(`<text x="${(tx2 + tx3)/2}" y="${boxY + 50}" text-anchor="middle" font-size="14" fill="#9CA3AF">▸</text>`);
-    out.push(`<text x="${tx3}" y="${boxY + 42}" text-anchor="middle" font-size="11" fill="#6B7280">최종전환</text>`);
-    out.push(`<text x="${tx3}" y="${boxY + 56}" text-anchor="middle" font-size="14" font-weight="700" fill="${col.line}">${rate.toFixed(2)}%</text>`);
+    // 3열: 균등 분할 (boxW/4 간격)
+    var tx1 = boxX + 56, tx2 = boxX + 160, tx3 = boxX + 264;
+    var arrMid1 = boxX + 108, arrMid2 = boxX + 212;
+    // 라벨행 y=42
+    out.push(`<text x="${tx1}" y="${boxY + 42}" text-anchor="middle" font-size="10" fill="#6E6E73">커머스인입</text>`);
+    out.push(`<text x="${tx2}" y="${boxY + 42}" text-anchor="middle" font-size="10" fill="#6E6E73">가입신청완료</text>`);
+    out.push(`<text x="${tx3}" y="${boxY + 42}" text-anchor="middle" font-size="10" fill="#6E6E73">최종전환</text>`);
+    out.push(`<text x="${arrMid1}" y="${boxY + 42}" text-anchor="middle" font-size="10" fill="#9CA3AF">▸</text>`);
+    out.push(`<text x="${arrMid2}" y="${boxY + 42}" text-anchor="middle" font-size="10" fill="#9CA3AF">▸</text>`);
+    // 값행 y=58
+    out.push(`<text x="${tx1}" y="${boxY + 58}" text-anchor="middle" font-size="13" font-weight="700" fill="#1D1D1F">${fmtNum(inflow)}</text>`);
+    out.push(`<text x="${tx2}" y="${boxY + 58}" text-anchor="middle" font-size="13" font-weight="700" fill="#1D1D1F">${fmtNum(signup)}</text>`);
+    out.push(`<text x="${tx3}" y="${boxY + 58}" text-anchor="middle" font-size="13" font-weight="700" fill="${col.line}">${rate.toFixed(2)}%</text>`);
   }
 
-  // Top-left campaign side labels (colored like the area)
-  out.push(`<text x="${padX + 6}" y="${(plotTop + 50).toFixed(2)}" font-size="16" font-weight="700" fill="${COLORS.purple.line}">${esc(data.campaigns[1].name)}</text>`);
-  out.push(`<text x="${(xCenter(2) - 10).toFixed(2)}" y="${(ys(50) - 10).toFixed(2)}" font-size="16" font-weight="700" fill="${COLORS.green.line}">${esc(data.campaigns[0].name)}</text>`);
+  // 캠페인 레이블 제거됨
 
   // Y axis grid + labels (0, 25, 50, 75, 100)
   for (var p of [0, 25, 50, 75, 100]) {
     var y = ys(p);
-    out.push(`<line x1="${padX}" y1="${y.toFixed(2)}" x2="${padX + totalW}" y2="${y.toFixed(2)}" stroke="${COLORS.axisGrid}" stroke-width="1" stroke-dasharray="${p === 0 ? '0' : '3,3'}"/>`);
+    out.push(`<line x1="${padX}" y1="${y.toFixed(2)}" x2="${padX + totalW}" y2="${y.toFixed(2)}" stroke="${COLORS.axisGrid}" stroke-width="1" stroke-dasharray="${p === 0 ? '0' : '4,4'}"/>`);
     out.push(`<text x="${(padX - 12).toFixed(2)}" y="${(y + 4).toFixed(2)}" text-anchor="end" font-size="12" fill="${COLORS.axisLabel}">${p}%</text>`);
   }
 
   // Vertical guide lines at each marker x position
   for (var i = 0; i < N; i++) {
     var x = xCenter(i);
-    out.push(`<line x1="${x.toFixed(2)}" y1="${plotTop}" x2="${x.toFixed(2)}" y2="${plotBottom}" stroke="${COLORS.axisGrid}" stroke-width="1" stroke-dasharray="3,3"/>`);
+    out.push(`<line x1="${x.toFixed(2)}" y1="${plotTop}" x2="${x.toFixed(2)}" y2="${plotBottom}" stroke="${COLORS.axisGrid}" stroke-width="1" stroke-dasharray="4,4"/>`);
   }
 
   var baselineY = ys(0);
@@ -3085,7 +3076,7 @@ function renderSVG_type(data, opts) {
       var ly = above ? cy - 22 : cy + 30;
       var ly2 = above ? cy - 8 : cy + 44;
       out.push(`<text x="${cx.toFixed(2)}" y="${ly.toFixed(2)}" text-anchor="middle" font-size="20" font-weight="800" fill="${col.line}">${percents[i].toFixed(percents[i] < 1 ? 2 : 1)}%</text>`);
-      out.push(`<text x="${cx.toFixed(2)}" y="${ly2.toFixed(2)}" text-anchor="middle" font-size="13" fill="#6B7280">${fmtNum(values[i])}명</text>`);
+      out.push(`<text x="${cx.toFixed(2)}" y="${ly2.toFixed(2)}" text-anchor="middle" font-size="13" fill="#6E6E73">${fmtNum(values[i])}명</text>`);
     }
   }
 
@@ -3104,31 +3095,26 @@ function renderSVG_type(data, opts) {
 function renderSVG_device(data, opts) {
   opts = opts || {};
   var showGuide = opts.showGuide !== false;
-  var W = 1800, H = 880;
-  var panelW = (W - 60) / 2;
-  var panelGap = 30;
-
+  var deviceKey = (opts && opts.deviceKey) || 'pc';
+  var W = 830, H = 620;
   var out = [];
   out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif">`);
   out.push(`<rect width="${W}" height="${H}" fill="#ffffff"/>`);
-
-  // Draw two panels side-by-side
-  drawDevicePanel(out, data, "pc",  20,            20, panelW - panelGap/2, H - 40, showGuide);
-  drawDevicePanel(out, data, "mo",  20 + panelW + panelGap/2, 20, panelW - panelGap/2, H - 40, showGuide);
-
+  drawDevicePanel(out, data, deviceKey, 10, 10, W - 20, H - 20, showGuide);
   out.push(`</svg>`);
   return out.join("\n");
 }
+
 
 function drawDevicePanel(out, data, deviceKey, x0, y0, panelW, panelH, showGuide) {
   var N = STAGE_INFO.length;
   var stageNames = STAGE_INFO.map(s => s.name);
 
   // Panel header (white background)
-  out.push(`<rect x="${x0}" y="${y0}" width="${panelW}" height="${panelH}" rx="14" ry="14" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>`);
+  out.push(`<rect x="${x0}" y="${y0}" width="${panelW}" height="${panelH}" rx="8" ry="8" fill="#FFFFFF" stroke="#D2D2D7" stroke-width="1"/>`);
   // Device label
   var devLabel = deviceKey === "pc" ? "PC" : "MO";
-  out.push(`<rect x="${x0 + 18}" y="${y0 + 14}" width="60" height="28" rx="14" ry="14" fill="#F3F4F6" stroke="#E5E7EB"/>`);
+  out.push(`<rect x="${x0 + 18}" y="${y0 + 14}" width="60" height="28" rx="8" ry="8" fill="#F3F4F6" stroke="#D2D2D7"/>`);
   out.push(`<text x="${x0 + 48}" y="${y0 + 33}" text-anchor="middle" font-size="14" font-weight="700" fill="#374151">${devLabel}</text>`);
 
   // Legends (campaign swatches with DEVICE_COLORS)
@@ -3137,7 +3123,7 @@ function drawDevicePanel(out, data, deviceKey, x0, y0, panelW, panelH, showGuide
   for (var i = 0; i < data.campaigns.length; i++) {
     var c = data.campaigns[i];
     var dcol = DEVICE_COLORS[i];
-    out.push(`<rect x="${legX}" y="${legY - 8}" width="14" height="14" rx="3" ry="3" fill="${dcol.fill}"/>`);
+    out.push(`<rect x="${legX}" y="${legY - 8}" width="14" height="14" rx="4" ry="4" fill="${dcol.fill}"/>`);
     var inflow = c[deviceKey][0];
     var signup = c[deviceKey][c[deviceKey].length - 1];
     var rate = pct(signup, inflow);
@@ -3162,7 +3148,7 @@ function drawDevicePanel(out, data, deviceKey, x0, y0, panelW, panelH, showGuide
     var sx = plotL + i * slotW;
     var isHi = i < 2;
     var fill = isHi ? COLORS.arrowDark : COLORS.arrowLight;
-    var tcol = isHi ? "#FFFFFF" : "#6B7280";
+    var tcol = isHi ? "#FFFFFF" : "#6E6E73";
     out.push(`<polygon points="${arrowPolygon(sx, arrowsRowY, slotW, arrowsH)}" fill="${fill}"/>`);
     out.push(`<text x="${(sx + slotW/2 - arrowsH/4).toFixed(2)}" y="${(arrowsRowY + arrowsH/2 + 5).toFixed(2)}" text-anchor="middle" font-size="13" font-weight="700" fill="${tcol}">${esc(stageNames[i])}</text>`);
   }
@@ -3170,15 +3156,15 @@ function drawDevicePanel(out, data, deviceKey, x0, y0, panelW, panelH, showGuide
   // Y axis 0-100%
   for (var p of [0, 25, 50, 75, 100]) {
     var y = plotBottom - (p / 100) * plotH;
-    out.push(`<line x1="${plotL}" y1="${y.toFixed(2)}" x2="${plotL + plotW}" y2="${y.toFixed(2)}" stroke="${COLORS.axisGrid}" stroke-width="1" stroke-dasharray="${p === 0 ? '0' : '3,3'}"/>`);
-    out.push(`<text x="${(plotL - 8).toFixed(2)}" y="${(y + 4).toFixed(2)}" text-anchor="end" font-size="11" fill="${COLORS.axisLabel}">${p}%</text>`);
+    out.push(`<line x1="${plotL}" y1="${y.toFixed(2)}" x2="${plotL + plotW}" y2="${y.toFixed(2)}" stroke="${COLORS.axisGrid}" stroke-width="1" stroke-dasharray="${p === 0 ? '0' : '4,4'}"/>`);
+    out.push(`<text x="${(plotL - 8).toFixed(2)}" y="${(y + 4).toFixed(2)}" text-anchor="end" font-size="12" fill="${COLORS.axisLabel}">${p}%</text>`);
   }
 
   // Bars: each stage shows passing rate (= count[i] / count[i-1]) for stages 1..N-1
   // stage 0 is just the 100% baseline (no bar)
   // Width: bars at each stage, 2 sub-bars (one per campaign), or overlaid
   // Use overlaid bars: campaign 1 (semi-transparent blue), campaign 2 (semi-transparent purple), guide (gray outline)
-  var barWidth = slotW * 0.42;
+  var barWidth = slotW * 0.45;
 
   function passPct(arr, i) {
     if (i === 0) return 100;
@@ -3197,7 +3183,7 @@ function drawDevicePanel(out, data, deviceKey, x0, y0, panelW, panelH, showGuide
     var by = ys(100);
     var bh = plotBottom - by;
     var bx = cx - barWidth / 2;
-    out.push(`<rect x="${bx.toFixed(2)}" y="${by.toFixed(2)}" width="${barWidth.toFixed(2)}" height="${bh.toFixed(2)}" rx="3" ry="3" fill="#E5E7EB" opacity="0.55"/>`);
+    out.push(`<rect x="${bx.toFixed(2)}" y="${by.toFixed(2)}" width="${barWidth.toFixed(2)}" height="${bh.toFixed(2)}" rx="4" ry="4" fill="#D2D2D7" opacity="0.55"/>`);
   }
 
   // Draw bars for each campaign — OVERLAPPING at same X with SAME WIDTH.
@@ -3217,13 +3203,13 @@ function drawDevicePanel(out, data, deviceKey, x0, y0, panelW, panelH, showGuide
       var by = ys(it.pct);
       var bh = plotBottom - by;
       var bx = cx - barWidth / 2;
-      out.push(`<rect x="${bx.toFixed(2)}" y="${by.toFixed(2)}" width="${barWidth.toFixed(2)}" height="${Math.max(2, bh).toFixed(2)}" rx="3" ry="3" fill="${it.col.fill}"/>`);
+      out.push(`<rect x="${bx.toFixed(2)}" y="${by.toFixed(2)}" width="${barWidth.toFixed(2)}" height="${Math.max(2, bh).toFixed(2)}" rx="4" ry="4" fill="${it.col.fill}"/>`);
     }
     // Value labels (above each bar — c1 on left, c2 on right)
     {
       var by1 = ys(c1p), by2 = ys(c2p);
-      out.push(`<text x="${(cx - 2).toFixed(2)}" y="${(by1 - 8).toFixed(2)}" text-anchor="end" font-size="11" font-weight="700" fill="${c1col.line}">${c1p.toFixed(1)}%</text>`);
-      out.push(`<text x="${(cx + 4).toFixed(2)}" y="${(by2 - 8).toFixed(2)}" text-anchor="start" font-size="11" font-weight="700" fill="${c2col.line}">${c2p.toFixed(1)}%</text>`);
+      out.push(`<text x="${(cx - 2).toFixed(2)}" y="${(by1 - 8).toFixed(2)}" text-anchor="end" font-size="12" font-weight="700" fill="${c1col.line}">${c1p.toFixed(1)}%</text>`);
+      out.push(`<text x="${(cx + 4).toFixed(2)}" y="${(by2 - 8).toFixed(2)}" text-anchor="start" font-size="12" font-weight="700" fill="${c2col.line}">${c2p.toFixed(1)}%</text>`);
     }
   }
 
@@ -3257,7 +3243,7 @@ function drawDevicePanel(out, data, deviceKey, x0, y0, panelW, panelH, showGuide
       points.push([cx, ys(p)]);
     }
     var linePts = points.map(p => `${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(" ");
-    out.push(`<polyline points="${linePts}" fill="none" stroke="${COLORS.guide.line}" stroke-width="1.5" stroke-dasharray="5,4" stroke-linejoin="round" stroke-linecap="round"/>`);
+    out.push(`<polyline points="${linePts}" fill="none" stroke="${COLORS.guide.line}" stroke-width="1.5" stroke-dasharray="4,4" stroke-linejoin="round" stroke-linecap="round"/>`);
     for (var [x, y] of points) {
       out.push(`<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="3" fill="#FFFFFF" stroke="${COLORS.guide.line}" stroke-width="1.5"/>`);
     }
@@ -3279,31 +3265,35 @@ function drawDevicePanel(out, data, deviceKey, x0, y0, panelW, panelH, showGuide
       var boxX = cx - slotW/2 - boxW/2 + 18; // center in the gap area between stages
       var boxY = ys(50) - boxH / 2; // vertical center around 50% height
       out.push(`<g>`);
-      out.push(`<rect x="${(boxX + 2).toFixed(2)}" y="${(boxY + 3).toFixed(2)}" width="${boxW}" height="${boxH}" rx="10" ry="10" fill="#000" opacity="0.06"/>`);
-      out.push(`<rect x="${boxX.toFixed(2)}" y="${boxY.toFixed(2)}" width="${boxW}" height="${boxH}" rx="10" ry="10" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>`);
+      out.push(`<rect x="${(boxX + 2).toFixed(2)}" y="${(boxY + 3).toFixed(2)}" width="${boxW}" height="${boxH}" rx="8" ry="8" fill="#000" opacity="0.06"/>`);
+      out.push(`<rect x="${boxX.toFixed(2)}" y="${boxY.toFixed(2)}" width="${boxW}" height="${boxH}" rx="8" ry="8" fill="#FFFFFF" stroke="#D2D2D7" stroke-width="1"/>`);
       // Campaign 1 row
       var r1y = boxY + 22;
-      out.push(`<rect x="${(boxX + 14).toFixed(2)}" y="${(r1y - 8).toFixed(2)}" width="10" height="10" rx="2" ry="2" fill="${c1col.line}"/>`);
-      out.push(`<text x="${(boxX + 32).toFixed(2)}" y="${(r1y + 2).toFixed(2)}" font-size="11" font-weight="700" fill="${c1col.line}">↓</text>`);
-      out.push(`<text x="${(boxX + boxW - 14).toFixed(2)}" y="${(r1y + 3).toFixed(2)}" text-anchor="end" font-size="16" font-weight="800" fill="#1F2937">${c1Drop.toFixed(1)}%</text>`);
+      out.push(`<rect x="${(boxX + 14).toFixed(2)}" y="${(r1y - 8).toFixed(2)}" width="10" height="10" rx="4" ry="4" fill="${c1col.line}"/>`);
+      out.push(`<text x="${(boxX + 32).toFixed(2)}" y="${(r1y + 2).toFixed(2)}" font-size="12" font-weight="700" fill="${c1col.line}">↓</text>`);
+      out.push(`<text x="${(boxX + boxW - 14).toFixed(2)}" y="${(r1y + 3).toFixed(2)}" text-anchor="end" font-size="16" font-weight="800" fill="#1D1D1F">${c1Drop.toFixed(1)}%</text>`);
       // Campaign 2 row
       var r2y = boxY + 48;
-      out.push(`<rect x="${(boxX + 14).toFixed(2)}" y="${(r2y - 8).toFixed(2)}" width="10" height="10" rx="2" ry="2" fill="${c2col.line}"/>`);
-      out.push(`<text x="${(boxX + 32).toFixed(2)}" y="${(r2y + 2).toFixed(2)}" font-size="11" font-weight="700" fill="${c2col.line}">↓</text>`);
-      out.push(`<text x="${(boxX + boxW - 14).toFixed(2)}" y="${(r2y + 3).toFixed(2)}" text-anchor="end" font-size="16" font-weight="800" fill="#1F2937">${c2Drop.toFixed(1)}%</text>`);
+      out.push(`<rect x="${(boxX + 14).toFixed(2)}" y="${(r2y - 8).toFixed(2)}" width="10" height="10" rx="4" ry="4" fill="${c2col.line}"/>`);
+      out.push(`<text x="${(boxX + 32).toFixed(2)}" y="${(r2y + 2).toFixed(2)}" font-size="12" font-weight="700" fill="${c2col.line}">↓</text>`);
+      out.push(`<text x="${(boxX + boxW - 14).toFixed(2)}" y="${(r2y + 3).toFixed(2)}" text-anchor="end" font-size="16" font-weight="800" fill="#1D1D1F">${c2Drop.toFixed(1)}%</text>`);
       out.push(`</g>`);
     } else {
       // Small inline text below the bars (gray)
       var dropY = plotBottom + 16;
-      out.push(`<text x="${cx.toFixed(2)}" y="${dropY.toFixed(2)}" text-anchor="middle" font-size="11" fill="#9CA3AF">↓ ${c1Drop.toFixed(1)}%</text>`);
-      out.push(`<text x="${cx.toFixed(2)}" y="${(dropY + 14).toFixed(2)}" text-anchor="middle" font-size="11" fill="#9CA3AF">↓ ${c2Drop.toFixed(1)}%</text>`);
+      out.push(`<text x="${cx.toFixed(2)}" y="${dropY.toFixed(2)}" text-anchor="middle" font-size="12" fill="#9CA3AF">↓ ${c1Drop.toFixed(1)}%</text>`);
+      out.push(`<text x="${cx.toFixed(2)}" y="${(dropY + 14).toFixed(2)}" text-anchor="middle" font-size="12" fill="#9CA3AF">↓ ${c2Drop.toFixed(1)}%</text>`);
     }
   }
 }
 
 // Dispatcher
 function renderSVG(data, opts) {
-  if ((opts && opts.chartType) === "device") return renderSVG_device(data, opts);
+  if ((opts && opts.chartType) === "device") {
+    var pcSvg = renderSVG_device(data, Object.assign({}, opts, {deviceKey: 'pc'}));
+    var moSvg = renderSVG_device(data, Object.assign({}, opts, {deviceKey: 'mo'}));
+    return pcSvg + '<!--SEP-->' + moSvg;
+  }
   return renderSVG_type(data, opts);
 }
 
@@ -3497,7 +3487,10 @@ var $xlsx = document.getElementById("ld-xlsxInput");
 var $filename = document.getElementById("ld-filename");
 
 function currentOpts() { return { chartType: $chartType.value, showGuide: $showGuide.checked }; }
-function rerender() { $chart.innerHTML = renderSVG(currentData, currentOpts()); }
+function rerender() {
+  var result = renderSVG(currentData, currentOpts());
+  document.getElementById("ld-chart").innerHTML = result.replace('<!--SEP-->', '<div style="height:12px"></div>');
+}
 function setStatus(msg, kind) {
   $status.textContent = msg || "";
   $status.className = "status " + (kind || "ok");
