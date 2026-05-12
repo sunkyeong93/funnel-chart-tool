@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>퍼널 분석 차트 도구 — 통합</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --surface: #f9fafb;
+    --border: #e5e7eb;
+    --border-hover: #9ca3af;
+    --text: #1f2937;
+    --text-muted: #6b7280;
+    --text-light: #9ca3af;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --accent-bg: #eff6ff;
+    --accent-text: #1e40af;
+    --radius: 10px;
+    --tab-h: 44px;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* ── NAV ─────────────────────────────────────────── */
+  .app-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: stretch;
+    padding: 0 20px;
+    gap: 2px;
+  }
+  .app-nav .brand {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: -0.01em;
+    padding-right: 20px;
+    display: flex;
+    align-items: center;
+    border-right: 1px solid var(--border);
+    margin-right: 8px;
+    white-space: nowrap;
+  }
+  .tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    height: var(--tab-h);
+    padding: 0 14px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.12s, border-color 0.12s;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
+  .tab-btn .icon { font-size: 15px; }
+
+  /* ── PANELS ──────────────────────────────────────── */
+  .tab-panel { display: none; padding: 20px; max-width: 1300px; margin: 0 auto; }
+  .tab-panel.active { display: block; }
+
+  /* ── SHARED CONTROLS ─────────────────────────────── */
+  header h1 { font-size: 18px; font-weight: 700; margin-bottom: 4px; color: #111827; }
+  header p  { color: var(--text-muted); font-size: 13px; margin-bottom: 16px; }
+
+  .toolbar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+    padding: 10px 14px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); margin-bottom: 14px;
+  }
+  .toolbar .grow { flex: 1 1 auto; }
+  .toolbar label.inline { display: inline-flex; align-items: center; gap: 6px; color: #4b5563; font-size: 13px; }
+
+  button, select {
+    font: inherit; border-radius: 8px; border: 1px solid var(--border);
+    padding: 7px 13px; background: var(--bg); color: var(--text); cursor: pointer; transition: all 0.12s;
+  }
+  button:hover, select:hover { border-color: var(--border-hover); background: #f3f4f6; }
+  button.primary { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+  button.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  button.ghost { background: transparent; border-color: transparent; color: var(--text-muted); }
+  button.ghost:hover { background: #f3f4f6; color: var(--text); }
+
+  details.data-panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 0 14px; margin-bottom: 16px;
+  }
+  details.data-panel > summary {
+    cursor: pointer; padding: 11px 0; font-weight: 600; color: #374151;
+    list-style: none; font-size: 13px;
+  }
+  details.data-panel > summary::before { content: "▸ "; color: var(--text-light); }
+  details.data-panel[open] > summary::before { content: "▾ "; }
+  details.data-panel .body { padding: 4px 0 14px; }
+  details.data-panel .hint { color: var(--text-muted); font-size: 12px; margin: 0 0 8px; }
+
+  .upload-row {
+    display: flex; align-items: center; gap: 12px; margin: 6px 0 12px;
+    padding: 11px 12px; background: var(--bg); border: 1px dashed var(--border); border-radius: 8px;
+  }
+  .upload-row input[type="file"] { display: none; }
+  .upload-row .file-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 13px; border-radius: 8px; border: 1px solid var(--accent);
+    background: var(--accent-bg); color: var(--accent-text);
+    font-weight: 600; cursor: pointer; font-size: 13px;
+  }
+  .upload-row .file-btn:hover { background: #dbeafe; }
+  .upload-row .or    { color: var(--text-light); font-size: 12px; }
+  .upload-row .fname { color: var(--text-muted); font-size: 12px; font-family: ui-monospace, monospace; }
+
+  textarea.tsv-area {
+    width: 100%; min-height: 160px; padding: 10px 12px;
+    border: 1px solid var(--border); border-radius: 8px;
+    font-family: ui-monospace, monospace; font-size: 12px; line-height: 1.5;
+    background: var(--bg); color: #111827; resize: vertical;
+  }
+  textarea.tsv-area:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: var(--accent); }
+  .actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+
+  .chart-wrap { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 8px; overflow: auto; }
+  .chart-wrap svg { display: block; max-width: 100%; height: auto; }
+
+  .status { margin-top: 8px; font-size: 12px; min-height: 18px; }
+  .status.ok  { color: #059669; }
+  .status.err { color: #dc2626; }
+
+  .tips {
+    margin-top: 14px; padding: 11px 14px;
+    background: #fef9c3; border: 1px solid #fde68a;
+    border-radius: 8px; color: #713f12; font-size: 13px;
+  }
+  .tips b { color: #92400e; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════
+     NAV
+═══════════════════════════════════════════════════════════ -->
+<nav class="app-nav">
+  <span class="brand">📊 퍼널 분석 차트 도구</span>
+  <button class="tab-btn active" data-tab="t1"><span class="icon">📊</span>채널 분석</button>
+  <button class="tab-btn" data-tab="t2"><span class="icon">📉</span>단계별 이탈</button>
+  <button class="tab-btn" data-tab="t3"><span class="icon">📋</span>유형 요약</button>
+  <button class="tab-btn" data-tab="t4"><span class="icon">🏷️</span>랜딩별 비교</button>
+</nav>
+
+<!-- ════════════════════════════════════════════════════════
+     TAB 1: 채널 분석
+═══════════════════════════════════════════════════════════ -->
+<div id="t1" class="tab-panel active">
+  <header>
+    <h1>채널 퍼널 차트 — 매트릭스 / PC vs Mobile</h1>
+    <p>한 데이터로 두 가지 차트를 토글 — (1) 채널 포지션 매트릭스 (2) PC vs Mobile 가로 막대. SVG 다운로드 후 Figma에 드래그하세요.</p>
+  </header>
+  <div class="toolbar">
+    <button id="ch-download" class="primary">SVG 다운로드</button>
+    <label class="inline">차트 타입
+      <select id="ch-chartType">
+        <option value="matrix">포지션 매트릭스 (버블)</option>
+        <option value="bars">PC vs Mobile 가로 막대</option>
+      </select>
+    </label>
+    <label class="inline">팔레트
+      <select id="ch-palette">
+        <option value="template">템플릿 컬러</option>
+        <option value="grayscale">단색 회색</option>
+      </select>
+    </label>
+    <label class="inline" id="ch-optMedian"><input type="checkbox" id="ch-showMedian" checked /> 중앙선</label>
+    <label class="inline" id="ch-optQuad"><input type="checkbox" id="ch-showQuadrants" checked /> 사분면 라벨</label>
+    <label class="inline" id="ch-optAvg" style="display:none"><input type="checkbox" id="ch-showAvg" checked /> 합산 평균선</label>
+    <span class="grow"></span>
+    <span id="ch-status" class="status ok"></span>
+  </div>
+  <details class="data-panel" open>
+    <summary>데이터 갱신</summary>
+    <div class="body">
+      <div class="upload-row">
+        <label class="file-btn"><input type="file" id="ch-xlsx" accept=".xlsx" />📂 엑셀 파일 선택 (.xlsx)</label>
+        <span class="or">또는 ↓ 표 붙여넣기</span>
+        <span class="fname" id="ch-fname"></span>
+      </div>
+      <p class="hint">엑셀(.xlsx)을 올리면 자동 파싱(템플릿 / GA4 피벗 / 전치 피벗 모두 지원). PC와 MO를 자동 분리해서 두 차트가 같은 데이터로 그려집니다.</p>
+      <textarea id="ch-tsv" class="tsv-area" spellcheck="false"></textarea>
+      <div class="actions">
+        <button id="ch-apply" class="primary">붙여넣은 데이터로 업데이트</button>
+        <button id="ch-reset" class="ghost">시드 데이터로 복원</button>
+      </div>
+    </div>
+  </details>
+  <div class="chart-wrap" id="ch-chart"></div>
+  <div class="tips"><b>Figma 사용법:</b> 다운로드한 SVG를 Figma 캔버스에 드래그하면 모든 요소(버블·막대·라벨·축)가 벡터 레이어로 들어옵니다.</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     TAB 2: 단계별 이탈
+═══════════════════════════════════════════════════════════ -->
+<div id="t2" class="tab-panel">
+  <header>
+    <h1>퍼널 단계별 이탈률 분석</h1>
+    <p>단계별 통과율 영역 차트 + 단계 사이 Drop off 박스. 종합/PC vs Mobile 두 가지 차트 토글.</p>
+  </header>
+  <div class="toolbar">
+    <button id="st-download" class="primary">SVG 다운로드</button>
+    <label class="inline">차트 타입
+      <select id="st-chartType">
+        <option value="combined">종합 (단일 영역)</option>
+        <option value="pcmo">PC vs Mobile 미러</option>
+      </select>
+    </label>
+    <span class="grow"></span>
+    <span id="st-status" class="status ok"></span>
+  </div>
+  <details class="data-panel" open>
+    <summary>데이터 갱신</summary>
+    <div class="body">
+      <div class="upload-row">
+        <label class="file-btn"><input type="file" id="st-xlsx" accept=".xlsx" />📂 엑셀 파일 선택 (.xlsx)</label>
+        <span class="or">또는 ↓ 표 붙여넣기</span>
+        <span class="fname" id="st-fname"></span>
+      </div>
+      <p class="hint">템플릿 / GA4 피벗 / 전치 피벗 형식의 엑셀 모두 인식. 5단계 + PC·MO 디바이스로 분리해서 영역 차트와 Drop off 박스를 그립니다.</p>
+      <textarea id="st-tsv" class="tsv-area" spellcheck="false"></textarea>
+      <div class="actions">
+        <button id="st-apply" class="primary">붙여넣은 데이터로 업데이트</button>
+        <button id="st-reset" class="ghost">시드 데이터로 복원</button>
+      </div>
+    </div>
+  </details>
+  <div class="chart-wrap" id="st-chart"></div>
+  <div class="tips"><b>Figma 사용법:</b> 다운로드한 SVG를 Figma 캔버스에 드래그하면 단계 화살표·곡선·라벨·Drop off 박스가 모두 벡터 레이어로 들어옵니다.</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     TAB 3: 유형 요약
+═══════════════════════════════════════════════════════════ -->
+<div id="t3" class="tab-panel">
+  <header>
+    <h1>유형별 유입 · 가입 · 최종 전환율</h1>
+    <p>유형별 유입수와 최종 전환수를 막대로, 전환율(%)을 라인으로 함께 보여주는 콤보 차트.</p>
+  </header>
+  <div class="toolbar">
+    <button id="ty-download" class="primary">SVG 다운로드</button>
+    <label class="inline">차트 타입
+      <select id="ty-chartType">
+        <option value="combo">막대 + 라인 콤보</option>
+        <option value="matrix">포지션 매트릭스 (버블)</option>
+      </select>
+    </label>
+    <label class="inline" id="ty-paletteLabel">팔레트
+      <select id="ty-palette">
+        <option value="default">기본 (회색·네이비·핑크)</option>
+        <option value="grayscale">단색 회색</option>
+      </select>
+    </label>
+    <span class="grow"></span>
+    <span id="ty-status" class="status ok"></span>
+  </div>
+  <details class="data-panel" open>
+    <summary>데이터 갱신</summary>
+    <div class="body">
+      <div class="upload-row">
+        <label class="file-btn"><input type="file" id="ty-xlsx" accept=".xlsx" />📂 엑셀 파일 선택 (.xlsx)</label>
+        <span class="or">또는 ↓ 표 붙여넣기</span>
+        <span class="fname" id="ty-fname"></span>
+      </div>
+      <p class="hint">유형 / 단계별 / 카운트 형식의 엑셀(또는 TSV)을 올리세요. 각 유형마다 유입 행과 최종 전환 단계 행이 페어로 있어야 합니다.</p>
+      <textarea id="ty-tsv" class="tsv-area" spellcheck="false"></textarea>
+      <div class="actions">
+        <button id="ty-apply" class="primary">붙여넣은 데이터로 업데이트</button>
+        <button id="ty-reset" class="ghost">시드 데이터로 복원</button>
+      </div>
+    </div>
+  </details>
+  <div class="chart-wrap" id="ty-chart"></div>
+  <div class="tips"><b>Figma 사용법:</b> 다운로드한 SVG를 Figma 캔버스에 드래그하면 모든 막대·라인·라벨이 벡터 레이어로 들어옵니다.</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     TAB 4: 랜딩별 비교
+═══════════════════════════════════════════════════════════ -->
+<div id="t4" class="tab-panel">
+  <header>
+    <h1>랜딩별 비교 — 유형별 / 디바이스별</h1>
+    <p>같은 유형이지만 랜딩이 다른 두 캠페인의 전환율 비교. 너겟 전체값은 회색 가이드로 표시.</p>
+  </header>
+  <div class="toolbar">
+    <button id="ld-download" class="primary">SVG 다운로드</button>
+    <label class="inline">차트 타입
+      <select id="ld-chartType">
+        <option value="type">[1] 유형별 비교 (영역)</option>
+        <option value="device">[2] 유형별 디바이스 비교 (PC + MO)</option>
+      </select>
+    </label>
+    <label class="inline"><input type="checkbox" id="ld-showGuide" checked /> 너겟 전체 가이드</label>
+    <span class="grow"></span>
+    <span id="ld-status" class="status ok"></span>
+  </div>
+  <details class="data-panel" open>
+    <summary>데이터 갱신</summary>
+    <div class="body">
+      <div class="upload-row">
+        <label class="file-btn"><input type="file" id="ld-xlsx" accept=".xlsx" />📂 엑셀 파일 선택 (.xlsx)</label>
+        <span class="fname" id="ld-fname"></span>
+      </div>
+      <p class="hint">디바이스별 전체 너겟 퍼널 상세 분석 + 너겟 유형별 퍼널 상세 분석 형식의 엑셀을 인식합니다.</p>
+      <div class="actions">
+        <button id="ld-reset" class="ghost">시드 데이터로 복원</button>
+      </div>
+    </div>
+  </details>
+  <div class="chart-wrap" id="ld-chart"></div>
+  <div class="tips"><b>Figma 사용법:</b> SVG를 드래그하면 모든 영역·라인·라벨이 벡터 레이어로 들어옵니다.</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════════════════════ -->
+<script>
+// ── TAB SWITCHING ────────────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ── SHARED UTILITIES ─────────────────────────────────────
+function esc(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function fmtNum(n) { return Math.round(n).toLocaleString(); }
+function pct(part, whole) { return whole > 0 ? part / whole * 100 : 0; }
+function median(arr) {
+  const s = [...arr].sort((a,b)=>a-b); const m = Math.floor(s.length/2);
+  return s.length%2 ? s[m] : (s[m-1]+s[m])/2;
+}
+function niceLogHigh(v) {
+  if(v<=0)return 10;const e=Math.floor(Math.log10(v));const m=v/Math.pow(10,e);
+  if(m<=1)return Math.pow(10,e);if(m<=2)return 2*Math.pow(10,e);
+  if(m<=5)return 5*Math.pow(10,e);return Math.pow(10,e+1);
+}
+function niceLogTicks(lo,hi) {
+  const ticks=[];
+  for(let e=Math.floor(Math.log10(lo));e<=Math.ceil(Math.log10(hi));e++){
+    for(const m of[1,2,5]){const v=m*Math.pow(10,e);if(v>=lo&&v<=hi)ticks.push(v);}
+  }
+  if(ticks[0]!==lo)ticks.unshift(lo);
+  if(ticks[ticks.length-1]!==hi)ticks.push(hi);
+  return Array.from(new Set(ticks)).sort((a,b)=>a-b);
+}
+function formatNum(n){return n>=1000?n.toLocaleString():String(n);}
+function formatK(n){
+  if(n>=1000000)return(n/1000000).toFixed(n%1000000===0?0:1)+"M";
+  if(n>=1000)return(n/1000).toFixed(0)+"K";return String(n);
+}
+function niceNumStep(r){
+  const e=Math.floor(Math.log10(r));const m=r/Math.pow(10,e);
+  let nm;if(m<1.5)nm=1;else if(m<3)nm=2;else if(m<7)nm=5;else nm=10;
+  return nm*Math.pow(10,e);
+}
+const STEP_FIRST=s=>/①/.test(s)||/^1[\.\s]\S/.test(s);
+const STEP_LAST=s=>/⑤/.test(s)||/^5[\.\s]\S/.test(s);
+const STEP_ANY=s=>/[①②③④⑤]/.test(s)||/^[1-5][\.\s]\S/.test(s);
+const ICONS=["①","②","③","④","⑤"];
+function isPCDevice(s){return/^pc$/i.test(s)||/desktop/i.test(s);}
+function isMODevice(s){return/^mo$|^moweb$|^mobile$|^m$/i.test(s);}
+function getRowTotalAfter(row,startCol){
+  let last=null;
+  for(let c=startCol;c<row.length;c++){
+    const v=row[c];if(v==null)continue;
+    if(typeof v==="string"){const t=v.trim();if(t===""||t==="-"||t==="–"||t==="N/A")continue;break;}
+    if(typeof v==="number"&&isFinite(v))last=v;
+  }
+  return last;
+}
+function parseTSVToRows(text){
+  const cleaned=String(text).replace(/ /g," ");
+  const lines=cleaned.split(/\r?\n/);const rows=[];
+  for(const raw of lines){
+    if(raw.trim()===""){rows.push([]);continue;}
+    let cols;if(raw.includes("\t"))cols=raw.split("\t");else cols=raw.split(/,(?![^"]*"\s*$)/);
+    const parsed=cols.map(c=>{
+      const t=String(c==null?"":c).trim().replace(/^"|"$/g,"");
+      if(t===""||t==="-"||t==="–"||t==="N/A")return null;
+      const numStr=t.replace(/,/g,"").replace(/%$/,"");
+      if(/^-?\d+(\.\d+)?$/.test(numStr))return parseFloat(numStr);
+      return t;
+    });
+    rows.push(parsed);
+  }
+  return rows;
+}
+
+// ── SHARED XLSX READER ───────────────────────────────────
+async function unzipXlsx(u8){
+  const dv=new DataView(u8.buffer,u8.byteOffset,u8.byteLength);
+  const eocdSig=0x06054b50;let eocd=-1;
+  const scanFrom=Math.max(0,u8.length-65557);
+  for(let i=u8.length-22;i>=scanFrom;i--){if(dv.getUint32(i,true)===eocdSig){eocd=i;break;}}
+  if(eocd<0)throw new Error("올바른 .xlsx 파일이 아닙니다");
+  const cdOffset=dv.getUint32(eocd+16,true);const numEntries=dv.getUint16(eocd+10,true);
+  const files={};let p=cdOffset;
+  for(let i=0;i<numEntries;i++){
+    if(dv.getUint32(p,true)!==0x02014b50)break;
+    const compMethod=dv.getUint16(p+10,true);const compSize=dv.getUint32(p+20,true);
+    const nameLen=dv.getUint16(p+28,true);const extraLen=dv.getUint16(p+30,true);
+    const commentLen=dv.getUint16(p+32,true);const lho=dv.getUint32(p+42,true);
+    const name=new TextDecoder("utf-8").decode(u8.subarray(p+46,p+46+nameLen));
+    p+=46+nameLen+extraLen+commentLen;
+    if(dv.getUint32(lho,true)!==0x04034b50)continue;
+    const lNameLen=dv.getUint16(lho+26,true);const lExtraLen=dv.getUint16(lho+28,true);
+    const dataStart=lho+30+lNameLen+lExtraLen;
+    const compData=u8.subarray(dataStart,dataStart+compSize);
+    let bytes;
+    if(compMethod===0)bytes=compData;
+    else if(compMethod===8){
+      const stream=new Blob([compData]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+      bytes=new Uint8Array(await new Response(stream).arrayBuffer());
+    }else throw new Error("지원하지 않는 압축: "+compMethod);
+    files[name]=bytes;
+  }
+  return files;
+}
+function parseXlsxWorkbook(files){
+  const decoder=new TextDecoder("utf-8");const text=name=>files[name]?decoder.decode(files[name]):null;
+  const sharedStrings=[];
+  if(files["xl/sharedStrings.xml"]){
+    const doc=new DOMParser().parseFromString(text("xl/sharedStrings.xml"),"text/xml");
+    for(const si of doc.getElementsByTagName("si")){let str="";for(const t of si.getElementsByTagName("t"))str+=t.textContent||"";sharedStrings.push(str);}
+  }
+  const rid2target={};
+  if(files["xl/_rels/workbook.xml.rels"]){
+    const rdoc=new DOMParser().parseFromString(text("xl/_rels/workbook.xml.rels"),"text/xml");
+    for(const r of rdoc.getElementsByTagName("Relationship"))rid2target[r.getAttribute("Id")]=r.getAttribute("Target");
+  }
+  const sheets=[];
+  if(files["xl/workbook.xml"]){
+    const wdoc=new DOMParser().parseFromString(text("xl/workbook.xml"),"text/xml");
+    for(const s of wdoc.getElementsByTagName("sheet")){
+      const name=s.getAttribute("name");let rid=s.getAttribute("r:id");
+      if(!rid)for(let i=0;i<s.attributes.length;i++){if(s.attributes[i].localName==="id"){rid=s.attributes[i].value;break;}}
+      const target=rid2target[rid];if(!target)continue;
+      sheets.push({name,file:target.startsWith("/")?target.slice(1):"xl/"+target});
+    }
+  }
+  function colRefToIdx(ref){let n=0;for(const c of ref)n=n*26+(c.charCodeAt(0)-64);return n-1;}
+  function readSheet(name){
+    const sheet=sheets.find(s=>s.name===name);if(!sheet)return null;
+    const xml=text(sheet.file);if(!xml)return null;
+    const doc=new DOMParser().parseFromString(xml,"text/xml");const result=[];
+    for(const row of doc.getElementsByTagName("row")){
+      const rIdx=parseInt(row.getAttribute("r"),10)-1;
+      while(result.length<=rIdx)result.push([]);const arr=result[rIdx];
+      for(const cell of row.getElementsByTagName("c")){
+        const ref=cell.getAttribute("r");const m=ref?ref.match(/^[A-Z]+/):null;if(!m)continue;
+        const ci=colRefToIdx(m[0]);const t=cell.getAttribute("t");
+        const vEl=cell.getElementsByTagName("v")[0];const isEl=cell.getElementsByTagName("is")[0];
+        let val;
+        if(t==="s"&&vEl)val=sharedStrings[parseInt(vEl.textContent,10)];
+        else if(t==="inlineStr"&&isEl)val=isEl.textContent.trim();
+        else if(t==="str"&&vEl)val=vEl.textContent;
+        else if(t==="b"&&vEl)val=vEl.textContent==="1";
+        else if(vEl)val=parseFloat(vEl.textContent);
+        while(arr.length<ci)arr.push(null);arr[ci]=val;
+      }
+    }
+    return result;
+  }
+  return{sheets,readSheet};
+}
+function svgDownload(svgStr,filename){
+  const blob=new Blob([svgStr],{type:"image/svg+xml;charset=utf-8"});
+  const url=URL.createObjectURL(blob);const a=document.createElement("a");
+  a.href=url;a.download=filename;document.body.appendChild(a);a.click();
+  document.body.removeChild(a);setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+</script>
+
+<!-- ════════════════════════════════════════════════════════
+     SCRIPT: TAB 1 — 채널 분석
+═══════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+const SEED=[
+  {channel:"Organic",pc:{inflow:4169,signups:90,rate:2.16},mo:{inflow:956,signups:9,rate:0.94},total:{inflow:5125,signups:99,rate:1.93}},
+  {channel:"Paid",pc:{inflow:17038,signups:187,rate:1.10},mo:{inflow:15015,signups:60,rate:0.40},total:{inflow:32053,signups:247,rate:0.77}},
+  {channel:"Owned",pc:{inflow:18134,signups:539,rate:2.97},mo:{inflow:16593,signups:80,rate:0.48},total:{inflow:34727,signups:619,rate:1.78}},
+  {channel:"Direct",pc:{inflow:1884,signups:351,rate:18.63},mo:{inflow:3047,signups:20,rate:0.66},total:{inflow:4931,signups:371,rate:7.52}},
+  {channel:"Referral",pc:{inflow:619,signups:31,rate:5.01},mo:{inflow:1885,signups:13,rate:0.69},total:{inflow:2504,signups:44,rate:1.76}}
+];
+const SEED_TSV=["채널\t디바이스\t①커머스인입\t②정보탐색\t③주문시도\t④본인인증\t⑤가입신청완료\t최종 전환율","Organic\tPC\t4169\t1556\t211\t129\t90\t2.16%","Organic\tMO\t956\t271\t56\t24\t9\t0.94%","Paid\tPC\t17038\t5228\t656\t344\t187\t1.10%","Paid\tMO\t15015\t2235\t432\t120\t60\t0.40%","Owned\tPC\t18134\t6138\t1061\t715\t539\t2.97%","Owned\tMO\t16593\t2777\t537\t159\t80\t0.48%","Direct\tPC\t1884\t938\t410\t376\t351\t18.63%","Direct\tMO\t3047\t596\t114\t38\t20\t0.66%","Referral\tPC\t619\t280\t67\t43\t31\t5.01%","Referral\tMO\t1885\t439\t80\t32\t13\t0.69%"].join("\n");
+const PALETTES={template:{Organic:{fill:"rgba(143,124,217,0.40)",stroke:"#8F7CD9"},Paid:{fill:"rgba(120,166,217,0.45)",stroke:"#78A6D9"},Owned:{fill:"rgba(133,205,135,0.40)",stroke:"#85CD87"},Direct:{fill:"rgba(232,184,75,0.45)",stroke:"#E8B84B"},Referral:{fill:"rgba(237,154,108,0.45)",stroke:"#ED9A6C"},_default:{fill:"rgba(156,163,175,0.40)",stroke:"#9CA3AF"}},grayscale:{_default:{fill:"rgba(160,160,160,0.40)",stroke:"#6b7280"}}};
+
+function finalizeChannel(channel,v){
+  const total={inflow:v.pc.inflow+v.mo.inflow,signups:v.pc.signups+v.mo.signups};
+  total.rate=total.inflow>0?total.signups/total.inflow*100:0;
+  return{channel,pc:{...v.pc,rate:v.pc.inflow>0?v.pc.signups/v.pc.inflow*100:0},mo:{...v.mo,rate:v.mo.inflow>0?v.mo.signups/v.mo.inflow*100:0},total};
+}
+function detectFormat(rows){
+  let hasT=false,hasS=false,hasTr=false;
+  for(const row of rows){for(let c=0;c<(row||[]).length;c++){const cell=(row||[])[c];if(typeof cell!=="string")continue;const t=cell.trim();if(t==="채널")hasT=true;if(t==="디바이스")hasT=true;if(STEP_ANY(t))hasS=true;if(/^행\s*레이블$/.test(t)){let abc=0;for(let cc=c+1;cc<row.length;cc++){const v=row[cc];if(typeof v==="string"&&v.trim()&&/^[A-Za-z]/.test(v.trim()))abc++;}if(abc>=2)hasTr=true;}}}
+  if(hasT)return"template";if(hasTr)return"transposed";if(hasS)return"pivot";return"unknown";
+}
+function parseDevice_template(rows){
+  const agg=new Map();
+  for(const row of rows){
+    if(!row||row.length<7)continue;const ch=row[0];
+    if(typeof ch!=="string"||!ch.trim()||ch==="채널"||ch.startsWith("※")||ch.startsWith("//"))continue;
+    const dev=String(row[1]||"").trim();let device;
+    if(isPCDevice(dev))device="pc";else if(isMODevice(dev))device="mo";else continue;
+    const inflow=row[2],signups=row[6];
+    if(typeof inflow!=="number"||inflow<=0||typeof signups!=="number"||signups<0)continue;
+    if(!agg.has(ch))agg.set(ch,{pc:{inflow:0,signups:0},mo:{inflow:0,signups:0}});
+    const v=agg.get(ch)[device];v.inflow+=inflow;v.signups+=signups;
+  }
+  return Array.from(agg.entries()).map(([ch,v])=>finalizeChannel(ch,v));
+}
+function parseDevice_pivot(rows){
+  const labelCols=new Set();
+  for(let r=0;r<rows.length;r++){const row=rows[r]||[];for(let c=0;c<row.length;c++){if(typeof row[c]==="string"&&STEP_ANY(row[c]))labelCols.add(c);}}
+  const colDevice=new Map();
+  for(const c of labelCols){
+    let device=null,firstStepRow=-1;
+    for(let r=0;r<rows.length;r++){const row=rows[r]||[];if(typeof row[c]==="string"&&STEP_ANY(row[c])){firstStepRow=r;break;}}
+    if(firstStepRow<0)continue;
+    for(let r=0;r<firstStepRow&&!device;r++){const row=rows[r]||[];for(let cc=Math.max(0,c-2);cc<=Math.min(row.length-1,c+2);cc++){const v=row[cc];if(typeof v!=="string")continue;const t=v.trim();if(isPCDevice(t)){device="pc";break;}if(isMODevice(t)){device="mo";break;}}}
+    if(device)colDevice.set(c,device);
+  }
+  if(!colDevice.size)return[];
+  const pcByNum=new Map(),moByNum=new Map(),nameByNum=new Map();
+  for(const[c,device]of colDevice.entries()){
+    const localByNum=new Map();
+    for(let r=0;r<rows.length;r++){
+      const row=rows[r]||[];const v=row[c];if(typeof v!=="string")continue;const t=v.trim();if(!STEP_ANY(t))continue;
+      const info=stepInfoFromLabel(t);if(!info)continue;
+      const total=getRowTotalAfter(row,c+1);if(total==null||!isFinite(total))continue;
+      if(!localByNum.has(info.num))localByNum.set(info.num,total);
+      if(!nameByNum.has(info.num))nameByNum.set(info.num,info);
+    }
+    const target=device==="pc"?pcByNum:moByNum;
+    for(const[n,v]of localByNum.entries())target.set(n,(target.get(n)||0)+v);
+  }
+  // build channel-level result from pivot (single channel per pivot)
+  if(!pcByNum.size&&!moByNum.size)return[];
+  const pcTotal=Array.from(pcByNum.values()).reduce((a,b)=>a+b,0);
+  const moTotal=Array.from(moByNum.values()).reduce((a,b)=>a+b,0);
+  return[finalizeChannel("Total",{pc:{inflow:Array.from(pcByNum.values())[0]||0,signups:Array.from(pcByNum.values()).pop()||0},mo:{inflow:Array.from(moByNum.values())[0]||0,signups:Array.from(moByNum.values()).pop()||0}})];
+}
+function rowsToDeviceData(rows){
+  const fmt=detectFormat(rows);
+  if(fmt==="template")return parseDevice_template(rows);
+  for(const fn of[parseDevice_template]){const d=fn(rows);if(d.length>0)return d;}
+  return[];
+}
+function stepInfoFromLabel(t){
+  let num=null,icon=null,name="";
+  const m1=t.match(/^([1-5])[\.\s]?\s*([①②③④⑤])?\s*(.*)$/);
+  if(m1){num=parseInt(m1[1]);icon=m1[2]||ICONS[num-1];name=(m1[3]||"").trim();}
+  else{const im=t.match(/[①②③④⑤]/);if(im){icon=im[0];num=ICONS.indexOf(icon)+1;name=t.replace(/[①②③④⑤]/,"").trim();}}
+  if(!num)return null;return{num,name:name||`Stage ${num}`,icon:icon||ICONS[num-1]};
+}
+
+function renderSVG_matrix(data,opts){
+  opts=opts||{};const palette=PALETTES[opts.palette]||PALETTES.template;
+  const showMedian=opts.showMedian!==false,showQuadrants=opts.showQuadrants!==false;
+  const W=1400,H=800,margin={top:110,right:110,bottom:100,left:130};
+  const plotW=W-margin.left-margin.right,plotH=H-margin.top-margin.bottom;
+  if(!data||data.length===0)return`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}"><rect width="${W}" height="${H}" fill="#fff"/><text x="${W/2}" y="${H/2}" text-anchor="middle" font-size="18" fill="#9ca3af">데이터가 없습니다</text></svg>`;
+  const inflows=data.map(d=>d.total.inflow),rates=data.map(d=>d.total.rate),signupsArr=data.map(d=>d.total.signups);
+  const minIn=Math.min(...inflows),maxIn=Math.max(...inflows);
+  const xmin=Math.pow(10,Math.floor(Math.log10(minIn))),xmax=niceLogHigh(maxIn),xticks=niceLogTicks(xmin,xmax);
+  const maxRate=Math.max(...rates);let ystep;
+  if(maxRate<=4)ystep=1;else if(maxRate<=10)ystep=2;else if(maxRate<=25)ystep=5;else if(maxRate<=50)ystep=10;else ystep=20;
+  const ymaxLabel=Math.max(ystep,Math.ceil(maxRate/ystep)*ystep),ymax=Math.max(ymaxLabel+ystep*0.5,maxRate+1.5);
+  const yticks=[];for(let i=0;i<=ymaxLabel;i+=ystep)yticks.push(i);
+  const xs=v=>margin.left+(Math.log10(v)-Math.log10(xmin))/(Math.log10(xmax)-Math.log10(xmin))*plotW;
+  const ys=v=>margin.top+(1-v/ymax)*plotH;const maxSig=Math.max(...signupsArr);const rs=v=>18+Math.sqrt(v/maxSig)*70;
+  const medY=median(rates);const colorOf=ch=>palette[ch]||palette._default||{fill:"rgba(150,150,150,0.4)",stroke:"#888"};
+  const TXT={titleBg:"#5C6470",subtitle:"#7B8194",axisLabel:"#C8447F",tickLabel:"#9CA3AF",grid:"#E5E7EB",median:"#D1D5DB",label:"#374151",quadHigh:"#9F6FE0",quadLow:"#9CA3AF"};
+  const out=[];
+  out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system,BlinkMacSystemFont,'Pretendard','Noto Sans KR',sans-serif">`);
+  out.push(`<rect x="0" y="0" width="${W}" height="${H}" fill="#ffffff"/>`);
+  out.push(`<rect x="32" y="28" rx="22" ry="22" width="540" height="44" fill="${TXT.titleBg}"/>`);
+  out.push(`<text x="60" y="56" font-size="20" font-weight="700" fill="#ffffff">${esc("채널 포지션 매트릭스: 유입 부피 × 최종 전환율")}</text>`);
+  out.push(`<text x="32" y="96" font-size="15" fill="${TXT.subtitle}">X=1단계 유입수 (log) · Y=최종 전환율(%) · 버블 크기=최종 가입자 수 · 합산(PC+Mobile)</text>`);
+  out.push(`<text transform="translate(46,${margin.top+plotH/2}) rotate(-90)" text-anchor="middle" font-size="14" font-weight="600" fill="${TXT.axisLabel}">최종 전환율 (%)</text>`);
+  out.push(`<text x="${margin.left+plotW/2}" y="${H-30}" text-anchor="middle" font-size="14" font-weight="600" fill="${TXT.axisLabel}">유입 수</text>`);
+  for(const t of xticks){const x=xs(t);out.push(`<line x1="${x}" y1="${margin.top}" x2="${x}" y2="${margin.top+plotH}" stroke="${TXT.grid}" stroke-width="1"/>`);out.push(`<text x="${x}" y="${margin.top+plotH+30}" text-anchor="middle" font-size="13" fill="${TXT.tickLabel}">${formatNum(t)}</text>`);}
+  for(const t of yticks){const y=ys(t);out.push(`<line x1="${margin.left}" y1="${y}" x2="${margin.left+plotW}" y2="${y}" stroke="${TXT.grid}" stroke-width="1"/>`);out.push(`<text x="${margin.left-14}" y="${y+5}" text-anchor="end" font-size="13" fill="${TXT.tickLabel}">${t}%</text>`);}
+  if(showMedian&&data.length>=3)out.push(`<line x1="${margin.left}" y1="${ys(medY)}" x2="${margin.left+plotW}" y2="${ys(medY)}" stroke="${TXT.median}" stroke-width="1"/>`);
+  if(showQuadrants){out.push(`<text x="${margin.left+14}" y="${margin.top+24}" font-size="13" fill="${TXT.quadHigh}" font-weight="500">↖ 작은 부피 / 높은 효율</text>`);out.push(`<text x="${margin.left+plotW-14}" y="${margin.top+24}" text-anchor="end" font-size="13" fill="${TXT.quadHigh}" font-weight="500">큰 부피 / 높은 효율 ↗</text>`);out.push(`<text x="${margin.left+14}" y="${margin.top+plotH-12}" font-size="13" fill="${TXT.quadLow}">↙ 작은 부피 / 낮은 효율</text>`);out.push(`<text x="${margin.left+plotW-14}" y="${margin.top+plotH-12}" text-anchor="end" font-size="13" fill="${TXT.quadLow}">큰 부피 / 낮은 효율 ↘</text>`);}
+  const bubbles=data.map(d=>({d,cx:xs(d.total.inflow),cy:ys(d.total.rate),r:rs(d.total.signups),color:colorOf(d.channel)}));
+  for(const b of bubbles){out.push(`<circle cx="${b.cx.toFixed(2)}" cy="${b.cy.toFixed(2)}" r="${b.r.toFixed(2)}" fill="${b.color.fill}" stroke="${b.color.stroke}" stroke-width="2"/>`);out.push(`<circle cx="${b.cx.toFixed(2)}" cy="${b.cy.toFixed(2)}" r="3" fill="${b.color.stroke}"/>`);}
+  const labelW=200,labelH=44;
+  function boxIntersectsAnyBubble(box,exclude){for(const b of bubbles){if(b===exclude)continue;const closestX=Math.max(box.x,Math.min(b.cx,box.x+box.w));const closestY=Math.max(box.y,Math.min(b.cy,box.y+box.h));const dx=b.cx-closestX,dy=b.cy-closestY;if(dx*dx+dy*dy<b.r*b.r)return true;}return false;}
+  for(const b of bubbles){
+    const aboveTop=b.cy-b.r-labelH-6,belowTop=b.cy+b.r+6;
+    const boxAbove={x:b.cx-labelW/2,y:aboveTop,w:labelW,h:labelH};const boxBelow={x:b.cx-labelW/2,y:belowTop,w:labelW,h:labelH};
+    const aboveOk=aboveTop>=105&&!boxIntersectsAnyBubble(boxAbove,b);const belowOk=belowTop+labelH<H-20&&!boxIntersectsAnyBubble(boxBelow,b);
+    let pos="above";if(!aboveOk&&belowOk)pos="below";else if(!aboveOk&&!belowOk)pos="below";
+    let nameY,valY;if(pos==="above"){nameY=b.cy-b.r-28;valY=b.cy-b.r-10;}else{nameY=b.cy+b.r+22;valY=b.cy+b.r+40;}
+    out.push(`<text x="${b.cx.toFixed(2)}" y="${nameY.toFixed(2)}" text-anchor="middle" font-size="16" font-weight="700" fill="${TXT.label}">${esc(b.d.channel)}</text>`);
+    out.push(`<text x="${b.cx.toFixed(2)}" y="${valY.toFixed(2)}" text-anchor="middle" font-size="14" font-weight="600" fill="${b.color.stroke}">${b.d.total.rate.toFixed(2)}% · ${b.d.total.signups.toLocaleString()}명</text>`);
+  }
+  out.push(`</svg>`);return out.join("\n");
+}
+function renderSVG_bars(data,opts){
+  opts=opts||{};const palette=PALETTES[opts.palette]||PALETTES.template;const showAvg=opts.showAvg!==false;
+  if(!data||data.length===0)return`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 400"><text x="700" y="200" text-anchor="middle" font-size="18" fill="#9ca3af">데이터가 없습니다</text></svg>`;
+  const colorOf=ch=>palette[ch]||palette._default||{fill:"rgba(150,150,150,0.4)",stroke:"#888"};
+  const ROW_H=150,W=1600,margin={top:200,right:100,bottom:90,left:240};
+  const plotW=W-margin.left-margin.right,plotH=data.length*ROW_H,H=margin.top+plotH+margin.bottom;
+  const allRates=data.flatMap(d=>[d.pc.rate,d.mo.rate,d.total.rate]),maxRate=Math.max(...allRates,0);
+  let xstep;if(maxRate<=4)xstep=1;else if(maxRate<=12)xstep=2;else if(maxRate<=25)xstep=5;else if(maxRate<=60)xstep=10;else xstep=20;
+  const xmaxLabel=Math.max(xstep,Math.ceil(maxRate/xstep)*xstep),xmaxPlot=Math.max(xmaxLabel*1.05,maxRate+xstep*0.5);
+  const xticks=[];for(let i=0;i<=xmaxLabel;i+=xstep)xticks.push(i);const xs=v=>margin.left+v/xmaxPlot*plotW;
+  const sumIn=data.reduce((s,d)=>s+d.total.inflow,0),sumSig=data.reduce((s,d)=>s+d.total.signups,0),avgRate=sumIn>0?sumSig/sumIn*100:0;
+  const TXT={titleBg:"#5C6470",subtitle:"#7B8194",axisLabel:"#C8447F",avg:"#C8447F",avgLine:"#DC3A8E",tickLabel:"#9CA3AF",grid:"#E5E7EB",channelName:"#1F2937",metaSignup:"#9CA3AF",deviceLabel:"#6B7280"};
+  const out=[];
+  out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system,BlinkMacSystemFont,'Pretendard','Noto Sans KR',sans-serif">`);
+  out.push(`<rect x="0" y="0" width="${W}" height="${H}" fill="#ffffff"/>`);
+  out.push(`<rect x="32" y="28" rx="22" ry="22" width="500" height="44" fill="${TXT.titleBg}"/>`);
+  out.push(`<text x="60" y="56" font-size="20" font-weight="700" fill="#ffffff">${esc("채널별 최종 전환율 — PC vs Mobile")}</text>`);
+  out.push(`<text x="32" y="100" font-size="15" fill="${TXT.subtitle}">채널별 각 퍼널 단계 사용자 수 및 단계 통과율</text>`);
+  for(const t of xticks){const x=xs(t);out.push(`<line x1="${x.toFixed(2)}" y1="${margin.top}" x2="${x.toFixed(2)}" y2="${margin.top+plotH}" stroke="${TXT.grid}" stroke-width="1"/>`);}
+  if(showAvg){const avgX=xs(avgRate);out.push(`<line x1="${avgX.toFixed(2)}" y1="${margin.top-30}" x2="${avgX.toFixed(2)}" y2="${margin.top+plotH}" stroke="${TXT.avgLine}" stroke-width="1.5" stroke-dasharray="6,4"/>`);out.push(`<text x="${avgX.toFixed(2)}" y="${margin.top-38}" text-anchor="middle" font-size="14" font-weight="700" fill="${TXT.avg}">합산 평균 ${avgRate.toFixed(2)}%</text>`);}
+  for(let i=0;i<data.length;i++){
+    const d=data[i],c=colorOf(d.channel),yTop=margin.top+i*ROW_H,labelX=margin.left;
+    out.push(`<text x="${labelX}" y="${yTop+22}" font-size="20" font-weight="700" fill="${TXT.channelName}">${esc(d.channel)}</text>`);
+    out.push(`<text x="${labelX+220}" y="${yTop+22}" font-size="16" font-weight="700" fill="${c.stroke}">합산 ${d.total.rate.toFixed(2)}%</text>`);
+    out.push(`<text x="${labelX+380}" y="${yTop+22}" font-size="14" fill="${TXT.metaSignup}">가입 ${d.total.signups.toLocaleString()}명</text>`);
+    const pcY=yTop+48,pcW=Math.max(0,xs(d.pc.rate)-margin.left);
+    out.push(`<text x="${labelX-16}" y="${pcY+16}" text-anchor="end" font-size="12" font-weight="600" fill="${TXT.deviceLabel}">PC</text>`);
+    out.push(`<rect x="${labelX}" y="${pcY}" width="${pcW.toFixed(2)}" height="22" rx="2" ry="2" fill="${c.stroke}" opacity="0.9"/>`);
+    out.push(`<text x="${(labelX+pcW+8).toFixed(2)}" y="${pcY+17}" font-size="14" font-weight="700" fill="${c.stroke}">${d.pc.rate.toFixed(2)}%</text>`);
+    const moY=yTop+88,moW=Math.max(0,xs(d.mo.rate)-margin.left);
+    out.push(`<text x="${labelX-16}" y="${moY+16}" text-anchor="end" font-size="12" font-weight="600" fill="${TXT.deviceLabel}">Mo</text>`);
+    out.push(`<rect x="${labelX}" y="${moY}" width="${moW.toFixed(2)}" height="22" rx="2" ry="2" fill="${c.fill}"/>`);
+    out.push(`<text x="${(labelX+moW+8).toFixed(2)}" y="${moY+17}" font-size="14" font-weight="700" fill="${c.stroke}">${d.mo.rate.toFixed(2)}%</text>`);
+  }
+  const axisY=margin.top+plotH+28;
+  for(const t of xticks)out.push(`<text x="${xs(t).toFixed(2)}" y="${axisY}" text-anchor="middle" font-size="13" fill="${TXT.tickLabel}">${t}%</text>`);
+  out.push(`<text x="${margin.left+plotW/2}" y="${H-24}" text-anchor="middle" font-size="14" font-weight="600" fill="${TXT.axisLabel}">최종 전환율 (%)</text>`);
+  out.push(`</svg>`);return out.join("\n");
+}
+function renderSVG_ch(data,opts){return(opts&&opts.chartType)==="bars"?renderSVG_bars(data,opts):renderSVG_matrix(data,opts);}
+
+// UI
+let chData=SEED.slice();
+const $chChart=document.getElementById("ch-chart");
+const $chTsv=document.getElementById("ch-tsv");
+const $chChartType=document.getElementById("ch-chartType");
+const $chPalette=document.getElementById("ch-palette");
+const $chShowMedian=document.getElementById("ch-showMedian");
+const $chShowQuadrants=document.getElementById("ch-showQuadrants");
+const $chShowAvg=document.getElementById("ch-showAvg");
+const $chOptMedian=document.getElementById("ch-optMedian");
+const $chOptQuad=document.getElementById("ch-optQuad");
+const $chOptAvg=document.getElementById("ch-optAvg");
+const $chStatus=document.getElementById("ch-status");
+function chOpts(){return{chartType:$chChartType.value,palette:$chPalette.value,showMedian:$chShowMedian.checked,showQuadrants:$chShowQuadrants.checked,showAvg:$chShowAvg.checked};}
+function chRerender(){const isMatrix=$chChartType.value==="matrix";$chOptMedian.style.display=isMatrix?"":"none";$chOptQuad.style.display=isMatrix?"":"none";$chOptAvg.style.display=isMatrix?"none":"";$chChart.innerHTML=renderSVG_ch(chData,chOpts());}
+function chSetStatus(msg,kind){$chStatus.textContent=msg||"";$chStatus.className="status "+(kind||"ok");}
+$chTsv.value=SEED_TSV;chRerender();chSetStatus(`현재 ${chData.length}개 채널 표시 중 (시드 데이터)`);
+document.getElementById("ch-apply").addEventListener("click",()=>{const data=rowsToDeviceData(parseTSVToRows($chTsv.value));if(!data.length){chSetStatus("파싱 실패: 형식을 확인하세요.","err");return;}chData=data;chRerender();chSetStatus(`✓ ${data.length}개 채널 / PC·MO 분리 완료`);});
+document.getElementById("ch-reset").addEventListener("click",()=>{$chTsv.value=SEED_TSV;chData=SEED.slice();chRerender();chSetStatus("시드 데이터로 복원됨");});
+[$chChartType,$chPalette,$chShowMedian,$chShowQuadrants,$chShowAvg].forEach(el=>el.addEventListener("change",chRerender));
+document.getElementById("ch-xlsx").addEventListener("change",async(e)=>{
+  const file=e.target.files&&e.target.files[0];if(!file)return;
+  document.getElementById("ch-fname").textContent=file.name;chSetStatus(`엑셀 파싱 중: ${file.name}…`);
+  try{const u8=new Uint8Array(await file.arrayBuffer());const files=await unzipXlsx(u8);const wb=parseXlsxWorkbook(files);if(!wb.sheets.length)throw new Error("시트를 찾을 수 없습니다");
+  let chosen=null,data=[];
+  for(const s of wb.sheets){const rows=wb.readSheet(s.name)||[];const d=rowsToDeviceData(rows);if(d.length>0){chosen=s;data=d;break;}}
+  if(!data.length)throw new Error("PC/MO 디바이스가 분리된 채널 데이터를 찾지 못했습니다");
+  chData=data;chRerender();chSetStatus(`✓ ${file.name} → '${chosen.name}' / ${data.length}개 채널`);}
+  catch(err){chSetStatus("xlsx 파싱 실패: "+err.message,"err");}finally{e.target.value="";}
+});
+document.getElementById("ch-download").addEventListener("click",()=>{
+  svgDownload(renderSVG_ch(chData,chOpts()),$chChartType.value==="bars"?"channel_pc_vs_mobile_bars.svg":"channel_position_matrix.svg");
+  chSetStatus("✓ SVG 다운로드 — Figma 캔버스에 드래그하세요");
+});
+})();
+</script>
+
+<!-- ════════════════════════════════════════════════════════
+     SCRIPT: TAB 2 — 단계별 이탈
+═══════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+const SEED_ST={stages:[{num:1,icon:"①",name:"커머스인입",pc:41844,mo:37496},{num:2,icon:"②",name:"정보탐색",pc:14140,mo:6318},{num:3,icon:"③",name:"주문시도",pc:2405,mo:1219},{num:4,icon:"④",name:"본인인증",pc:1607,mo:373},{num:5,icon:"⑤",name:"가입신청완료",pc:1198,mo:182}].map(s=>({...s,total:s.pc+s.mo}))};
+const SEED_TSV_ST=["moweb","행 레이블\t총합계","1.①커머스인입\t37496","2.②정보탐색\t6318","3.③주문시도\t1219","4.④본인인증\t373","5.⑤가입신청완료\t182","","pc","행 레이블\t총합계","1.①커머스인입\t41844","2.②정보탐색\t14140","3.③주문시도\t2405","4.④본인인증\t1607","5.⑤가입신청완료\t1198"].join("\n");
+function iconToNum(c){return ICONS.indexOf(c)+1;}
+function stepInfoFromLabel(t){let num=null,icon=null,name="";const m1=t.match(/^([1-5])[\.\s]?\s*([①②③④⑤])?\s*(.*)$/);if(m1){num=parseInt(m1[1]);icon=m1[2]||ICONS[num-1];name=(m1[3]||"").trim();}else{const im=t.match(/[①②③④⑤]/);if(im){icon=im[0];num=iconToNum(icon);name=t.replace(/[①②③④⑤]/,"").trim();}}if(!num)return null;return{num,name:name||`Stage ${num}`,icon:icon||ICONS[num-1]};}
+function finalizeStages(nameByNum,pcByNum,moByNum){
+  const allNums=new Set([...nameByNum.keys(),...pcByNum.keys(),...moByNum.keys()]);
+  return{stages:[...allNums].sort((a,b)=>a-b).map(n=>{const info=nameByNum.get(n)||{num:n,name:`Stage ${n}`,icon:ICONS[n-1]||`${n}`};const pc=pcByNum.get(n)||0,mo=moByNum.get(n)||0;return{num:n,name:info.name,icon:info.icon,pc,mo,total:pc+mo};})};
+}
+function parseStages_pivot(rows){
+  const labelCols=new Set();
+  for(let r=0;r<rows.length;r++){const row=rows[r]||[];for(let c=0;c<row.length;c++){if(typeof row[c]==="string"&&STEP_ANY(row[c]))labelCols.add(c);}}
+  const colDevice=new Map();
+  for(const c of labelCols){let device=null,firstStepRow=-1;for(let r=0;r<rows.length;r++){const row=rows[r]||[];if(typeof row[c]==="string"&&STEP_ANY(row[c])){firstStepRow=r;break;}}if(firstStepRow<0)continue;for(let r=0;r<firstStepRow&&!device;r++){const row=rows[r]||[];for(let cc=Math.max(0,c-2);cc<=Math.min(row.length-1,c+2);cc++){const v=row[cc];if(typeof v!=="string")continue;const t=v.trim();if(isPCDevice(t)){device="pc";break;}if(isMODevice(t)){device="mo";break;}}}if(device)colDevice.set(c,device);}
+  if(!colDevice.size)return{stages:[]};
+  const pcByNum=new Map(),moByNum=new Map(),nameByNum=new Map();
+  for(const[c,device]of colDevice.entries()){const localByNum=new Map();for(let r=0;r<rows.length;r++){const row=rows[r]||[];const v=row[c];if(typeof v!=="string")continue;const t=v.trim();if(!STEP_ANY(t))continue;const info=stepInfoFromLabel(t);if(!info)continue;const total=getRowTotalAfter(row,c+1);if(total==null||!isFinite(total))continue;if(!localByNum.has(info.num))localByNum.set(info.num,total);if(!nameByNum.has(info.num))nameByNum.set(info.num,info);}const target=device==="pc"?pcByNum:moByNum;for(const[n,v]of localByNum.entries())target.set(n,(target.get(n)||0)+v);}
+  return finalizeStages(nameByNum,pcByNum,moByNum);
+}
+function parseStages_template(rows){
+  let headerRow=-1;const stepCols=[];const pcByNum=new Map(),moByNum=new Map(),nameByNum=new Map();
+  for(let r=0;r<rows.length;r++){const row=rows[r]||[];let foundCh=false,foundDev=false;for(const cell of row){if(typeof cell!=="string")continue;if(cell.trim()==="채널")foundCh=true;if(cell.trim()==="디바이스")foundDev=true;}if(foundCh&&foundDev){headerRow=r;for(let c=0;c<row.length;c++){if(typeof row[c]!=="string")continue;const info=stepInfoFromLabel(row[c].trim());if(info)stepCols.push({col:c,info});}break;}}
+  if(headerRow<0||stepCols.length===0)return{stages:[]};
+  for(const sc of stepCols)nameByNum.set(sc.info.num,sc.info);
+  for(let r=headerRow+1;r<rows.length;r++){const row=rows[r]||[];const ch=row[0];if(typeof ch!=="string"||!ch.trim()||ch==="채널"||ch.startsWith("※")||ch.startsWith("//"))continue;const dev=String(row[1]||"").trim();let device;if(isPCDevice(dev))device="pc";else if(isMODevice(dev))device="mo";else continue;for(const sc of stepCols){const v=row[sc.col];if(typeof v!=="number"||!isFinite(v))continue;const map=device==="pc"?pcByNum:moByNum;map.set(sc.info.num,(map.get(sc.info.num)||0)+v);}}
+  return finalizeStages(nameByNum,pcByNum,moByNum);
+}
+function rowsToStageData(rows){
+  const fmt=detectFormatSt(rows);
+  let result;if(fmt==="template")result=parseStages_template(rows);else result=parseStages_pivot(rows);
+  if(!result||!result.stages.length){for(const fn of[parseStages_template,parseStages_pivot]){const r=fn(rows);if(r.stages.length>0){result=r;break;}}}
+  return result||{stages:[]};
+}
+function detectFormatSt(rows){let hasT=false,hasS=false;for(const row of rows){for(const cell of(row||[])){if(typeof cell!=="string")continue;const t=cell.trim();if(t==="채널"||t==="디바이스")hasT=true;if(STEP_ANY(t))hasS=true;}}if(hasT)return"template";if(hasS)return"pivot";return"unknown";}
+
+const COLORS_ST={pinkArea:"rgba(232,28,122,0.12)",pinkLine:"#E81C7A",pinkLabel:"#E81C7A",pinkBoxBg:"#FFEAF4",pinkBoxBorder:"#FBC9DD",pinkBoxText:"#E81C7A",pinkArrow:"#E81C7A",greyBoxBg:"#F3F4F6",greyBoxBorder:"#E5E7EB",greyBoxText:"#374151",greyArrow:"#9CA3AF",pcArea:"rgba(60,170,120,0.15)",pcLine:"#3CAA78",pcLabel:"#3CAA78",moArea:"rgba(120,95,210,0.15)",moLine:"#785FD2",moLabel:"#785FD2",axisGrid:"#E5E7EB",axisLabel:"#9CA3AF",valueLabel:"#374151",metaLabel:"#9CA3AF",baseline:"#9CA3AF"};
+function arrowPolygon(x,y,w,h){const tipW=h/2;return`${x},${y} ${x+w-tipW},${y} ${x+w},${y+h/2} ${x+w-tipW},${y+h} ${x},${y+h}`;}
+function smoothPath(points){if(points.length===0)return"";if(points.length===1)return`M ${points[0][0]},${points[0][1]}`;let d=`M ${points[0][0].toFixed(2)},${points[0][1].toFixed(2)}`;for(let i=0;i<points.length-1;i++){const[x0,y0]=points[i],[x1,y1]=points[i+1],dx=(x1-x0)/2;d+=` C ${(x0+dx).toFixed(2)},${y0.toFixed(2)} ${(x1-dx).toFixed(2)},${y1.toFixed(2)} ${x1.toFixed(2)},${y1.toFixed(2)}`;}return d;}
+function drawStageArrows_st(out,stages,x0,y0,totalW,h){const N=stages.length,w=totalW/N;for(let i=0;i<N;i++){const x=x0+i*w;const isHi=i<2;out.push(`<polygon points="${arrowPolygon(x,y0,w,h)}" fill="${isHi?"#6B7280":"#F3F4F6"}"/>`);const cx=x+(w-h/2)/2;out.push(`<text x="${cx.toFixed(2)}" y="${(y0+h/2+7).toFixed(2)}" text-anchor="middle" font-size="20" font-weight="700" fill="${isHi?"#FFFFFF":"#6B7280"}">${esc(stages[i].name)}</text>`);}}
+function drawDropOffInline(out,drops,x0,y0,totalW){const N=drops.length+1,slotW=totalW/N,labelW=Math.min(slotW*0.92,240),boxH=56;
+  for(let i=0;i<drops.length;i++){const d=drops[i];const isHigh=i<2;const arrColor=isHigh?COLORS_ST.pinkArrow:COLORS_ST.greyArrow;const labelColor=isHigh?COLORS_ST.pinkLabel:"#6B7280";const bg=isHigh?COLORS_ST.pinkBoxBg:COLORS_ST.greyBoxBg;const border=isHigh?COLORS_ST.pinkBoxBorder:COLORS_ST.greyBoxBorder;const cx=x0+(i+0.5)*slotW,lx=cx-labelW/2;
+  out.push(`<rect x="${lx.toFixed(2)}" y="${y0}" width="${labelW.toFixed(2)}" height="${boxH}" rx="10" ry="10" fill="${bg}" stroke="${border}" stroke-width="1"/>`);
+  const arrX=lx+18,arrY=y0+boxH/2;out.push(`<path d="M ${arrX-6},${arrY-11} L ${arrX+6},${arrY-11} L ${arrX+6},${arrY-1} L ${arrX+11},${arrY-1} L ${arrX},${arrY+12} L ${arrX-11},${arrY-1} L ${arrX-6},${arrY-1} Z" fill="${arrColor}"/>`);
+  out.push(`<text x="${(lx+36).toFixed(2)}" y="${(y0+22).toFixed(2)}" font-size="13" font-weight="700" fill="${labelColor}">Drop off</text>`);
+  out.push(`<text x="${(lx+36).toFixed(2)}" y="${(y0+40).toFixed(2)}" font-size="12" fill="#6B7280">−${fmtNum(d.count)}명</text>`);
+  out.push(`<text x="${(lx+labelW-12).toFixed(2)}" y="${(y0+26).toFixed(2)}" text-anchor="end" font-size="22" font-weight="800" fill="#1F2937">${d.ratePct.toFixed(1)}%</text>`);
+  out.push(`<text x="${(lx+labelW-12).toFixed(2)}" y="${(y0+44).toFixed(2)}" text-anchor="end" font-size="12" fill="#6B7280">통과 ${d.passPct.toFixed(1)}%</text>`);}
+}
+function renderSVG_combined(data){
+  const stages=data.stages;if(!stages||stages.length===0)return`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 400"><text x="800" y="200" text-anchor="middle" font-size="18" fill="#9ca3af">데이터가 없습니다</text></svg>`;
+  const W=1700,H=700,padX=80,arrowsH=60,dropTopH=50;
+  const dropTopY=arrowsH+16,plotTop=dropTopY+dropTopH+30,plotBottom=H-60,plotH=plotBottom-plotTop,totalW=W-padX*2,N=stages.length;
+  const baseTotal=stages[0].total,yPercents=stages.map(s=>pct(s.total,baseTotal));
+  const xCenter=i=>padX+i*(totalW/N),ys=p=>plotBottom-(p/100)*plotH;
+  const out=[];
+  out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system,BlinkMacSystemFont,'Pretendard','Noto Sans KR',sans-serif">`);
+  out.push(`<defs><linearGradient id="grad-pink-st" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E81C7A" stop-opacity="0.40"/><stop offset="100%" stop-color="#E81C7A" stop-opacity="0.02"/></linearGradient></defs>`);
+  out.push(`<rect width="${W}" height="${H}" fill="#ffffff"/>`);
+  drawStageArrows_st(out,stages,padX,0,totalW,arrowsH);
+  const combinedDrops=[];for(let i=0;i<N-1;i++){const drop=stages[i].total-stages[i+1].total;const ratePct=pct(drop,stages[i].total);combinedDrops.push({count:drop,ratePct,passPct:100-ratePct});}
+  drawDropOffInline(out,combinedDrops,padX,dropTopY,totalW);
+  for(const p of[0,25,50,75,100]){const y=ys(p);out.push(`<line x1="${padX}" y1="${y.toFixed(2)}" x2="${padX+totalW}" y2="${y.toFixed(2)}" stroke="${COLORS_ST.axisGrid}" stroke-width="1"/>`);out.push(`<text x="${padX-12}" y="${(y+4).toFixed(2)}" text-anchor="end" font-size="12" fill="${COLORS_ST.axisLabel}">${p}%</text>`);}
+  const baselineY=ys(0),points=stages.map((s,i)=>[xCenter(i),ys(yPercents[i])]);
+  const areaD=`M ${xCenter(0).toFixed(2)},${baselineY.toFixed(2)} L ${xCenter(0).toFixed(2)},${ys(yPercents[0]).toFixed(2)} `+smoothPath(points).replace(/^M [^ ]+ /,"")+` L ${xCenter(N-1).toFixed(2)},${baselineY.toFixed(2)} Z`;
+  out.push(`<path d="${areaD}" fill="url(#grad-pink-st)"/>`);out.push(`<path d="${smoothPath(points)}" fill="none" stroke="${COLORS_ST.pinkLine}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`);
+  out.push(`<line x1="${xCenter(N-1).toFixed(2)}" y1="${ys(yPercents[N-1]).toFixed(2)}" x2="${(padX+totalW).toFixed(2)}" y2="${ys(yPercents[N-1]).toFixed(2)}" stroke="${COLORS_ST.pinkLine}" stroke-width="2.5" stroke-linecap="round"/>`);
+  for(let i=0;i<N;i++){const cx=xCenter(i),cy=ys(yPercents[i]);out.push(`<circle cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="6" fill="#FFFFFF" stroke="${COLORS_ST.pinkLine}" stroke-width="2.5"/>`);if(i>0){out.push(`<text x="${cx.toFixed(2)}" y="${(cy-22).toFixed(2)}" text-anchor="middle" font-size="18" font-weight="700" fill="${COLORS_ST.pinkLabel}">${yPercents[i].toFixed(1)}%</text>`);out.push(`<text x="${cx.toFixed(2)}" y="${(cy-6).toFixed(2)}" text-anchor="middle" font-size="13" fill="${COLORS_ST.metaLabel}">${fmtNum(stages[i].total)}명</text>`);}}
+  out.push(`</svg>`);return out.join("\n");
+}
+function renderSVG_pcmo(data){
+  const stages=data.stages;if(!stages||stages.length===0)return`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 400"><text x="800" y="200" text-anchor="middle" font-size="18" fill="#9ca3af">데이터가 없습니다</text></svg>`;
+  const W=1700,H=980,padX=80,arrowsH=60,dropTopH=50;
+  const dropTopY=arrowsH+16,plotTop=dropTopY+dropTopH+30,halfH=240,midY=plotTop+halfH,plotBottom=midY+halfH,dropBotY=plotBottom+28,dropBotH=50,totalW=W-padX*2,N=stages.length;
+  const pcBase=stages[0].pc,moBase=stages[0].mo;
+  const pcPct=stages.map(s=>pct(s.pc,pcBase)),moPct=stages.map(s=>pct(s.mo,moBase));
+  const xCenter=i=>padX+i*(totalW/N),ysPC=p=>midY-(p/100)*halfH,ysMO=p=>midY+(p/100)*halfH;
+  const out=[];
+  out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system,BlinkMacSystemFont,'Pretendard','Noto Sans KR',sans-serif">`);
+  out.push(`<defs><linearGradient id="grad-pc-st" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3CAA78" stop-opacity="0.40"/><stop offset="100%" stop-color="#3CAA78" stop-opacity="0.02"/></linearGradient><linearGradient id="grad-mo-st" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#785FD2" stop-opacity="0.02"/><stop offset="100%" stop-color="#785FD2" stop-opacity="0.40"/></linearGradient></defs>`);
+  out.push(`<rect width="${W}" height="${H}" fill="#ffffff"/>`);
+  drawStageArrows_st(out,stages,padX,0,totalW,arrowsH);
+  const pcDrops=[];for(let i=0;i<N-1;i++){const drop=stages[i].pc-stages[i+1].pc;const ratePct=pct(drop,stages[i].pc);pcDrops.push({count:drop,ratePct,passPct:100-ratePct});}
+  drawDropOffInline(out,pcDrops,padX,dropTopY,totalW);
+  for(const p of[0,25,50,75,100]){const y=ysPC(p);out.push(`<line x1="${padX}" y1="${y.toFixed(2)}" x2="${padX+totalW}" y2="${y.toFixed(2)}" stroke="${COLORS_ST.axisGrid}" stroke-width="1"/>`);out.push(`<text x="${padX-12}" y="${(y+4).toFixed(2)}" text-anchor="end" font-size="11" fill="${COLORS_ST.axisLabel}">${p}%</text>`);}
+  for(const p of[25,50,75,100]){const y=ysMO(p);out.push(`<line x1="${padX}" y1="${y.toFixed(2)}" x2="${padX+totalW}" y2="${y.toFixed(2)}" stroke="${COLORS_ST.axisGrid}" stroke-width="1"/>`);out.push(`<text x="${padX-12}" y="${(y+4).toFixed(2)}" text-anchor="end" font-size="11" fill="${COLORS_ST.axisLabel}">${p}%</text>`);}
+  out.push(`<line x1="${padX}" y1="${midY.toFixed(2)}" x2="${padX+totalW}" y2="${midY.toFixed(2)}" stroke="${COLORS_ST.baseline}" stroke-width="1.2"/>`);
+  const pcPoints=stages.map((s,i)=>[xCenter(i),ysPC(pcPct[i])]);
+  const pcAreaD=`M ${xCenter(0).toFixed(2)},${midY.toFixed(2)} L ${xCenter(0).toFixed(2)},${ysPC(pcPct[0]).toFixed(2)} `+smoothPath(pcPoints).replace(/^M [^ ]+ /,"")+` L ${xCenter(N-1).toFixed(2)},${midY.toFixed(2)} Z`;
+  out.push(`<path d="${pcAreaD}" fill="url(#grad-pc-st)"/>`);out.push(`<path d="${smoothPath(pcPoints)}" fill="none" stroke="${COLORS_ST.pcLine}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`);
+  out.push(`<line x1="${xCenter(N-1).toFixed(2)}" y1="${ysPC(pcPct[N-1]).toFixed(2)}" x2="${(padX+totalW).toFixed(2)}" y2="${ysPC(pcPct[N-1]).toFixed(2)}" stroke="${COLORS_ST.pcLine}" stroke-width="2.5" stroke-linecap="round"/>`);
+  const moPoints=stages.map((s,i)=>[xCenter(i),ysMO(moPct[i])]);
+  const moAreaD=`M ${xCenter(0).toFixed(2)},${midY.toFixed(2)} L ${xCenter(0).toFixed(2)},${ysMO(moPct[0]).toFixed(2)} `+smoothPath(moPoints).replace(/^M [^ ]+ /,"")+` L ${xCenter(N-1).toFixed(2)},${midY.toFixed(2)} Z`;
+  out.push(`<path d="${moAreaD}" fill="url(#grad-mo-st)"/>`);out.push(`<path d="${smoothPath(moPoints)}" fill="none" stroke="${COLORS_ST.moLine}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`);
+  out.push(`<line x1="${xCenter(N-1).toFixed(2)}" y1="${ysMO(moPct[N-1]).toFixed(2)}" x2="${(padX+totalW).toFixed(2)}" y2="${ysMO(moPct[N-1]).toFixed(2)}" stroke="${COLORS_ST.moLine}" stroke-width="2.5" stroke-linecap="round"/>`);
+  out.push(`<text x="${padX+18}" y="${(plotTop+80).toFixed(2)}" font-size="56" font-weight="800" fill="${COLORS_ST.pcLine}" opacity="0.35">PC</text>`);
+  out.push(`<text x="${padX+18}" y="${(plotBottom-16).toFixed(2)}" font-size="56" font-weight="800" fill="${COLORS_ST.moLine}" opacity="0.35">MO</text>`);
+  for(let i=0;i<N;i++){const cx=xCenter(i),cy=ysPC(pcPct[i]);out.push(`<circle cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="5.5" fill="#FFFFFF" stroke="${COLORS_ST.pcLine}" stroke-width="2.5"/>`);if(i>0){out.push(`<text x="${cx.toFixed(2)}" y="${(cy-22).toFixed(2)}" text-anchor="middle" font-size="16" font-weight="700" fill="${COLORS_ST.pcLabel}">${pcPct[i].toFixed(2)}%</text>`);out.push(`<text x="${cx.toFixed(2)}" y="${(cy-8).toFixed(2)}" text-anchor="middle" font-size="12" fill="${COLORS_ST.metaLabel}">${fmtNum(stages[i].pc)}명</text>`);}}
+  for(let i=0;i<N;i++){const cx=xCenter(i),cy=ysMO(moPct[i]);out.push(`<circle cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="5.5" fill="#FFFFFF" stroke="${COLORS_ST.moLine}" stroke-width="2.5"/>`);if(i>0){out.push(`<text x="${cx.toFixed(2)}" y="${(cy+18).toFixed(2)}" text-anchor="middle" font-size="16" font-weight="700" fill="${COLORS_ST.moLabel}">${moPct[i].toFixed(2)}%</text>`);out.push(`<text x="${cx.toFixed(2)}" y="${(cy+32).toFixed(2)}" text-anchor="middle" font-size="12" fill="${COLORS_ST.metaLabel}">${fmtNum(stages[i].mo)}명</text>`);}}
+  const moDrops=[];for(let i=0;i<N-1;i++){const drop=stages[i].mo-stages[i+1].mo;const ratePct=pct(drop,stages[i].mo);moDrops.push({count:drop,ratePct,passPct:100-ratePct});}
+  drawDropOffInline(out,moDrops,padX,dropBotY,totalW);
+  out.push(`</svg>`);return out.join("\n");
+}
+function renderSVG_st(data,opts){return(opts&&opts.chartType)==="pcmo"?renderSVG_pcmo(data):renderSVG_combined(data);}
+
+let stData=SEED_ST;
+const $stChart=document.getElementById("st-chart"),$stTsv=document.getElementById("st-tsv"),$stChartType=document.getElementById("st-chartType"),$stStatus=document.getElementById("st-status");
+function stOpts(){return{chartType:$stChartType.value};}
+function stRerender(){$stChart.innerHTML=renderSVG_st(stData,stOpts());}
+function stSetStatus(msg,kind){$stStatus.textContent=msg||"";$stStatus.className="status "+(kind||"ok");}
+$stTsv.value=SEED_TSV_ST;stRerender();stSetStatus(`현재 ${stData.stages.length}단계 표시 중 (시드 데이터)`);
+document.getElementById("st-apply").addEventListener("click",()=>{const data=rowsToStageData(parseTSVToRows($stTsv.value));if(!data.stages.length){stSetStatus("파싱 실패: 5단계 + PC/MO 데이터를 확인하세요.","err");return;}stData=data;stRerender();stSetStatus(`✓ ${data.stages.length}단계 / PC·MO 분리 완료`);});
+document.getElementById("st-reset").addEventListener("click",()=>{$stTsv.value=SEED_TSV_ST;stData=SEED_ST;stRerender();stSetStatus("시드 데이터로 복원됨");});
+$stChartType.addEventListener("change",stRerender);
+document.getElementById("st-xlsx").addEventListener("change",async(e)=>{
+  const file=e.target.files&&e.target.files[0];if(!file)return;
+  document.getElementById("st-fname").textContent=file.name;stSetStatus(`엑셀 파싱 중: ${file.name}…`);
+  try{const u8=new Uint8Array(await file.arrayBuffer());const files=await unzipXlsx(u8);const wb=parseXlsxWorkbook(files);if(!wb.sheets.length)throw new Error("시트 없음");let chosen=null,data={stages:[]};for(const s of wb.sheets){const rows=wb.readSheet(s.name)||[];const d=rowsToStageData(rows);if(d.stages.length>0){chosen=s;data=d;break;}}if(!data.stages.length)throw new Error("5단계+PC/MO 데이터를 찾지 못했습니다");stData=data;stRerender();stSetStatus(`✓ ${file.name} → '${chosen.name}' / ${data.stages.length}단계`);}
+  catch(err){stSetStatus("xlsx 파싱 실패: "+err.message,"err");}finally{e.target.value="";}
+});
+document.getElementById("st-download").addEventListener("click",()=>{svgDownload(renderSVG_st(stData,stOpts()),$stChartType.value==="pcmo"?"funnel_dropoff_pc_vs_mobile.svg":"funnel_dropoff_combined.svg");stSetStatus("✓ SVG 다운로드 — Figma 캔버스에 드래그하세요");});
+})();
+</script>
+
+<!-- ════════════════════════════════════════════════════════
+     SCRIPT: TAB 3 — 유형 요약
+═══════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+const SEED_TY=[{type:"너겟",inflow:198350,signups:3450,signupStage:"가입신청완료"},{type:"모바일상시",inflow:171573,signups:369,signupStage:"주문서접수완료"},{type:"아이폰",inflow:28099,signups:60,signupStage:"주문서접수완료"},{type:"중고폰갤럭시",inflow:21655,signups:372,signupStage:"주문서접수완료"},{type:"단말별",inflow:229364,signups:3132,signupStage:"주문서접수완료"}].map(d=>({...d,rate:d.inflow>0?d.signups/d.inflow*100:0}));
+const SEED_TSV_TY=["유형\t단계별\t4월","너겟\t유입\t198350","\t가입신청완료\t3450","모바일상시\t유입\t171573","\t주문서접수완료\t369","아이폰\t유입\t28099","\t주문서접수완료\t60","중고폰갤럭시\t유입\t21655","\t주문서접수완료\t372","단말별\t유입\t229364","\t주문서접수완료\t3132"].join("\n");
+const ENTRY_RE=/^(유입|시작|진입|방문|사용자|세션)/,EXIT_RE=/(가입|완료|접수|구매|결제|전환|등록|신청)/;
+function parseTypeSummary(rows){
+  let headerRow=-1;
+  for(let r=0;r<rows.length;r++){const row=rows[r]||[];let hasType=false,hasStage=false;for(const cell of row){if(typeof cell!=="string")continue;const t=cell.trim();if(/^유형$/.test(t)||/^구분$/.test(t)||/^캠페인$/.test(t))hasType=true;if(/단계별|항목|단계|구분|stage/i.test(t))hasStage=true;}if(hasType&&hasStage){headerRow=r;break;}}
+  if(headerRow<0)return[];
+  const headers=rows[headerRow];let typeCol=-1,stageCol=-1,valueCol=-1;
+  for(let c=0;c<headers.length;c++){const h=headers[c];if(typeof h!=="string")continue;const t=h.trim();if(typeCol<0&&(/^유형$/.test(t)||/^구분$/.test(t)||/^캠페인$/.test(t)))typeCol=c;else if(stageCol<0&&/단계|항목|stage/i.test(t))stageCol=c;}
+  if(typeCol<0||stageCol<0)return[];
+  for(let r=headerRow+1;r<rows.length&&valueCol<0;r++){const row=rows[r]||[];for(let c=stageCol+1;c<row.length;c++){if(typeof row[c]==="number"&&isFinite(row[c])){valueCol=c;break;}}}
+  if(valueCol<0)return[];
+  const out=[];let cur=null;
+  for(let r=headerRow+1;r<rows.length;r++){const row=rows[r]||[];const tRaw=row[typeCol],stage=row[stageCol],val=row[valueCol];if(typeof tRaw==="string"&&tRaw.trim()){if(cur)out.push(cur);cur={type:tRaw.trim(),inflow:0,signups:0,signupStage:""};}if(!cur)continue;if(typeof val!=="number"||!isFinite(val))continue;if(typeof stage!=="string")continue;const st=stage.trim();if(!st)continue;if(ENTRY_RE.test(st))cur.inflow=val;else if(EXIT_RE.test(st)){cur.signups=val;cur.signupStage=st;}}
+  if(cur)out.push(cur);
+  return out.filter(t=>t.inflow>0).map(t=>({...t,rate:t.inflow>0?t.signups/t.inflow*100:0}));
+}
+function renderSVG_ty_combo(data,opts){
+  opts=opts||{};const isGray=(opts.palette||"default")==="grayscale";
+  const W=1600,ROWS=data.length,margin={top:200,right:150,bottom:110,left:130},plotH=500,plotW=W-margin.left-margin.right,H=margin.top+plotH+margin.bottom;
+  if(!data||ROWS===0)return`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} 400"><text x="${W/2}" y="200" text-anchor="middle" font-size="18" fill="#9ca3af">데이터가 없습니다</text></svg>`;
+  const maxLeft=Math.max(...data.map(d=>d.inflow)),leftStep=niceNumStep(maxLeft/5),leftMax=Math.ceil(maxLeft/leftStep)*leftStep;
+  const leftTicks=[];for(let v=0;v<=leftMax;v+=leftStep)leftTicks.push(v);
+  const maxRate=Math.max(...data.map(d=>d.rate),0.01);let rateStep;if(maxRate<=1)rateStep=0.2;else if(maxRate<=2.5)rateStep=0.5;else if(maxRate<=6)rateStep=1;else if(maxRate<=12)rateStep=2;else if(maxRate<=25)rateStep=5;else if(maxRate<=50)rateStep=10;else rateStep=20;
+  const rateMax=Math.max(rateStep,Math.ceil(maxRate/rateStep)*rateStep);const rateTicks=[];for(let v=0;v<=rateMax;v+=rateStep)rateTicks.push(+v.toFixed(2));
+  const slotW=plotW/ROWS,xs=i=>margin.left+(i+0.5)*slotW,ysL=v=>margin.top+(1-v/leftMax)*plotH,ysR=v=>margin.top+(1-v/rateMax)*plotH,baseline=ysL(0);
+  const barInflow=Math.min(slotW*0.55,110),barSignup=barInflow*0.7;
+  const COLORS_TY=isGray?{inflow:"#D1D5DB",inflowStroke:"#9CA3AF",signup:"#4B5563",line:"#6B7280",dotFill:"#FFFFFF",dotStroke:"#6B7280"}:{inflow:"#E5E7EB",inflowStroke:"#D1D5DB",signup:"#1E3A6B",line:"#DC3A8E",dotFill:"#FFFFFF",dotStroke:"#DC3A8E"};
+  const TXT={titleBg:"#5C6470",axisLabel:"#C8447F",tickLabel:"#9CA3AF",grid:"#E5E7EB",valueLabel:"#374151",catLabel:"#374151"};
+  const stageCounts={};for(const d of data)if(d.signupStage)stageCounts[d.signupStage]=(stageCounts[d.signupStage]||0)+1;
+  let signupLegendLabel="최종 전환수",best=0;for(const[k,v]of Object.entries(stageCounts)){if(v>best){best=v;signupLegendLabel=k;}}
+  const out=[];
+  out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system,BlinkMacSystemFont,'Pretendard','Noto Sans KR',sans-serif">`);
+  out.push(`<rect x="0" y="0" width="${W}" height="${H}" fill="#ffffff"/>`);
+  out.push(`<rect x="32" y="28" rx="22" ry="22" width="450" height="44" fill="${TXT.titleBg}"/>`);
+  out.push(`<text x="60" y="56" font-size="20" font-weight="700" fill="#ffffff">${esc("유형별 유입 · 가입 · 최종 전환율")}</text>`);
+  out.push(`<text x="32" y="110" font-size="14" fill="#6B7280">막대 = 유입수 / 최종 전환수 (좌축) · 라인 = 최종 전환율 % (우축)</text>`);
+  let swX=32,swY=146;out.push(`<rect x="${swX}" y="${swY-12}" width="32" height="14" fill="${COLORS_TY.inflow}" stroke="${COLORS_TY.inflowStroke}"/>`);out.push(`<text x="${swX+40}" y="${swY}" font-size="14" font-weight="600" fill="#374151">유입</text>`);swX+=100;
+  out.push(`<rect x="${swX}" y="${swY-12}" width="32" height="14" fill="${COLORS_TY.signup}"/>`);out.push(`<text x="${swX+40}" y="${swY}" font-size="14" font-weight="600" fill="#374151">${esc(signupLegendLabel)}</text>`);swX+=60+signupLegendLabel.length*14;
+  out.push(`<line x1="${swX}" y1="${swY-5}" x2="${swX+30}" y2="${swY-5}" stroke="${COLORS_TY.line}" stroke-width="2.5"/>`);out.push(`<circle cx="${swX+15}" cy="${swY-5}" r="5" fill="${COLORS_TY.dotFill}" stroke="${COLORS_TY.line}" stroke-width="2.5"/>`);out.push(`<text x="${swX+40}" y="${swY}" font-size="14" font-weight="600" fill="${COLORS_TY.line}">최종 전환율</text>`);
+  out.push(`<text x="${margin.left-80}" y="${margin.top-14}" font-size="12" fill="#6B7280">유입 / 전환 (명)</text>`);
+  out.push(`<text x="${margin.left+plotW+5}" y="${margin.top-14}" font-size="12" fill="${COLORS_TY.line}">최종 전환율 (%)</text>`);
+  for(const t of leftTicks){const y=ysL(t);out.push(`<line x1="${margin.left}" y1="${y.toFixed(2)}" x2="${margin.left+plotW}" y2="${y.toFixed(2)}" stroke="${TXT.grid}" stroke-width="1"/>`);out.push(`<text x="${margin.left-10}" y="${(y+4).toFixed(2)}" text-anchor="end" font-size="13" fill="${TXT.tickLabel}">${formatK(t)}</text>`);}
+  for(const t of rateTicks){const y=ysR(t);out.push(`<text x="${margin.left+plotW+10}" y="${(y+4).toFixed(2)}" font-size="13" fill="${COLORS_TY.line}">${(t).toFixed(rateStep<1?1:0)}%</text>`);}
+  for(let i=0;i<ROWS;i++){const d=data[i],cx=xs(i),inY=ysL(d.inflow),inH=baseline-inY;
+    out.push(`<rect x="${(cx-barInflow/2).toFixed(2)}" y="${inY.toFixed(2)}" width="${barInflow.toFixed(2)}" height="${inH.toFixed(2)}" fill="${COLORS_TY.inflow}" stroke="${COLORS_TY.inflowStroke}" stroke-width="1"/>`);
+    out.push(`<text x="${cx.toFixed(2)}" y="${(inY-10).toFixed(2)}" text-anchor="middle" font-size="14" font-weight="700" fill="${TXT.valueLabel}">${d.inflow.toLocaleString()}</text>`);
+    const sgY=ysL(d.signups),sgH=baseline-sgY;
+    out.push(`<rect x="${(cx-barSignup/2).toFixed(2)}" y="${sgY.toFixed(2)}" width="${barSignup.toFixed(2)}" height="${Math.max(2,sgH).toFixed(2)}" rx="1.5" ry="1.5" fill="${COLORS_TY.signup}"/>`);
+    out.push(`<text x="${cx.toFixed(2)}" y="${(sgY-10).toFixed(2)}" text-anchor="middle" font-size="14" font-weight="700" fill="${COLORS_TY.signup}">${d.signups.toLocaleString()}</text>`);
+  }
+  const linePts=data.map((d,i)=>`${xs(i).toFixed(2)},${ysR(d.rate).toFixed(2)}`).join(" ");
+  out.push(`<polyline points="${linePts}" fill="none" stroke="${COLORS_TY.line}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`);
+  for(let i=0;i<ROWS;i++){const d=data[i],px=xs(i),py=ysR(d.rate);out.push(`<circle cx="${px.toFixed(2)}" cy="${py.toFixed(2)}" r="6" fill="${COLORS_TY.dotFill}" stroke="${COLORS_TY.dotStroke}" stroke-width="2.5"/>`);const inY=ysL(d.inflow);let labelY=py-16,labelX=px,labelAnchor="middle";if(Math.abs(labelY-(inY-16))<18){labelX=px+14;labelY=py+5;labelAnchor="start";}out.push(`<text x="${labelX.toFixed(2)}" y="${labelY.toFixed(2)}" text-anchor="${labelAnchor}" font-size="14" font-weight="700" fill="${COLORS_TY.line}">${d.rate.toFixed(2)}%</text>`);}
+  const labelY=baseline+28;for(let i=0;i<ROWS;i++)out.push(`<text x="${xs(i).toFixed(2)}" y="${labelY.toFixed(2)}" text-anchor="middle" font-size="14" font-weight="600" fill="${TXT.catLabel}">${esc(data[i].type)}</text>`);
+  out.push(`</svg>`);return out.join("\n");
+}
+function renderSVG_ty(data,opts){return(opts&&opts.chartType)==="combo"?renderSVG_ty_combo(data,opts):renderSVG_ty_combo(data,opts);}
+
+let tyData=SEED_TY.slice();
+const $tyChart=document.getElementById("ty-chart"),$tyTsv=document.getElementById("ty-tsv"),$tyChartType=document.getElementById("ty-chartType"),$tyPalette=document.getElementById("ty-palette"),$tyStatus=document.getElementById("ty-status"),$tyPaletteLabel=document.getElementById("ty-paletteLabel");
+function tyOpts(){return{palette:$tyPalette.value,chartType:$tyChartType.value};}
+function tyRerender(){$tyPaletteLabel.style.display=$tyChartType.value==="matrix"?"none":"";$tyChart.innerHTML=renderSVG_ty(tyData,tyOpts());}
+function tySetStatus(msg,kind){$tyStatus.textContent=msg||"";$tyStatus.className="status "+(kind||"ok");}
+$tyTsv.value=SEED_TSV_TY;tyRerender();tySetStatus(`현재 ${tyData.length}개 유형 표시 중 (시드 데이터)`);
+document.getElementById("ty-apply").addEventListener("click",()=>{const data=parseTypeSummary(parseTSVToRows($tyTsv.value));if(!data.length){tySetStatus("파싱 실패: 헤더(유형/단계별)와 유입/전환 단계 행을 확인하세요.","err");return;}tyData=data;tyRerender();tySetStatus(`✓ ${data.length}개 유형 로드됨`);});
+document.getElementById("ty-reset").addEventListener("click",()=>{$tyTsv.value=SEED_TSV_TY;tyData=SEED_TY.slice();tyRerender();tySetStatus("시드 데이터로 복원됨");});
+[$tyPalette,$tyChartType].forEach(el=>el.addEventListener("change",tyRerender));
+document.getElementById("ty-xlsx").addEventListener("change",async(e)=>{
+  const file=e.target.files&&e.target.files[0];if(!file)return;
+  document.getElementById("ty-fname").textContent=file.name;tySetStatus(`엑셀 파싱 중: ${file.name}…`);
+  try{const u8=new Uint8Array(await file.arrayBuffer());const files=await unzipXlsx(u8);const wb=parseXlsxWorkbook(files);if(!wb.sheets.length)throw new Error("시트 없음");let chosen=null,data=[];for(const s of wb.sheets){const rows=wb.readSheet(s.name)||[];const d=parseTypeSummary(rows);if(d.length>0){chosen=s;data=d;break;}}if(!data.length)throw new Error("유형/단계별 데이터를 찾지 못했습니다");tyData=data;tyRerender();tySetStatus(`✓ ${file.name} → '${chosen.name}' / ${data.length}개 유형`);}
+  catch(err){tySetStatus("xlsx 파싱 실패: "+err.message,"err");}finally{e.target.value="";}
+});
+document.getElementById("ty-download").addEventListener("click",()=>{svgDownload(renderSVG_ty(tyData,tyOpts()),"type_summary_combo_chart.svg");tySetStatus("✓ SVG 다운로드 — Figma 캔버스에 드래그하세요");});
+})();
+</script>
+
+<!-- ════════════════════════════════════════════════════════
+     SCRIPT: TAB 4 — 랜딩별 비교
+═══════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+const STAGE_INFO_LD=[{num:1,icon:"①",name:"커머스인입"},{num:2,icon:"②",name:"정보탐색"},{num:3,icon:"③",name:"주문시도"},{num:4,icon:"④",name:"본인인증"},{num:5,icon:"⑤",name:"가입신청완료"}];
+const SEED_LD={total:{name:"너겟 전체",overall:[79340,20458,3624,1980,1380],pc:[41844,14140,2405,1607,1198],mo:[37496,6318,1219,373,182]},campaigns:[{name:"너겟 메인",colorKey:"green",overall:[28973,14364,1647,560,214],pc:[17521,9940,826,385,136],mo:[11452,4424,821,175,78]},{name:"너겟 기획전 (82173)",colorKey:"purple",overall:[34081,2206,288,122,47],pc:[15930,1745,194,88,37],mo:[18151,461,94,34,10]}]};
+const COLORS_LD={green:{line:"#3CAA78",area:"rgba(60,170,120,0.20)"},purple:{line:"#785FD2",area:"rgba(120,95,210,0.18)"},guide:{line:"#9CA3AF",strokeDash:"4,4"},arrowDark:"#6B7280",arrowLight:"#F3F4F6",axisGrid:"#E5E7EB",axisLabel:"#9CA3AF"};
+const DEVICE_COLORS_LD=[{fill:"#A5CDFF",line:"#A5CDFF"},{fill:"#B09CF0",line:"#B09CF0"}];
+function arrowPolygon_ld(x,y,w,h){const tipW=h/2;return`${x},${y} ${x+w-tipW},${y} ${x+w},${y+h/2} ${x+w-tipW},${y+h} ${x},${y+h}`;}
+function smoothPath_ld(points){if(points.length===0)return"";if(points.length===1)return`M ${points[0][0]},${points[0][1]}`;let d=`M ${points[0][0].toFixed(2)},${points[0][1].toFixed(2)}`;for(let i=0;i<points.length-1;i++){const[x0,y0]=points[i],[x1,y1]=points[i+1],dx=(x1-x0)/2;d+=` C ${(x0+dx).toFixed(2)},${y0.toFixed(2)} ${(x1-dx).toFixed(2)},${y1.toFixed(2)} ${x1.toFixed(2)},${y1.toFixed(2)}`;}return d;}
+function drawArrows_ld(out,x0,y0,totalW,h){const N=STAGE_INFO_LD.length,w=totalW/N;for(let i=0;i<N;i++){const x=x0+i*w,isHi=i<2;out.push(`<polygon points="${arrowPolygon_ld(x,y0,w,h)}" fill="${isHi?COLORS_LD.arrowDark:COLORS_LD.arrowLight}"/>`);const cx=x+(w-h/2)/2;out.push(`<text x="${cx.toFixed(2)}" y="${(y0+h/2+7).toFixed(2)}" text-anchor="middle" font-size="20" font-weight="700" fill="${isHi?"#FFFFFF":"#6B7280"}">${esc(STAGE_INFO_LD[i].name)}</text>`);}}
+function renderSVG_ld_type(data,opts){
+  opts=opts||{};const showGuide=opts.showGuide!==false;const W=1800,H=760,padX=60,arrowsH=60,statsH=80;
+  const statsY=arrowsH+20,plotTop=statsY+statsH+16,plotBottom=H-80,plotH=plotBottom-plotTop,totalW=W-padX*2,N=STAGE_INFO_LD.length;
+  const xCenter=i=>padX+i*(totalW/N),ys=p=>plotBottom-(p/100)*plotH;
+  const totalPcts=data.total.overall.map(v=>pct(v,data.total.overall[0]));
+  const campaignPcts=data.campaigns.map(c=>c.overall.map(v=>pct(v,c.overall[0])));
+  const out=[];
+  out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system,BlinkMacSystemFont,'Pretendard','Noto Sans KR',sans-serif">`);
+  out.push(`<defs><linearGradient id="grad-cmp1-ld" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${COLORS_LD.green.line}" stop-opacity="0.30"/><stop offset="100%" stop-color="${COLORS_LD.green.line}" stop-opacity="0.02"/></linearGradient><linearGradient id="grad-cmp2-ld" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${COLORS_LD.purple.line}" stop-opacity="0.30"/><stop offset="100%" stop-color="${COLORS_LD.purple.line}" stop-opacity="0.02"/></linearGradient></defs>`);
+  out.push(`<rect width="${W}" height="${H}" fill="#ffffff"/>`);
+  drawArrows_ld(out,padX,0,totalW,arrowsH);
+  for(let i=0;i<data.campaigns.length;i++){const c=data.campaigns[i],col=COLORS_LD[c.colorKey];const boxX=padX+totalW-360-i*380,boxY=statsY,boxW=360,boxH=60;out.push(`<rect x="${boxX}" y="${boxY}" width="${boxW}" height="${boxH}" rx="10" ry="10" fill="${i===0?'rgba(60,170,120,0.10)':'rgba(120,95,210,0.10)'}" stroke="${col.line}" stroke-opacity="0.3" stroke-width="1"/>`);out.push(`<text x="${boxX+boxW/2}" y="${boxY+22}" text-anchor="middle" font-size="14" font-weight="700" fill="${col.line}">${esc(c.name)}</text>`);const inflow=c.overall[0],signup=c.overall[c.overall.length-1],rate=pct(signup,inflow);const tx1=boxX+72,tx2=boxX+192,tx3=boxX+300;out.push(`<text x="${tx1}" y="${boxY+42}" text-anchor="middle" font-size="11" fill="#6B7280">커머스인입</text>`);out.push(`<text x="${tx1}" y="${boxY+56}" text-anchor="middle" font-size="14" font-weight="700" fill="#1F2937">${fmtNum(inflow)}</text>`);out.push(`<text x="${tx2}" y="${boxY+42}" text-anchor="middle" font-size="11" fill="#6B7280">가입신청완료</text>`);out.push(`<text x="${tx2}" y="${boxY+56}" text-anchor="middle" font-size="14" font-weight="700" fill="#1F2937">${fmtNum(signup)}</text>`);out.push(`<text x="${tx3}" y="${boxY+42}" text-anchor="middle" font-size="11" fill="#6B7280">최종전환</text>`);out.push(`<text x="${tx3}" y="${boxY+56}" text-anchor="middle" font-size="14" font-weight="700" fill="${col.line}">${rate.toFixed(2)}%</text>`);}
+  for(const p of[0,25,50,75,100]){const y=ys(p);out.push(`<line x1="${padX}" y1="${y.toFixed(2)}" x2="${padX+totalW}" y2="${y.toFixed(2)}" stroke="${COLORS_LD.axisGrid}" stroke-width="1" stroke-dasharray="${p===0?'0':'3,3'}"/>`);out.push(`<text x="${(padX-12).toFixed(2)}" y="${(y+4).toFixed(2)}" text-anchor="end" font-size="12" fill="${COLORS_LD.axisLabel}">${p}%</text>`);}
+  const baselineY=ys(0);
+  function drawAreaLine(percents,gradId,lineColor,dashed){const points=percents.map((p,i)=>[xCenter(i),ys(p)]);const areaD=`M ${xCenter(0).toFixed(2)},${baselineY.toFixed(2)} L ${xCenter(0).toFixed(2)},${ys(percents[0]).toFixed(2)} `+smoothPath_ld(points).replace(/^M [^ ]+ /,"")+` L ${xCenter(N-1).toFixed(2)},${baselineY.toFixed(2)} Z`;out.push(`<path d="${areaD}" fill="url(#${gradId})"/>`);out.push(`<path d="${smoothPath_ld(points)}" fill="none" stroke="${lineColor}" stroke-width="${dashed?2:2.5}" stroke-linejoin="round" stroke-linecap="round"${dashed?' stroke-dasharray="6,4"':''}/>`);const lastX=xCenter(N-1),lastY=ys(percents[N-1]);out.push(`<line x1="${lastX.toFixed(2)}" y1="${lastY.toFixed(2)}" x2="${(padX+totalW).toFixed(2)}" y2="${lastY.toFixed(2)}" stroke="${lineColor}" stroke-width="${dashed?2:2.5}" stroke-linecap="round"${dashed?' stroke-dasharray="6,4"':''}/>`);}
+  if(showGuide){const points=totalPcts.map((p,i)=>[xCenter(i),ys(p)]);out.push(`<path d="${smoothPath_ld(points)}" fill="none" stroke="${COLORS_LD.guide.line}" stroke-width="1.5" stroke-dasharray="${COLORS_LD.guide.strokeDash}" stroke-linejoin="round" stroke-linecap="round"/>`);}
+  drawAreaLine(campaignPcts[1],"grad-cmp2-ld",COLORS_LD.purple.line,true);
+  drawAreaLine(campaignPcts[0],"grad-cmp1-ld",COLORS_LD.green.line,false);
+  function drawMarkersAndLabels(percents,values,colorKey,above){const col=COLORS_LD[colorKey];for(let i=1;i<N;i++){const cx=xCenter(i),cy=ys(percents[i]);out.push(`<circle cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="6" fill="#FFFFFF" stroke="${col.line}" stroke-width="2.5"/>`);const ly=above?cy-22:cy+30,ly2=above?cy-8:cy+44;out.push(`<text x="${cx.toFixed(2)}" y="${ly.toFixed(2)}" text-anchor="middle" font-size="20" font-weight="800" fill="${col.line}">${percents[i].toFixed(percents[i]<1?2:1)}%</text>`);out.push(`<text x="${cx.toFixed(2)}" y="${ly2.toFixed(2)}" text-anchor="middle" font-size="13" fill="#6B7280">${fmtNum(values[i])}명</text>`);}}
+  drawMarkersAndLabels(campaignPcts[0],data.campaigns[0].overall,"green",true);
+  drawMarkersAndLabels(campaignPcts[1],data.campaigns[1].overall,"purple",false);
+  out.push(`</svg>`);return out.join("\n");
+}
+function renderSVG_ld_device(data,opts){
+  opts=opts||{};const showGuide=opts.showGuide!==false;const W=1800,H=880,panelW=(W-60)/2,panelGap=30;
+  const out=[];out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system,BlinkMacSystemFont,'Pretendard','Noto Sans KR',sans-serif">`);out.push(`<rect width="${W}" height="${H}" fill="#ffffff"/>`);
+  function drawPanel(deviceKey,x0){
+    const N=STAGE_INFO_LD.length,plotPadX=56,arrowsRowY=y0+60,arrowsH=36,plotTop=arrowsRowY+arrowsH+24,plotBottom=y0+panelH-40,plotH=plotBottom-plotTop,plotL=x0+plotPadX,plotW=panelW-plotPadX*2,slotW=plotW/N;
+    const y0=20,panelH=H-40;const barWidth=slotW*0.42;
+    out.push(`<rect x="${x0}" y="${y0}" width="${panelW}" height="${panelH}" rx="14" ry="14" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>`);
+    const devLabel=deviceKey==="pc"?"PC":"MO";out.push(`<rect x="${x0+18}" y="${y0+14}" width="60" height="28" rx="14" ry="14" fill="#F3F4F6" stroke="#E5E7EB"/>`);out.push(`<text x="${x0+48}" y="${y0+33}" text-anchor="middle" font-size="14" font-weight="700" fill="#374151">${devLabel}</text>`);
+    for(let i=0;i<N;i++){const sx=plotL+i*slotW,isHi=i<2;out.push(`<polygon points="${arrowPolygon_ld(sx,arrowsRowY,slotW,arrowsH)}" fill="${isHi?COLORS_LD.arrowDark:COLORS_LD.arrowLight}"/>`);out.push(`<text x="${(sx+slotW/2-arrowsH/4).toFixed(2)}" y="${(arrowsRowY+arrowsH/2+5).toFixed(2)}" text-anchor="middle" font-size="13" font-weight="700" fill="${isHi?"#FFFFFF":"#6B7280"}">${esc(STAGE_INFO_LD[i].name)}</text>`);}
+    for(const p of[0,25,50,75,100]){const y=plotBottom-(p/100)*plotH;out.push(`<line x1="${plotL}" y1="${y.toFixed(2)}" x2="${plotL+plotW}" y2="${y.toFixed(2)}" stroke="${COLORS_LD.axisGrid}" stroke-width="1" stroke-dasharray="${p===0?'0':'3,3'}"/>`);out.push(`<text x="${(plotL-8).toFixed(2)}" y="${(y+4).toFixed(2)}" text-anchor="end" font-size="11" fill="${COLORS_LD.axisLabel}">${p}%</text>`);}
+    function passPct(arr,i){return i===0?100:pct(arr[i],arr[i-1]);}
+    function ysP(p){return plotBottom-(p/100)*plotH;}
+    for(let i=1;i<N;i++){const sx=plotL+i*slotW,cx=sx+slotW/2;const c1p=passPct(data.campaigns[0][deviceKey],i),c2p=passPct(data.campaigns[1][deviceKey],i);const items=c1p>=c2p?[{pct:c1p,col:DEVICE_COLORS_LD[0]},{pct:c2p,col:DEVICE_COLORS_LD[1]}]:[{pct:c2p,col:DEVICE_COLORS_LD[1]},{pct:c1p,col:DEVICE_COLORS_LD[0]}];for(const it of items){if(it.pct<=0)continue;const by=ysP(it.pct),bh=plotBottom-by;out.push(`<rect x="${(cx-barWidth/2).toFixed(2)}" y="${by.toFixed(2)}" width="${barWidth.toFixed(2)}" height="${Math.max(2,bh).toFixed(2)}" rx="3" ry="3" fill="${it.col.fill}"/>`);}
+    out.push(`<text x="${(cx-2).toFixed(2)}" y="${(ysP(c1p)-8).toFixed(2)}" text-anchor="end" font-size="11" font-weight="700" fill="${DEVICE_COLORS_LD[0].line}">${c1p.toFixed(1)}%</text>`);out.push(`<text x="${(cx+4).toFixed(2)}" y="${(ysP(c2p)-8).toFixed(2)}" text-anchor="start" font-size="11" font-weight="700" fill="${DEVICE_COLORS_LD[1].line}">${c2p.toFixed(1)}%</text>`);}
+    for(let ci=0;ci<data.campaigns.length;ci++){const arr=data.campaigns[ci][deviceKey],col=DEVICE_COLORS_LD[ci];const linePts=[];for(let i=0;i<N;i++){const cx=plotL+(i+0.5)*slotW;linePts.push([cx,ysP(passPct(arr,i))]);}out.push(`<polyline points="${linePts.map(p=>`${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(" ")}" fill="none" stroke="${col.line}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`);for(const[x,y]of linePts)out.push(`<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="4" fill="#FFFFFF" stroke="${col.line}" stroke-width="2"/>`);}
+    if(showGuide){const totalArr=data.total[deviceKey];const linePts=[];for(let i=0;i<N;i++){const cx=plotL+(i+0.5)*slotW;linePts.push([cx,ysP(passPct(totalArr,i))]);}out.push(`<polyline points="${linePts.map(p=>`${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(" ")}" fill="none" stroke="${COLORS_LD.guide.line}" stroke-width="1.5" stroke-dasharray="5,4" stroke-linejoin="round" stroke-linecap="round"/>`);for(const[x,y]of linePts)out.push(`<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="3" fill="#FFFFFF" stroke="${COLORS_LD.guide.line}" stroke-width="1.5"/>`);}
+  }
+  drawPanel("pc",20);drawPanel("mo",20+panelW+panelGap/2);
+  out.push(`</svg>`);return out.join("\n");
+}
+function renderSVG_ld(data,opts){return(opts&&opts.chartType)==="device"?renderSVG_ld_device(data,opts):renderSVG_ld_type(data,opts);}
+
+let ldData=SEED_LD;
+const $ldChart=document.getElementById("ld-chart"),$ldChartType=document.getElementById("ld-chartType"),$ldShowGuide=document.getElementById("ld-showGuide"),$ldStatus=document.getElementById("ld-status");
+function ldOpts(){return{chartType:$ldChartType.value,showGuide:$ldShowGuide.checked};}
+function ldRerender(){$ldChart.innerHTML=renderSVG_ld(ldData,ldOpts());}
+function ldSetStatus(msg,kind){$ldStatus.textContent=msg||"";$ldStatus.className="status "+(kind||"ok");}
+ldRerender();ldSetStatus(`현재 ${ldData.campaigns.length}개 캠페인 비교 중 (시드 데이터)`);
+document.getElementById("ld-reset").addEventListener("click",()=>{ldData=SEED_LD;ldRerender();ldSetStatus("시드 데이터로 복원됨");});
+[$ldChartType,$ldShowGuide].forEach(el=>el.addEventListener("change",ldRerender));
+document.getElementById("ld-xlsx").addEventListener("change",async(e)=>{
+  const file=e.target.files&&e.target.files[0];if(!file)return;
+  document.getElementById("ld-fname").textContent=file.name;ldSetStatus(`엑셀 파싱 중: ${file.name}…`);
+  try{const u8=new Uint8Array(await file.arrayBuffer());const files=await unzipXlsx(u8);const wb=parseXlsxWorkbook(files);if(!wb.sheets.length)throw new Error("시트 없음");
+  function parseLanding(rows){const STEP_RE=/[①②③④⑤]/;function parseBlock(startRow){let firstStep=-1;for(let r=startRow;r<Math.min(rows.length,startRow+12);r++){const v=(rows[r]||[])[1];if(typeof v==="string"&&STEP_RE.test(v)){firstStep=r;break;}}if(firstStep<0)return null;const overall=[],mo=[],pc=[];for(let i=0;i<5;i++){const r=rows[firstStep+i]||[];const o=r[2],m=r[5],p=r[8];if(typeof o!=="number"||typeof m!=="number"||typeof p!=="number")return null;overall.push(o);mo.push(m);pc.push(p);}return{overall,mo,pc,endRow:firstStep+5};}let total=null;const campaigns=[];for(let r=0;r<rows.length;r++){const a=(rows[r]||[])[1];if(typeof a!=="string")continue;const t=a.trim();if(/^\[1\]/.test(t)||/디바이스별.*전체.*너겟/.test(t)){const blk=parseBlock(r+1);if(blk)total={name:"너겟 전체",overall:blk.overall,mo:blk.mo,pc:blk.pc};continue;}const sub=t.match(/^\d\)\s*(.+)/);if(sub){const blk=parseBlock(r+1);if(blk)campaigns.push({name:sub[1].trim(),colorKey:campaigns.length===0?"green":"purple",overall:blk.overall,mo:blk.mo,pc:blk.pc});}}if(!total||campaigns.length<2)return null;return{total,campaigns};}
+  let parsed=null;for(const s of wb.sheets){const rows=wb.readSheet(s.name)||[];const r=parseLanding(rows);if(r){parsed={sheet:s.name,data:r};break;}}
+  if(!parsed)throw new Error("랜딩별 비교 형식의 데이터를 찾지 못했습니다");
+  ldData=parsed.data;ldRerender();ldSetStatus(`✓ ${file.name} → '${parsed.sheet}' / ${parsed.data.campaigns.length}개 캠페인`);}
+  catch(err){ldSetStatus("xlsx 파싱 실패: "+err.message,"err");}finally{e.target.value="";}
+});
+document.getElementById("ld-download").addEventListener("click",()=>{svgDownload(renderSVG_ld(ldData,ldOpts()),$ldChartType.value==="device"?"landing_compare_pc_mo.svg":"landing_compare_type.svg");ldSetStatus("✓ SVG 다운로드 — Figma 캔버스에 드래그하세요");});
+})();
+</script>
+</body>
+</html>
