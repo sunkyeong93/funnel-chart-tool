@@ -1153,7 +1153,12 @@ $xlsx.addEventListener("change", async (e) => {
   $filename.textContent = file.name;
   setStatus(`엑셀 파싱 중: ${file.name}…`);
   try {
-    var buf = await file.arrayBuffer();
+    var buf = await new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function(e) { resolve(e.target.result); };
+      reader.onerror = function() { reject(new Error("파일을 읽을 수 없습니다")); };
+      reader.readAsArrayBuffer(file);
+    });
     var u8 = new Uint8Array(buf);
     var files = await unzipXlsx(u8);
     var wb = parseXlsxWorkbook(files);
@@ -2131,7 +2136,12 @@ $xlsx.addEventListener("change", async (e) => {
   $filename.textContent = file.name;
   setStatus(`엑셀 파싱 중: ${file.name}…`);
   try {
-    var buf = await file.arrayBuffer();
+    var buf = await new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function(e) { resolve(e.target.result); };
+      reader.onerror = function() { reject(new Error("파일을 읽을 수 없습니다")); };
+      reader.readAsArrayBuffer(file);
+    });
     var u8 = new Uint8Array(buf);
     var files = await unzipXlsx(u8);
     var wb = parseXlsxWorkbook(files);
@@ -2859,7 +2869,12 @@ $xlsx.addEventListener("change", async (e) => {
   $filename.textContent = file.name;
   setStatus(`엑셀 파싱 중: ${file.name}…`);
   try {
-    var buf = await file.arrayBuffer();
+    var buf = await new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function(e) { resolve(e.target.result); };
+      reader.onerror = function() { reject(new Error("파일을 읽을 수 없습니다")); };
+      reader.readAsArrayBuffer(file);
+    });
     var u8 = new Uint8Array(buf);
     var files = await unzipXlsx(u8);
     var wb = parseXlsxWorkbook(files);
@@ -3573,7 +3588,12 @@ $xlsx.addEventListener("change", async (e) => {
   $filename.textContent = file.name;
   setStatus(`엑셀 파싱 중: ${file.name}…`);
   try {
-    var buf = await file.arrayBuffer();
+    var buf = await new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function(e) { resolve(e.target.result); };
+      reader.onerror = function() { reject(new Error("파일을 읽을 수 없습니다")); };
+      reader.readAsArrayBuffer(file);
+    });
     var u8 = new Uint8Array(buf);
     var files = await unzipXlsx(u8);
     var wb = parseXlsxWorkbook(files);
